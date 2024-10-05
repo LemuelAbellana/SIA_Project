@@ -175,7 +175,7 @@ body {
 
 
 
-/* <------Service Page------> */    
+/* <------ SERVICE PAGE ------> */    
 
 .header2 {
     background-color: #08142c;
@@ -222,7 +222,7 @@ body {
 
 .image2 {
     width: 100%;
-    height: 100vh; 
+    height: 50vh; 
     background-image: url(./Assets/Resort.jpeg); 
     background-position: center; 
     background-size: cover; 
@@ -236,7 +236,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(35, 43, 43, 0.7); /* Dark transparent overlay */
+    background-color: rgba(35, 43, 43, 0.7); 
     display: flex;
     justify-content: center;
     align-items: center;
@@ -388,6 +388,8 @@ body {
 
 .check-details:hover {
     background-color: #f0a500;
+    cursor:grab;
+    
 }
 
 @media (max-width: 768px) {
@@ -506,6 +508,213 @@ body {
 }
 
 .title3::after {
+    right: 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.title3 {
+    font-size: 150px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #08142c;
+    position: relative;
+    padding: 1200px;
+    text-shadow: #08142c 12px, -24px, 10px;
+}
+
+.title3::before, .title3::after {
+    content: "";
+    height: 5px;
+    background-color: #08142c;
+    display: block;
+    position: absolute;
+    top: 50%;
+    width: 30%;
+}
+
+.title3::before {
+    left: 0;
+}
+
+.title3::after {
+    right: 0;
+}
+.profile{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-inline: 10px;
+    margin-top: 300px;
+}
+.fa-phone{
+    font-size: 150px;
+    color: black;
+}
+.fa-user{
+    font-size: 150px;
+    color: black;
+}
+.fa-location-dot{
+font-size: 150px;
+color: black;
+}
+
+.descr{
+    display: flex;
+    align-items: center;
+    padding: 50px 0;
+    justify-content: space-between;
+
+}
+.descriptionprof p{
+    font-size: 60px;
+    color: #08142c;
+    font-weight: 30vh;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif ;
+    margin-left: 800px;
+    margin-top: 150px;
+}
+
+.ownerah p{
+    margin-top: 150px;
+    font-size: 60px;
+    color: #08142c;
+    font-weight: 30vh;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif ;
+   align-items: center;
+   justify-content: center;
+   z-index: 1;
+   margin-left: 270px;
+}
+
+.locationrah p{
+    margin-top: 150px;
+    font-size: 60px;
+    color: #08142c;
+    font-weight: 30vh;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif ;
+    align-items: end;
+    justify-content: flex-end;
+    margin-right: 400px;
+}
+
+/* ----- BOOKING PHASE ------ */
+
+.header4 {
+    background-color: #08142c;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.navigation-bar4 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.nav-links4 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.nav-links4 a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px 20px;
+    margin: 0 100px;
+    font-size: 70px;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+}
+
+.nav-links4 a:hover {
+    color: #f0a500;
+}
+
+.nav-links4 .logo {
+    width: 250px; 
+    margin: 20px 30px; 
+}
+
+.nav-links img {
+    display: block;
+}
+
+.image4 {
+    width: 100%;
+    height: 100vh; 
+    background-image: url(./Assets/Resort.jpeg); 
+    background-position: center; 
+    background-size: cover; 
+    background-repeat: no-repeat; 
+    position: relative;
+}
+
+.image-overlay4 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(35, 43, 43, 0.7); /* Dark transparent overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.welcome4 img{
+    width: 4050px;
+}
+
+.welcome4 img.h4 {
+    max-width: 100%;
+    height: auto;
+    z-index: 1;
+    animation: fadeIn 1.2s ease-in-out;
+}
+
+.container4 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 20vh;
+}
+
+.title4 {
+    font-size: 75px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #08142c;
+    position: relative;
+    padding: 1200px;
+}
+
+.title4::before, .title4::after {
+    content: "";
+    height: 5px;
+    background-color: #08142c;
+    display: block;
+    position: absolute;
+    top: 50%;
+    width: 30%;
+}
+
+.title4::before {
+    left: 0;
+}
+
+.title4::after {
     right: 0;
 }
 
