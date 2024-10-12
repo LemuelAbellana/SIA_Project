@@ -273,3 +273,9 @@ ul, li {
     font-size: 30px;
     margin-left: 30px;
 }
+
+/* Button */ 
+
+button {
+    border: none;
+}
