@@ -1,57 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
-    <title>BookingForm</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+  <title>BookingForm</title>
 </head>
+
 <body>
-    <header class="header">
-        <div class="navigation-bar">
-          <div class="nav-links">
-            <a href="./index.html">Home</a>
-            <a href="./services.html">Services</a>
-    
-            <a href="index.html">
-              <img src="../SIA_Project/Assets/SIA_LOGO_wobg1.png" alt="Escape Avenue" class="logo">
-            </a>
-            <a href="./contact.html">Contact</a>
-            <a href="./booking.html">Book Now</a>
-          </div>
+  <header class="header">
+    <div class="navigation-bar">
+      <div class="nav-links">
+        <a href="./index.html">Home</a>
+        <a href="./services.html">Services</a>
+        <a href="index.html">
+          <img src="../SIA_Project/Assets/SIA_LOGO_wobg1.png" alt="Escape Avenue" class="logo">
+        </a>
+        <a href="./contact.html">Contact</a>
+        <a href="./booking.html">Book Now</a>
+      </div>
+    </div>
+  </header>
+  <form action="#">
+  <div class="form-container">
+    <div class="form-content">
+      <div class="left-side">
+        <div class="address-details">
+          <i class="fas fa-map-marker-alt"></i>
+          <div class="topic">Address</div>
+          <div class="text-one">Golf View Executive Homes</div>
+          <div class="text-two">Talomo, Davao City, Philippines</div>
         </div>
-      </header>
-      
-      <div class="form-container">
-        <div class="form-content">
-            <div class="left-side">
-                <div class="address-details">
-                    <i class="fas fa-map-marker-alt"></i>
-                        <div class="topic">Address</div>
-                        <div class="text-one">Golf View Executive Homes</div>
-                        <div class="text-two">Talomo, Davao City, Philippines</div>
-                </div>
-                <div class="left-side">
-                    <div class="phone-details">
-                        <i class="fas fa-phone-alt"></i>
-                            <div class="topic">Phone</div>
-                            <div class="text-one">09512575802</div>
-                            <div class="text-two">09065864399</div>
-                    </div>
-                    <div class="left-side">
-                        <div class="email-details">
-                            <i class="fas fa-envelope"></i>
-                                <div class="topic">Email</div>
-                                <div class="text-one">escapeavenue@gmail.com</div>
-                                <div class="text-two">lemuelabellana84@gmail.com</div>
-                        </div>
-            </div>
-            <div class="right-side">
-                <div class="topic-text">Send us a Message</div>
-                <p class="forms-paragraph">Let us know if there are </p>
-            </div>
+
+        <div class="phone-details">
+          <i class="fas fa-phone-alt"></i>
+          <div class="topic">Phone</div>
+          <div class="text-one">09512575802</div>
+          <div class="text-two">09065864399</div>
+        </div>
+
+        <div class="email-details">
+          <i class="fas fa-envelope"></i>
+          <div class="topic">Email</div>
+          <div class="text-one">escapeavenue@gmail.com</div>
+          <div class="text-two">lemuelabellana84@gmail.com</div>
         </div>
       </div>
+
+      <!-- Right Side Content -->
+      <div class="right-side">
+        <div class="topic-text">Send us a message</div>
+        <p class="forms-paragraph">Should you have any requests or inquiries, please do not hesitate to contact us. We are committed to providing prompt assistance and ensuring that all your needs are met to your satisfaction.</p>
+          <div class="input-box">
+            <input type="text" placeholder="Enter your name" required>
+          </div>
+          <div class="input-box">
+            <input type="email" placeholder="Enter your Email" required>
+          </div>
+          <div class="input-box message-box">
+            <textarea placeholder="Enter your message"required></textarea>
+          </div>
+          <div class="form-button">
+            <input type="submit" value="Send Now">
+          </div>
+      </div>
+    </div>
+  </div>
+</form>
 </body>
+
 </html>

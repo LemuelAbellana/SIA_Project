@@ -26,8 +26,8 @@ body {
 
 
 .image img {
-    width: 100%;
-    margin-right: 150px;
+    width: 75%;
+    margin-right: 70px;
 }
 
 .content {
@@ -278,4 +278,170 @@ ul, li {
 
 button {
     border: none;
+}
+
+/* Contact */
+.form-container{
+    width: 80%;
+    background: #f8fcff;
+    padding: 30px 60px 40px 40px;
+    border-radius: 6px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.7);
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+}
+
+.form-container .form-content{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.form-container .form-content .left-side{
+    width: 25%;
+    height: 100%;
+    position: relative;
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-container .form-content .left-side::before{
+    content: '';
+    position: absolute;
+    height: 70%;
+    width: 4px;
+    right: -15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #2a95ff;
+}
+.form-content .left-side .address-details,
+.form-content .left-side .phone-details,
+.form-content .left-side .email-details{
+    margin: 14px;
+    text-align: center;
+}
+.form-container .form-content .right-side{
+    width: 75%;
+    margin-left: 90px;
+}
+
+.form-content .left-side .address-details i,
+.form-content .left-side .phone-details i,
+.form-content .left-side .email-details i{
+    font-size: 30px;
+    color: #1073ff;
+    margin-bottom: 10px;
+}
+
+.form-content .left-side .address-details .text-one,
+.form-content .left-side .address-details .text-two,
+.form-content .left-side .phone-details .text-one,
+.form-content .left-side .phone-details .text-two,
+.form-content .left-side .email-details .text-one,
+.form-content .left-side .email-details .text-two{
+    font-size: 14px;
+    color: #afafb6;
+}
+
+.form-content .left-side .address-details .topic,
+.form-content .left-side .phone-details .topic,
+.form-content .left-side .email-details .topic{
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.form-content .right-side .topic-text{
+    font-size: 23px;
+    font-weight: bold;
+    color: #1073ff;
+}
+
+.form-content .right-side .input-box{
+    height: 50px;
+    width: 100%;
+    margin: 12px 0;
+}
+
+.form-content .right-side .input-box input{
+    height: 100%;
+    width: 100%;
+    border: none;
+    font-size: 16px;
+    background: #f0f1f8;
+    border-radius: 6px;
+    padding: 0 15px;
+}
+.form-content .right-side .input-box textarea{
+    height: 100px;
+    width: 100%;
+    border: none;
+    font-size: 16px;
+    background: #f0f1f8;
+    border-radius: 6px;
+    padding: 15px;
+    resize: none;
+
+}
+.form-content .right-side .message-box{
+    min-width: 110px;
+    margin-top: 6px;
+}
+
+.form-content .right-side .form-button{
+    margin-top: 50px;
+    display: inline-block;
+}
+
+.form-content .right-side .form-button input[type="submit"]{
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    background: #1073ff;
+    border-radius: 6px;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.3 ease;
+    
+}
+.form-content .right-side .form-button input[type="submit"]:hover{
+    background: #5029bc;
+}
+
+@media (max-width: 950px){
+    .form-container{
+        width: 90%;
+        padding: 30px 35px 40px 35px;
+    }
+}
+
+@media (max-width: 950px){
+    .form-container{
+        margin: 40px;
+        height: 100%;
+    }
+    .form-container .form-content{
+        flex-direction: column-reverse;
+    }
+    .form-container .form-content .left-side{
+        width: 100%;
+        flex-direction: row;
+        margin-top: 40px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .form-container .form-content .left-side::before{
+        display: none;
+    }
+    .form-container .form-content .right-side{
+        width: 100%;
+        margin-left: 0;
+    }
+
 }
