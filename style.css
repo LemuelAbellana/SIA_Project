@@ -450,6 +450,8 @@ button {
 /* Booking Section */
 .booking {
     padding: 2rem 9%;
+    margin-bottom: 75px;
+    margin-left: 1000px;
 }
 
 .booking .booking-heading {
@@ -514,7 +516,7 @@ button {
 }
 
 .booking .booking-row form .submit-btn {
-    background-color: #ff6600;
+    background-color: #1073ff;
     color: #fff;
     padding: 0.5rem 1rem;
     border: none;
@@ -524,7 +526,7 @@ button {
 }
 
 .booking .booking-row form .submit-btn:hover {
-    background-color: #e65c00;
+    background-color: #125fca;
 }
 
 /* Responsive Styles */
