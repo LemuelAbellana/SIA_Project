@@ -180,27 +180,58 @@ body {
 /* Side-by-side Image */
 .service-container {
     display: flex;
-    justify-content: center;
-    gap: 50px;
-    margin-bottom: 250px;
-    margin-top: 35px;
-
-}
-
-.service-container img {
-    width: 450px;
-    height: 300px;
-    border-radius: 50px;
-    transition: 0.2s linear;
-    transition: transform 0.4s ease;
-
+    margin-left: 150px;
+    margin-right: 150px;
+    margin-bottom: 100px;
 }
 
 
-.image-hover:hover {
-    transform: scale(1.1);
-    cursor: pointer;
+.row {
+    margin: 8px -16px;
 }
+
+
+.row, .column {
+    display: flex;
+    padding: 8px;
+}
+
+
+.column {
+    width: 40%;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.service-info {
+    background-color: white;
+    padding: 15px;
+    text-align: justify;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+}
+
+.service-info p {
+    font-size: 20px;
+    
+}
+
+
+.service-container .service-info {
+    transition: all 0.3s ease; 
+    transform: scale(1);
+    opacity: 1;
+  }
+  
+  .service-container .service-info:hover {
+    transform: scale(1.05); 
+    opacity: 0.9; 
+  }
+
+
 
 /* Footer */
 
@@ -267,21 +298,21 @@ body {
 
 
 
-/* Lists */ 
+/* Lists */
 
 ul, li {
     font-size: 30px;
     margin-left: 30px;
 }
 
-/* Button */ 
+/* Button */
 
 button {
     border: none;
 }
 
 /* Contact */
-.form-container{
+.form-container {
     width: 80%;
     background: #f8fcff;
     padding: 30px 60px 40px 40px;
@@ -291,16 +322,17 @@ button {
     margin-left: auto;
     margin-right: auto;
     margin-top: 50px;
-    margin-bottom: 250px;
+    margin-bottom: 150px;
+    margin-top: 100px;
 }
 
-.form-container .form-content{
+.form-container .form-content {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
 
-.form-container .form-content .left-side{
+.form-container .form-content .left-side {
     width: 25%;
     height: 100%;
     position: relative;
@@ -311,7 +343,7 @@ button {
     justify-content: center;
 }
 
-.form-container .form-content .left-side::before{
+.form-container .form-content .left-side::before {
     content: '';
     position: absolute;
     height: 70%;
@@ -321,20 +353,22 @@ button {
     transform: translateY(-50%);
     background: #2a95ff;
 }
+
 .form-content .left-side .address-details,
 .form-content .left-side .phone-details,
-.form-content .left-side .email-details{
+.form-content .left-side .email-details {
     margin: 14px;
     text-align: center;
 }
-.form-container .form-content .right-side{
+
+.form-container .form-content .right-side {
     width: 75%;
     margin-left: 90px;
 }
 
 .form-content .left-side .address-details i,
 .form-content .left-side .phone-details i,
-.form-content .left-side .email-details i{
+.form-content .left-side .email-details i {
     font-size: 30px;
     color: #1073ff;
     margin-bottom: 10px;
@@ -345,31 +379,31 @@ button {
 .form-content .left-side .phone-details .text-one,
 .form-content .left-side .phone-details .text-two,
 .form-content .left-side .email-details .text-one,
-.form-content .left-side .email-details .text-two{
+.form-content .left-side .email-details .text-two {
     font-size: 14px;
     color: #afafb6;
 }
 
 .form-content .left-side .address-details .topic,
 .form-content .left-side .phone-details .topic,
-.form-content .left-side .email-details .topic{
+.form-content .left-side .email-details .topic {
     font-size: 18px;
     font-weight: bold;
 }
 
-.form-content .right-side .topic-text{
+.form-content .right-side .topic-text {
     font-size: 23px;
     font-weight: bold;
     color: #1073ff;
 }
 
-.form-content .right-side .input-box{
+.form-content .right-side .input-box {
     height: 50px;
     width: 100%;
     margin: 12px 0;
 }
 
-.form-content .right-side .input-box input{
+.form-content .right-side .input-box input {
     height: 100%;
     width: 100%;
     border: none;
@@ -378,7 +412,8 @@ button {
     border-radius: 6px;
     padding: 0 15px;
 }
-.form-content .right-side .input-box textarea{
+
+.form-content .right-side .input-box textarea {
     height: 100px;
     width: 100%;
     border: none;
@@ -389,17 +424,18 @@ button {
     resize: none;
 
 }
-.form-content .right-side .message-box{
+
+.form-content .right-side .message-box {
     min-width: 110px;
     margin-top: 6px;
 }
 
-.form-content .right-side .form-button{
+.form-content .right-side .form-button {
     margin-top: 50px;
     display: inline-block;
 }
 
-.form-content .right-side .form-button input[type="submit"]{
+.form-content .right-side .form-button input[type="submit"] {
     color: #fff;
     font-size: 20px;
     font-weight: bold;
@@ -409,38 +445,43 @@ button {
     padding: 8px 16px;
     cursor: pointer;
     transition: all 0.3 ease;
-    
-}
-.form-content .right-side .form-button input[type="submit"]:hover{
-    background: #5029bc;
+
 }
 
-@media (max-width: 950px){
-    .form-container{
+.form-content .right-side .form-button input[type="submit"]:hover {
+    background: #125fca;
+}
+
+@media (max-width: 950px) {
+    .form-container {
         width: 90%;
         padding: 30px 35px 40px 35px;
     }
 }
 
-@media (max-width: 950px){
-    .form-container{
+@media (max-width: 950px) {
+    .form-container {
         margin: 40px;
         height: 100%;
     }
-    .form-container .form-content{
+
+    .form-container .form-content {
         flex-direction: column-reverse;
     }
-    .form-container .form-content .left-side{
+
+    .form-container .form-content .left-side {
         width: 100%;
         flex-direction: row;
         margin-top: 40px;
         justify-content: center;
         flex-wrap: wrap;
     }
-    .form-container .form-content .left-side::before{
+
+    .form-container .form-content .left-side::before {
         display: none;
     }
-    .form-container .form-content .right-side{
+
+    .form-container .form-content .right-side {
         width: 100%;
         margin-left: 0;
     }
