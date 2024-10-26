@@ -14,18 +14,25 @@
 <body>
 
   <header class="header">
+
     <div class="navigation-bar">
       <div class="nav-links">
         <a href="./index.html">Home</a>
         <a href="./services.html">Services</a>
 
-        <a href="index.html">
-          <img src="../SIA_Project/Assets/SIA_LOGO_wobg1.png" alt="Escape Avenue" class="logo">
-        </a>
         <a href="./contact.html">Contact</a>
+        <a href="index.html"><img src="../SIA_Project/Assets/SIA_LOGO_wobg1.png" alt="Escape Avenue" class="logo"></a>
         <a href="./booking.html">Book Now</a>
       </div>
-    </div>
+      <div class="dropdown">
+        <a href="./services.html" class="dropdown-btn">Sign Up</a>
+        <div class="dropdown-content">
+          <a href="./register.php"><i class="fa-solid fa-user-plus"></i> Register</a>
+          <a href="./login.html"><i class="fa-solid fa-user-plus"></i> Login</a>
+
+        </div>
+      </div>
+
   </header>
 
   <div class="image-header">
@@ -87,10 +94,9 @@
           <h3>Leaving </h3>
           <input type="datetime-local" required>
         </div>
-        
 
         <div class="form-submit-box">
-          <input type="submit" class="submit-btn" value="Book Now"> 
+          <input type="submit" class="submit-btn" value="Book Now">
         </div>
       </form>
     </div>
@@ -116,4 +122,5 @@
       </div>
     </div>
   </footer>
+
 </html>
