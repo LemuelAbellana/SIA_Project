@@ -700,26 +700,18 @@ a {
 .auth-buttons .login-btn,
 .auth-buttons .register-btn {
     padding: 8px 15px;
-    border: none;
+    border: 1px solid #125fca; /* Add a border for visibility */
     border-radius: 0px;
     cursor: pointer;
     font-size: 16px;
-    transition: background-color 0.3s;
-}
-
-.login-btn {
-    background-color: #125fca;
-    color: white;
-}
-
-.register-btn {
-    background-color: #125fca;
-    color: white;
+    background-color: transparent; /* Transparent background */
+    color: #ffffff; /* Color to match the border */
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .login-btn:hover,
 .register-btn:hover {
     background-color: #00226b;
-    
+    color: #f0a500; /* White color for text on hover */
 }
 
