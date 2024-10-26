@@ -688,3 +688,38 @@ a {
     height: auto;
     border-radius: 10px;
 }
+
+.auth-buttons {
+    display: flex;
+    gap: 20px;
+    margin: 5px;
+    text-decoration: none;
+    justify-content: flex-end;    
+}
+
+.auth-buttons .login-btn,
+.auth-buttons .register-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 0px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.login-btn {
+    background-color: #125fca;
+    color: white;
+}
+
+.register-btn {
+    background-color: #125fca;
+    color: white;
+}
+
+.login-btn:hover,
+.register-btn:hover {
+    background-color: #00226b;
+    
+}
+
