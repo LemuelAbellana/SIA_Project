@@ -2,7 +2,7 @@
 $hostname = "localhost";
 $dbUser = "root";
 $dbPassword = "";
-$dbName = "login_register";
+$dbName = "booking_db";
 $conn = mysqli_connect($hostname, $dbUser, $dbPassword, $dbName);
 
 if(!$conn){
