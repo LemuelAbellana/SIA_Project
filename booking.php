@@ -22,6 +22,7 @@
         <a href="./contact.html">Contact</a>
         <a href="./index.html"><img src="../SIA_Project/Assets/SIA_LOGO_wobg1.png" alt="Escape Avenue" class="logo"></a>
         <a href="./booking.php">Book Now</a>
+        <a href="./myBooking.html">My Booking</a>
       </div>
       <div class="dropdown">
         <a href="./services.html" class="dropdown-btn">Sign Up</a>
@@ -51,7 +52,6 @@
       <div class="booking-img">
         <img src="../SIA_Project/Assets/avenuegraphic.png" alt="Graphical Representation of Escape Avenue">
       </div>
-
       <?php
 // Include the database connection
 include 'bookingdatabase.php';
@@ -75,25 +75,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($name) || empty($email) || empty($contact_number) || empty($event_type) || empty($number_of_people) || empty($arrival_date) || empty($leaving_date)) {
         $error_msg[] = "Please fill in all fields.";
     } else {
-        if ($action === "check_availability") {
-            // Perform availability check (example logic, customize as needed)
-            $check_query = "SELECT * FROM bookings WHERE arrival_date <= '$leaving_date' AND leaving_date >= '$arrival_date'";
-            $check_result = mysqli_query($conn, $check_query);
+        // Check availability
+        $check_query = "SELECT * FROM bookings 
+                        WHERE (arrival_date < '$leaving_date' AND leaving_date > '$arrival_date')";
+        $check_result = mysqli_query($conn, $check_query);
 
-            if (mysqli_num_rows($check_result) > 0) {
-                $error_msg[] = "The venue is not available for the selected dates.";
+        if (mysqli_num_rows($check_result) > 0) {
+            $error_msg[] = "The venue is not available for the selected dates.";
+        } else {
+            // If no conflicts, proceed with booking
+            if ($action === "book_now") {
+                $insert_query = "INSERT INTO bookings (name, email, contact_number, event_type, number_of_people, arrival_date, leaving_date) 
+                                 VALUES ('$name', '$email', '$contact_number', '$event_type', $number_of_people, '$arrival_date', '$leaving_date')";
+
+                if (mysqli_query($conn, $insert_query)) {
+                    $success_msg[] = "Booking successfully completed.";
+                } else {
+                    $error_msg[] = "Error: " . mysqli_error($conn);
+                }
             } else {
                 $success_msg[] = "The venue is available for the selected dates.";
-            }
-        } elseif ($action === "book_now") {
-            // Insert booking data
-            $insert_query = "INSERT INTO bookings (name, email, contact_number, event_type, number_of_people, arrival_date, leaving_date) 
-                             VALUES ('$name', '$email', '$contact_number', '$event_type', $number_of_people, '$arrival_date', '$leaving_date')";
-
-            if (mysqli_query($conn, $insert_query)) {
-                $success_msg[] = "Booking successfully completed.";
-            } else {
-                $error_msg[] = "Error: " . mysqli_error($conn);
             }
         }
     }
@@ -110,6 +111,7 @@ if (!empty($success_msg)) {
     echo "<script>Swal.fire('Success', '" . implode('<br>', $success_msg) . "', 'success');</script>";
 }
 ?>
+
       <form action="booking.php" method="post">
         <div class="form-input-box">
           <label for="name">

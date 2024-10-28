@@ -739,3 +739,40 @@ a {
     display: block;
 }
 
+/* Booking Page */
+
+.receipt-container {
+    height: 500px;
+    max-width: 350px;
+    margin: auto;
+    display:flex;
+    justify-content: center;
+    margin-top: 25px;
+    margin-bottom: 100px;
+    border-color: black;
+    border-style: solid;
+    padding: 1rem;
+    
+    
+    
+}
+
+.logo-booking {
+    display: flex;
+    justify-content: center;
+}
+
+.title-booking {
+    margin-top: 50px;
+    font-size: 50px;
+    font-weight: 750;
+    line-height: 3rem;
+    margin-bottom: 1.7rem;
+    display: flex;
+    justify-content: center;
+}
+
+.receipt-container p {
+    font-size: 20px;
+    
+}
