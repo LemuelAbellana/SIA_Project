@@ -2,10 +2,11 @@
 $hostname = "localhost";
 $dbUser = "root";
 $dbPassword = "";
-$dbName = "booking_db";
+$dbName = "escape_avenue";
+
 $conn = mysqli_connect($hostname, $dbUser, $dbPassword, $dbName);
 
-if(!$conn){
-    die("Something went wrong");
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
 }
 ?>
