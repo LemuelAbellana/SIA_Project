@@ -708,15 +708,16 @@ a {
     padding: 10px 20px;
     font-size: 25px;
     text-transform: uppercase;
+    cursor:default;
 }
 
 .dropdown-content {
-    display: none; /* Hidden by default */
+    display: none; 
     position: absolute;
     background-color: #08142c;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
     z-index: 1;
-    top: 100%; /* Position below the dropdown button */
+    top: 100%; 
     min-width: 150px;
 }
 
@@ -735,7 +736,7 @@ a {
     background-color: #00226b;
 }
 
-/* Show dropdown content on hover */
+
 .dropdown:hover .dropdown-content {
     display: block;
 }
