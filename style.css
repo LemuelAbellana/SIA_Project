@@ -9,7 +9,9 @@ body {
     font-family: "Poppins", sans-serif;
     color: #01162C;
     background-color: #f4f0ec;
-}
+    margin: 0;
+    padding: 0;
+  }
 
 .header {
     background-color: #08142c;
@@ -17,6 +19,9 @@ body {
     top: 0;
     z-index: 500;
     height: 150px;
+    padding: 1rem;
+    text-align: center;
+      
 }
 
 .image {
@@ -241,12 +246,14 @@ body {
     background-color: #01162C;
     /* Updated background color */
     color: white;
-    padding: 2px 0px;
+    padding: 20px;
     text-align: center;
     position: relative;
     bottom: 0;
     width: 100%;
-}
+    margin-top: 60px;
+  }
+  
 
 .footer-container {
     display: flex;
@@ -740,41 +747,67 @@ a {
 .dropdown:hover .dropdown-content {
     display: block;
 }
-
-/* Booking Page */
-
-.receipt-container {
-    height: 500px;
-    max-width: 350px;
-    margin: auto;
-    display:flex;
-    justify-content: center;
-    margin-top: 25px;
-    margin-bottom: 100px;
-    border-color: black;
-    border-style: solid;
-    padding: 1rem;
-    
-    
-    
-}
-
-.logo-booking {
-    display: flex;
-    justify-content: center;
-}
-
-.title-booking {
+  
+  .title-booking {
     margin-top: 50px;
-    font-size: 50px;
-    font-weight: 750;
-    line-height: 3rem;
-    margin-bottom: 1.7rem;
-    display: flex;
-    justify-content: center;
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+    color: #003366;
+  }
+  
+  .receipt-container {
+    width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 2px solid #000;
+    border-radius: 5px;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
 }
 
-.receipt-container p {
-    font-size: 20px;
-    
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.receipt-row strong {
+    color: #003366;
+    width: 40%; /* Label width */
+    text-align: left;
+}
+
+.receipt-row span {
+    width: 60%; /* Value width */
+    text-align: left;
+    color: #333;
+}
+
+.note {
+    text-align: center;
+    font-style: italic;
+    margin-top: 20px;
+    color: #cc0000;
+}
+
+.cancel-button {
+    display: block;
+    width: 100%;
+    max-width: 200px; 
+    margin: 20px auto 0; 
+    background-color: #ff4d4d;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-button:hover {
+    background-color: #cc0000;
 }
