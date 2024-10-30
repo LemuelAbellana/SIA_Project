@@ -8,8 +8,8 @@
     integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
     crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
   <title>Booking</title>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 </head>
 
 <body>
@@ -52,8 +52,7 @@
       <div class="booking-img">
         <img src="../SIA_Project/Assets/avenuegraphic.png" alt="Graphical Representation of Escape Avenue">
       </div>
-
-      <!-- <?php 
+      <?php
 // Include the database connection
 include 'bookingdatabase.php';
 
@@ -76,25 +75,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (empty($name) || empty($email) || empty($contact_number) || empty($event_type) || empty($number_of_people) || empty($arrival_date) || empty($leaving_date)) {
         $error_msg[] = "Please fill in all fields.";
     } else {
-        if ($action === "check_availability") {
-            // Perform availability check (example logic, customize as needed)
-            $check_query = "SELECT * FROM bookings WHERE arrival_date <= '$leaving_date' AND leaving_date >= '$arrival_date'";
-            $check_result = mysqli_query($conn, $check_query);
+        // Check availability
+        $check_query = "SELECT * FROM bookings 
+                        WHERE (arrival_date < '$leaving_date' AND leaving_date > '$arrival_date')";
+        $check_result = mysqli_query($conn, $check_query);
 
-            if (mysqli_num_rows($check_result) > 0) {
-                $error_msg[] = "The venue is not available for the selected dates.";
+        if (mysqli_num_rows($check_result) > 0) {
+            $error_msg[] = "The venue is not available for the selected dates.";
+        } else {
+            // If no conflicts, proceed with booking
+            if ($action === "book_now") {
+                $insert_query = "INSERT INTO bookings (name, email, contact_number, event_type, number_of_people, arrival_date, leaving_date) 
+                                 VALUES ('$name', '$email', '$contact_number', '$event_type', $number_of_people, '$arrival_date', '$leaving_date')";
+
+                if (mysqli_query($conn, $insert_query)) {
+                    $success_msg[] = "Booking successfully completed.";
+                } else {
+                    $error_msg[] = "Error: " . mysqli_error($conn);
+                }
             } else {
                 $success_msg[] = "The venue is available for the selected dates.";
-            }
-        } elseif ($action === "book_now") {
-            // Insert booking data
-            $insert_query = "INSERT INTO bookings (name, email, contact_number, event_type, number_of_people, arrival_date, leaving_date) 
-                             VALUES ('$name', '$email', '$contact_number', '$event_type', $number_of_people, '$arrival_date', '$leaving_date')";
-
-            if (mysqli_query($conn, $insert_query)) {
-                $success_msg[] = "Booking successfully completed.";
-            } else {
-                $error_msg[] = "Error: " . mysqli_error($conn);
             }
         }
     }
@@ -102,15 +102,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 mysqli_close($conn);
 
-// Display messages using JavaScript
-if (!empty($error_msg)) {
-    echo "<script>Swal.fire('Error', '" . implode('<br>', $error_msg) . "', 'error');</script>";
+// Display success messages using Swal.fire
+if (!empty($success_msg)) {
+    foreach ($success_msg as $msg) {
+        echo "<script>
+                Swal.fire({
+                    title: 'Success',
+                    html: '$msg',
+                    icon: 'success',
+                    iconHtml: '<i class=\"fa fa-check-circle\"></i>',
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        icon: 'custom-icon',
+                        title: 'custom-title',
+                        htmlContainer: 'custom-html'
+                    }
+                });
+              </script>";
+    }
 }
 
-if (!empty($success_msg)) {
-    echo "<script>Swal.fire('Success', '" . implode('<br>', $success_msg) . "', 'success');</script>";
+// Display error messages using Swal.fire
+if (!empty($error_msg)) {
+    foreach ($error_msg as $msg) {
+        echo "<script>
+                Swal.fire({
+                    title: 'Error',
+                    html: '$msg',
+                    icon: 'error',
+                    iconHtml: '<i class=\"fa fa-times-circle\"></i>',
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        icon: 'custom-icon',
+                        title: 'custom-title',
+                        htmlContainer: 'custom-html'
+                    }
+                });
+              </script>";
+    }
 }
-?>-->
+?>
+
       <form action="booking.php" method="post">
         <div class="form-input-box">
           <label for="name">
@@ -187,7 +221,6 @@ if (!empty($success_msg)) {
   </footer>
 
   <script src="datedisable.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 </body>
 
 </html>
