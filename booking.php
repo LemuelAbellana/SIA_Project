@@ -102,13 +102,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 mysqli_close($conn);
 
-// Display messages using JavaScript
-if (!empty($error_msg)) {
-    echo "<script>Swal.fire('Error', '" . implode('<br>', $error_msg) . "', 'error');</script>";
+// Display success messages using Swal.fire
+if (!empty($success_msg)) {
+    foreach ($success_msg as $msg) {
+        echo "<script>
+                Swal.fire({
+                    title: 'Success',
+                    html: '$msg',
+                    icon: 'success',
+                    iconHtml: '<i class=\"fa fa-check-circle\"></i>',
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        icon: 'custom-icon',
+                        title: 'custom-title',
+                        htmlContainer: 'custom-html'
+                    }
+                });
+              </script>";
+    }
 }
 
-if (!empty($success_msg)) {
-    echo "<script>Swal.fire('Success', '" . implode('<br>', $success_msg) . "', 'success');</script>";
+// Display error messages using Swal.fire
+if (!empty($error_msg)) {
+    foreach ($error_msg as $msg) {
+        echo "<script>
+                Swal.fire({
+                    title: 'Error',
+                    html: '$msg',
+                    icon: 'error',
+                    iconHtml: '<i class=\"fa fa-times-circle\"></i>',
+                    showConfirmButton: true,
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        icon: 'custom-icon',
+                        title: 'custom-title',
+                        htmlContainer: 'custom-html'
+                    }
+                });
+              </script>";
+    }
 }
 ?>
 
@@ -117,7 +150,7 @@ if (!empty($success_msg)) {
           <label for="name">
             <h3>Name:</h3>
           </label>
-          <input type="text" id="name" name="name" placeholder="First name" required>
+          <input type="text" id="name" name="name" placeholder="Full name" required>
         </div>
         <div class="form-input-box">
           <label for="email">
