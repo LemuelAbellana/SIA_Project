@@ -19,9 +19,7 @@ body {
     top: 0;
     z-index: 500;
     height: 150px;
-    padding: 1rem;
-    text-align: center;
-      
+    text-align: center; 
 }
 
 .image {
