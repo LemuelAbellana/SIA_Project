@@ -1,3 +1,4 @@
+//
 <!DOCTYPE html>
 <html lang="en">
 
@@ -52,6 +53,7 @@
       <div class="booking-img">
         <img src="../SIA_Project/Assets/avenuegraphic.png" alt="Graphical Representation of Escape Avenue">
       </div>
+
       <?php
 // Include the database connection
 include 'bookingdatabase.php';
