@@ -1,4 +1,4 @@
-//
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,7 +23,7 @@
         <a href="./contact.html">Contact</a>
         <a href="./index.html"><img src="../SIA_Project/Assets/SIA_LOGO_wobg1.png" alt="Escape Avenue" class="logo"></a>
         <a href="./booking.php">Book Now</a>
-        <a href="./myBooking.html">My Booking</a>
+        <a href="./myBooking.php">My Booking</a>
       </div>
       <div class="dropdown">
         <a href="#" class="dropdown-btn">Sign Up</a>
