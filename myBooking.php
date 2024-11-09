@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Check if session variables are set
 if (isset($_SESSION['booking_id'])) {
     $booking_id = $_SESSION['booking_id'];
     $name = $_SESSION['name'];
@@ -11,14 +10,14 @@ if (isset($_SESSION['booking_id'])) {
     $number_of_people = $_SESSION['number_of_people'];
     $arrival_date = $_SESSION['arrival_date'];
     $leaving_date = $_SESSION['leaving_date'];
+
+    // Clear session after displaying booking details
+    session_unset();
+    session_destroy();
 } else {
     echo "No booking information found.";
     exit();
 }
-
-// Clear session after displaying booking details
-session_unset();
-session_destroy();
 ?>
 
 <!DOCTYPE html>
@@ -116,27 +115,6 @@ session_destroy();
       </div>
     </div>
   </footer>
-
-  <script>
-    function confirmCancellation() {
-      Swal.fire({
-  title: "Are you sure?",
-  text: "You won't be able to revert this!",
-  icon: "warning",
-  showCancelButton: true,
-  confirmButtonColor: "#3085d6",
-  cancelButtonColor: "#d33",
-  confirmButtonText: "Yes, Cancel my booking!"
-}).then((result) => {
-  if (result.isConfirmed) {
-    Swal.fire({
-      title: "Deleted!",
-      text: "Your Booking has been Canceled.",
-      icon: "success"
-    });
-  }
-});
-    }
-  </script>
+  <script src="confirm_cancel.js"></script>
 </body>
 </html>
