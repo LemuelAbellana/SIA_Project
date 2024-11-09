@@ -20,7 +20,7 @@ if (isset($_POST["login"])) {
     $password = $_POST["password"];
 
     // Query to find user
-    $sql = "SELECT * FROM users WHERE email = ?";
+    $sql = "SELECT * FROM admins WHERE email = ?";
     $stmt = mysqli_prepare($conn, $sql);
     mysqli_stmt_bind_param($stmt, "s", $email);
     mysqli_stmt_execute($stmt);
