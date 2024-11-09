@@ -22,10 +22,8 @@
   display: flex;
   transition: 0.3s;
 
-  
+
 }
-
-
 .sidebar a:hover {
   color: #f1f1f1;
 }

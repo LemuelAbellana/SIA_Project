@@ -1,3 +1,4 @@
+
 * {
     margin: 0;
     padding: 0;
@@ -7,11 +8,154 @@
 body {
     font-family: "Poppins", sans-serif;
     color: #01162C;
-    background-color: #f4f0ec;
     margin: 0;
     padding: 0;
+    background-color: #0a1b2e; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
   }
 
+  .container {
+    display: flex;
+    background: linear-gradient(90deg, rgba(157, 216, 250, 0.5) 0%, rgba(157, 216, 250, 0.5) 35%, rgba(155, 251, 227, 0.5) 100%);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    width: 750px;
+    height: 550px;
+    
+}
+
+
+.logo {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+}
+
+.logo img {
+    width: 250px;
+    border-radius: 5px;
+}
+
+.login-panel {
+    flex: 1.5;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-panel h2 {
+    font-size: 30px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #0a1b2e;
+}
+
+.login-panel p {
+    font-size: 18px;
+    color: #0a1b2e; 
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+.btn-group {
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-group button {
+    width: 48%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.btn-group .register-btn {
+    background-color: #ddd;
+    color: #333;
+}
+
+.btn-group .login-btn {
+    background-color: #66a6ff;
+    color: #fff;
+}
+
+.btn-group button:hover {
+    opacity: 0.9;
+}
+
+.input-group label {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-group label i {
+    position: absolute;
+    left: 10px;
+    color: #b0b0b0;
+}
+
+.input-group input {
+    width: 400px;
+    padding: 10px 10px 10px 35px; 
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #ffffff;
+    color: #b0b0b0;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #66a6ff;
+}
+
+.backgrndimg::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('./Assets/escape_backgroundimage.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.5;
+    z-index: -1;
+}
+
+.backgrndimg::after {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1;
+
+}
+
+
+
+
+
+
+/*
 .backgrndimg::before {
     content: "";
     position: fixed;
@@ -62,7 +206,7 @@ body {
 }
 
 
-/* Full-width input fields 
+ Full-width input fields 
 input[type=text], input[type=password] {
     width: 500px;
     padding: 15px;
@@ -79,7 +223,6 @@ input[type=text]:focus, input[type=password]:focus {
     border-radius: 25px;
 }
 
-*/
 
 .input-container {
     display: inline-block;
@@ -210,3 +353,5 @@ a {
         width: 100%; 
     }
 }
+
+*/
