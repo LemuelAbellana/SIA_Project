@@ -24,14 +24,16 @@
 
 
 }
+
 .sidebar a:hover {
   color: #f1f1f1;
 }
 
-
 #main {
   margin-left: 250px; 
   padding: 20px;
+  display: block;
+  justify-content: center;
 }
 
 .logo {
@@ -68,5 +70,18 @@ table, th, td {
   border-collapse: collapse;
   padding: 8px;
   text-align: center;
+}
+
+.booking_info_title{
+text-align: center;
+}
+
+.booking_info_date{
+text-align: center;
+}
+
+.table{
+display: flex;
+justify-content: center;
 }
 
