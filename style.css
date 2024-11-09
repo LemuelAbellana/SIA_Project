@@ -1,4 +1,5 @@
 /* Global Styles */
+
 * {
     margin: 0;
     padding: 0;
@@ -66,7 +67,6 @@ body {
     width: 100%;
     height: 100%;
     background-color: rgba(35, 43, 43, 0.7);
-    /* Dark transparent overlay */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -111,10 +111,6 @@ body {
     text-align: center;
 }
 
-
-
-
-
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -142,9 +138,7 @@ body {
     text-align: justify;
 }
 
-
 /* Nav-Bar */
-
 
 .navigation-bar {
     display: flex;
@@ -183,6 +177,7 @@ body {
 }
 
 /* Side-by-side Image */
+
 .service-container {
     display: flex;
     margin-left: 150px;
@@ -242,7 +237,6 @@ body {
 
 .footer {
     background-color: #01162C;
-    /* Updated background color */
     color: white;
     padding: 20px;
     text-align: center;
@@ -302,9 +296,6 @@ body {
     margin: 0 auto;
 }
 
-
-
-
 /* Lists */
 
 ul, li {
@@ -319,6 +310,7 @@ button {
 }
 
 /* Contact */
+
 .form-container {
     width: 80%;
     background: #f8fcff;
@@ -495,6 +487,7 @@ button {
 }
 
 /* Booking Section */
+
 .booking {
     padding: 2rem 9%;
     margin-bottom: 75px;
@@ -560,10 +553,10 @@ button {
 
 .booking .booking-row form .form-submit-box {
     display: flex;
-    flex-direction: row; /* Ensures buttons are in a row */
-    gap: 1rem; /* Adjust gap as needed */
+    flex-direction: row;
+    gap: 1rem; 
     margin-top: 1rem;
-    align-items: center; /* Centers buttons vertically */
+    align-items: center; 
 }
 
 .booking .booking-row form .submit-btn, 
@@ -629,20 +622,21 @@ button {
 }
 
 .signup-container {
-    padding: 20px;
+    padding: 15px;
     display: grid;
     justify-content: center;
-    background-color: #f5f5f5;
+    background-color: rgba(245, 245, 245);
     color: #01162C;
     margin-top: 50px;
     margin-left: 500px;
     margin-right: 500px;
     margin-bottom: 15px;
+    
 }
 
-/* Full-width input fields */
+/* Full-width input fields 
 input[type=text], input[type=password] {
-    width: 100%;
+    width: 500px;
     padding: 15px;
     margin: 5px 0 22px 0;
     display: inline-block;
@@ -657,27 +651,65 @@ input[type=text]:focus, input[type=password]:focus {
     border-radius: 25px;
 }
 
+*/
 
-hr {
-    border: 1px solid #f1f1f1;
-    margin-bottom: 25px;
+.input-container {
+    display: inline-block;
+    position: relative;
+    margin-bottom: 15px;
+    background: #f1f1f1;
+    
 }
 
+.input-container i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+}
+
+.input-container input[type="text"],
+.input-container input[type="password"] {
+    width: 500px;
+    padding: 10px 10px 10px 40px; 
+    display: inline-block;
+    border: none;
+    background: #f1f1f1;
+
+    
+}
+
+input[type=text]:focus, input[type=password]:focus {
+    background-color: #ddd;
+    outline: none;
+    
+}
 
 .registerbtn {
-    background-color: #1073ff;
-    color: white;
+    width: auto;
     padding: 16px 20px;
+    background-color: #1073ff;
     margin: 8px 0;
+    color: white;
     border: none;
     cursor: pointer;
-    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
     opacity: 0.9;
+
 }
 
 .registerbtn:hover {
-    opacity: 1;
+    background-color: #0751b8;
+    
 }
+
+hr {
+    border: 1px solid #7c7c7c;
+    margin-bottom: 25px;
+}
+
 
 a {
     color: dodgerblue;
