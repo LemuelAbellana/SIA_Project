@@ -592,7 +592,7 @@ button {
     }
 }
 
-/* Register Form */
+/* Register Form 
 
 
 .backgrndimg::before {
@@ -634,7 +634,7 @@ button {
     
 }
 
-/* Full-width input fields 
+Full-width input fields 
 input[type=text], input[type=password] {
     width: 500px;
     padding: 15px;
@@ -651,7 +651,7 @@ input[type=text]:focus, input[type=password]:focus {
     border-radius: 25px;
 }
 
-*/
+
 
 .input-container {
     display: inline-block;
@@ -736,6 +736,7 @@ a {
 }
 
 /* Dropdown Menu */
+
 .dropdown {
     position: relative;
 }
