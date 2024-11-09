@@ -55,10 +55,13 @@
       </div>
 
       <?php
+// Start the session
+session_start();
+
 // Include the database connection
 include 'bookingdatabase.php';
 
-// Initialize variables for messages
+// Initialize messages
 $success_msg = [];
 $error_msg = [];
 
@@ -73,11 +76,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $leaving_date = mysqli_real_escape_string($conn, $_POST['leaving_date']);
     $action = $_POST['action'];
 
-    // Check if required fields are filled
+    // Check for empty fields
     if (empty($name) || empty($email) || empty($contact_number) || empty($event_type) || empty($number_of_people) || empty($arrival_date) || empty($leaving_date)) {
         $error_msg[] = "Please fill in all fields.";
     } else {
-        // Check availability without inserting data
+        // Check availability
         $check_query = "SELECT * FROM booking_information 
                         WHERE (arrival_date < '$leaving_date' AND leaving_date > '$arrival_date')";
         $check_result = mysqli_query($conn, $check_query);
@@ -86,18 +89,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error_msg[] = "The venue is not available for the selected dates.";
         } else {
             if ($action === "check_availability") {
-                // Only show availability message without inserting data
                 $success_msg[] = "The venue is available for the selected dates.";
             } elseif ($action === "book_now") {
-                // Insert customer data only if the action is "book_now"
-                
-                // Insert or fetch customer
+                // Check if customer already exists by contact number
                 $customer_query = "SELECT customer_id FROM customer WHERE contact_number = '$contact_number'";
                 $customer_result = mysqli_query($conn, $customer_query);
 
                 if (mysqli_num_rows($customer_result) > 0) {
                     $customer_id = mysqli_fetch_assoc($customer_result)['customer_id'];
                 } else {
+                    // Insert new customer
                     $insert_customer = "INSERT INTO customer (name, email, contact_number) VALUES ('$name', '$email', '$contact_number')";
                     if (mysqli_query($conn, $insert_customer)) {
                         $customer_id = mysqli_insert_id($conn);
@@ -126,21 +127,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                    VALUES ($customer_id, '$contact_number', $event_id, '$arrival_date', '$leaving_date', $number_of_people)";
 
                 if (mysqli_query($conn, $insert_booking)) {
-                    $booking_id = mysqli_insert_id($conn); // Get the booking ID for further reference
-                    $success_msg[] = "Booking successfully completed.";
+                    $booking_id = mysqli_insert_id($conn); 
+                    
+                    // Store booking details in session variables
+                    $_SESSION['booking_id'] = $booking_id;
+                    $_SESSION['name'] = $name;
+                    $_SESSION['email'] = $email;
+                    $_SESSION['contact_number'] = $contact_number;
+                    $_SESSION['event_type'] = $event_type;
+                    $_SESSION['number_of_people'] = $number_of_people;
+                    $_SESSION['arrival_date'] = $arrival_date;
+                    $_SESSION['leaving_date'] = $leaving_date;
 
-                    // Insert or update number_of_people for the booking
-                    $people_query = "SELECT * FROM number_of_people WHERE booking_id = $booking_id";
-                    $people_result = mysqli_query($conn, $people_query);
-
-                    if (mysqli_num_rows($people_result) > 0) {
-                        $update_people = "UPDATE number_of_people SET number_of_people = $number_of_people WHERE booking_id = $booking_id";
-                        mysqli_query($conn, $update_people);
-                    } else {
-                        $insert_people = "INSERT INTO number_of_people (booking_id, number_of_people) VALUES ($booking_id, $number_of_people)";
-                        mysqli_query($conn, $insert_people);
-                    }
-
+                    // Redirect to the receipt page
+                    header("Location: myBooking.php");
+                    exit();
                 } else {
                     $error_msg[] = "Error: " . mysqli_error($conn);
                 }
@@ -150,7 +151,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 mysqli_close($conn);
-
 
 // Display success messages using Swal.fire
 if (!empty($success_msg)) {
@@ -162,12 +162,7 @@ if (!empty($success_msg)) {
                     icon: 'success',
                     iconHtml: '<i class=\"fa fa-check-circle\"></i>',
                     showConfirmButton: true,
-                    confirmButtonText: 'OK',
-                    customClass: {
-                        icon: 'custom-icon',
-                        title: 'custom-title',
-                        htmlContainer: 'custom-html'
-                    }
+                    confirmButtonText: 'OK'
                 });
               </script>";
     }
@@ -183,12 +178,7 @@ if (!empty($error_msg)) {
                     icon: 'error',
                     iconHtml: '<i class=\"fa fa-times-circle\"></i>',
                     showConfirmButton: true,
-                    confirmButtonText: 'OK',
-                    customClass: {
-                        icon: 'custom-icon',
-                        title: 'custom-title',
-                        htmlContainer: 'custom-html'
-                    }
+                    confirmButtonText: 'OK'
                 });
               </script>";
     }
