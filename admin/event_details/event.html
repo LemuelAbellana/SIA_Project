@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer">
-    <link rel="stylesheet" href="admin.css">
+    <link rel="stylesheet" href="./event.css">
 
     <title>Admin</title>
 </head>
@@ -18,35 +18,31 @@
             <img src="./Assets/SIA_LOGO_wobg1.png" alt="Logo" class="logo">
 
         </div>
-        <a href="#"><button class="sidebar-button"><i class="fa-solid fa-book"></i> Booking</button></a>
-        <a href="#"><button class="sidebar-button"><i class="fa-solid fa-receipt"></i> Customer</button></a>
+        <a href="../booking_details/booking_information.html"><button class="sidebar-button"><i class="fa-solid fa-book"></i> Booking</button></a>
+        <a href="../customer_details/cutomer.html"><button class="sidebar-button"><i class="fa-solid fa-receipt"></i> Customer</button></a>
         <a href="#"><button class="sidebar-button"><i class="fa-solid fa-hotel"></i> Event</button></a>
-        <a href="#"><button class="sidebar-button"><i class="fa-solid fa-hotel"></i> Guests</button></a>
-        <a href="#"><button class="sidebar-button"><i class="fa-regular fa-user"></i> Logout</button></a>
+        <a href="../log_out_details/log_out"><button class="sidebar-button"><i class="fa-regular fa-user"></i> Logout</button></a>
     </div>
 
     <div id="main">
-        <h2 class="booking_info_title">Booking Information</h2>
-        <p class="booking_info_date">Date</p>
+        <h2 class="event_info_title">Events</h2>
+        <p class="event_info_date">Date</p>
 
-       
+    <div class="table">  
         <table>
             
             <tr>
-                <th>Booking ID</th>
-                <th>Customer ID</th>
                 <th>Event ID</th>
-                <th>Arrival Date</th>
-                <th>Leaving Date</th>
-                <th>Number of People</th>
-                <th>Contact Number</th>
+                <th>Event Type</th>
+                <th>Total Number of People</th>
             </tr>
             
             <tr>
                 <td>0001</td>
                 <td>0001</td>
                 <td>0001</td>
-                <td>0001</td>
+            </tr>
+            <tr>
                 <td>0001</td>
                 <td>0001</td>
                 <td>0001</td>
@@ -55,41 +51,22 @@
                 <td>0001</td>
                 <td>0001</td>
                 <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
             </tr>
             <tr>
                 <td>0001</td>
                 <td>0001</td>
                 <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
             </tr>
             <tr>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-            </tr>
-            <tr>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
                 <td>0001</td>
                 <td>0001</td>
                 <td>0001</td>
             </tr>
         </table>
-
-          
+    </div> 
+    <div class="summary_report">
+    <button href="summarization">See Report</button>     
+    </div> 
     </div>
 </body>
 

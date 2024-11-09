@@ -65,41 +65,29 @@
     color: #ffffff;
 }
 
-.customer_info_title {
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 8px;
     text-align: center;
-}
+    width: 600px;
+  }
+  
+  .event_info_title{
+  text-align: center;
+  }
+  
+  .event_info_date{
+  text-align: center;
+  }
+  
+  .table{
+  display: flex;
+  justify-content: center;
+  }
 
-.customer_info_date {
-    text-align: center;
-}
-
-.receipt-container {
-    width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    border: 1px solid #000;
-    border-radius: 5px;
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-}
-
-.receipt-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    font-size: 16px;
-}
-
-.receipt-row strong {
-    color: #000;
-    width: 40%;
-    /* Label width */
-    text-align: left;
-}
-
-.receipt-row span {
-    width: 60%;
-    /* Value width */
-    text-align: left;
-    color: #333;
+.summary_report{
+margin-top: 30px;
+display: flex;
+justify-content: center;
 }
