@@ -724,3 +724,6 @@ button {
     display: block;
   }
   
+  .receipt-container .receipt-row .receipt-value .confirm{
+    color: rgb(14, 214, 34);
+  }
