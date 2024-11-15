@@ -1,17 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <link rel="stylesheet" href="style.css">
-  <title>Register</title>
-</head>
-
-<body class="backgrndimg">
-  <div>
     <?php
     if (isset($_POST["submit"])) {
         $fullName = $_POST["fullname"];
@@ -61,37 +47,4 @@
         }
     }
     ?>
-    <form action="register_action.php" method="post">
-      <div class="signup-container">
-        <div class="register-logo">
-          <img src="./Assets/SIA_LOGO_wobg1.png" alt="">
-        </div>
-        <h1>Register</h1>
-        <p>Please fill in this form to create an account.</p>
-        <hr>
-
-        <label for="fullname"><b>Full Name</b></label>
-        <input type="text" placeholder="Enter Fullname" name="fullname" id="fname" required>
-
-        <label for="email"><b>Email</b></label>
-        <input type="text" placeholder="Enter Email" name="email" id="email" required>
-
-        <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="password" id="psw" required>
-
-        <label for="psw-repeat"><b>Repeat Password</b></label>
-        <input type="password" placeholder="Repeat Password" name="repeat_password" id="psw-repeat" required>
-        <hr>
-
-        <p>By creating an account you agree to our <a href="#">Terms & Privacy</a>.</p>
-        <button type="submit" class="registerbtn" value="Sign-up" name="submit">Register</button>
-      </div>
-
-      <div class="signup-container signin">
-        <p>Already have an account? <a href="./login.html">Sign in</a>.</p>
-      </div>
-    </form>
-  </div>
-</body>
-
-</html>
+  
