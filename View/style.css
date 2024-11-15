@@ -54,7 +54,7 @@ body {
 .image-header {
     width: auto;
     height: 50vh;
-    background-image: url(./Assets/Resort.jpeg);
+    background-image: url(../Assets/Resort.jpeg);
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
