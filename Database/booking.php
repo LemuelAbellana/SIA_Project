@@ -26,9 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (mysqli_num_rows($check_result) > 0) {
             $error_msg[] = "The venue is not available for the selected dates.";
         } else {
-            if ($action === "check_availability") {
-                $success_msg[] = "The venue is available for the selected dates.";
-            } elseif ($action === "book_now") {
+            if ($action === "book_now") {
                 mysqli_begin_transaction($conn);
                 try {
                     // Retrieve or insert customer data
@@ -73,17 +71,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                     // Commit and set session data
                     mysqli_commit($conn);
-                    $_SESSION['booking_id'] = $booking_id;
-                    $_SESSION['name'] = $name;
-                    $_SESSION['email'] = $email;
-                    $_SESSION['contact_number'] = $contact_number;
-                    $_SESSION['event_type'] = $event_type;
-                    $_SESSION['number_of_people'] = $number_of_people;
-                    $_SESSION['arrival_date'] = $arrival_date;
-                    $_SESSION['leaving_date'] = $leaving_date;
-
-                    header("Location: myBooking.php");
-                    exit();
+                    $_SESSION['booking_data'] = [
+                        'booking_id' => $booking_id,
+                        'name' => $name,
+                        'email' => $email,
+                        'contact_number' => $contact_number,
+                        'event_type' => $event_type,
+                        'number_of_people' => $number_of_people,
+                        'arrival_date' => $arrival_date,
+                        'leaving_date' => $leaving_date,
+                        'status' => 'Confirmed'
+                    ];
                 } catch (Exception $e) {
                     mysqli_rollback($conn);
                     $error_msg[] = $e->getMessage();
@@ -94,31 +92,89 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     mysqli_close($conn);
 }
 
-if (!empty($success_msg)) {
-    foreach ($success_msg as $msg) {
-        echo "<script>
-                Swal.fire({
-                    title: 'Success',
-                    html: '$msg',
-                    icon: 'success',
-                    showConfirmButton: true,
-                    confirmButtonText: 'OK'
-                });
-              </script>";
-    }
-}
-
-if (!empty($error_msg)) {
-    foreach ($error_msg as $msg) {
-        echo "<script>
-                Swal.fire({
-                    title: 'Error',
-                    html: '$msg',
-                    icon: 'error',
-                    showConfirmButton: true,
-                    confirmButtonText: 'OK'
-                });
-              </script>";
-    }
-}
+// Display booking receipt if session data exists
+$booking_data = $_SESSION['booking_data'] ?? null;
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../View/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+  <title>Booking Receipt</title>
+</head>
+<body>
+<header class="header">
+  <div class="navigation-bar">
+    <div class="nav-links">
+      <a href="./index.html">Home</a>
+      <a href="./services.html">Services</a>
+      <a href="./contact.html">Contact</a>
+      <a href="./index.html"><img src="../Assets/SIA_LOGO_wobg1.png" alt="Escape Avenue" class="logo"></a>
+      <a href="./booking.html">Book Now</a>
+      <a href="./myBooking.html">My Booking</a>
+      <a href="./faq.html">FAQ</a>
+    </div>
+  </div>
+</header>
+
+<?php if ($booking_data): ?>
+<div class="receipt-container">
+  <h2 class="title-booking">Booking Receipt</h2>
+  <div class="receipt-row"><strong>ID Number:</strong> <?php echo $booking_data['booking_id']; ?></div>
+  <div class="receipt-row"><strong>Name:</strong> <?php echo $booking_data['name']; ?></div>
+  <div class="receipt-row"><strong>Email:</strong> <?php echo $booking_data['email']; ?></div>
+  <div class="receipt-row"><strong>Contact Number:</strong> <?php echo $booking_data['contact_number']; ?></div>
+  <div class="receipt-row"><strong>Event Type:</strong> <?php echo $booking_data['event_type']; ?></div>
+  <div class="receipt-row"><strong>Number of People:</strong> <?php echo $booking_data['number_of_people']; ?></div>
+  <div class="receipt-row"><strong>Arrival Date:</strong> <?php echo $booking_data['arrival_date']; ?></div>
+  <div class="receipt-row"><strong>Leaving Date:</strong> <?php echo $booking_data['leaving_date']; ?></div>
+  <div class="receipt-row"><strong>Status:</strong> <span style="color: green;"><?php echo $booking_data['status']; ?></span></div>
+  <div class="note"><strong>Note:</strong> Thank you for booking with Escape Avenue!</div>
+  <form id="cancelForm" action="cancelBooking.php" method="POST">
+    <input type="hidden" name="booking_id" value="<?php echo $booking_data['booking_id']; ?>">
+    <button type="button" class="cancel-button" onclick="confirmCancellation()">Cancel Booking</button>
+  </form>
+</div>
+<?php endif; ?>
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-left">
+      <p>&copy; 2024 Escape Avenue. All rights reserved.</p>
+    </div>
+    <div class="footer-middle">
+      <a href="./index.html" class="footer-logo">
+        <img src="../Assets/footer_logo.png" alt="Escape Avenue Logo" class="footer-logo-image">
+      </a>
+    </div>
+    <div class="footer-right">
+      <p>Follow us:</p>
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  function confirmCancellation() {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, cancel my booking!"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        document.getElementById("cancelForm").submit();
+        Swal.fire("Cancelled!", "Your booking has been cancelled.", "success");
+      }
+    });
+  }
+</script>
+</body>
+</html>

@@ -609,60 +609,59 @@ button {
   
   .receipt-container {
     width: 400px;
-    margin: 0 auto;
-    padding: 20px;
+    margin: 20px auto; /* Center align horizontally */
+    padding: 30px;
     border: 2px solid #000;
-    border-radius: 5px;
+    border-radius: 10px;
     font-family: Arial, sans-serif;
     background-color: #f9f9f9;
-    
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative; /* Ensure it respects top positioning */
+    top: 50px; /* Moves the container closer to the top */
 }
 
-
 .receipt-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    font-size: 16px;
+    display: flex; /* Arrange labels and values horizontally */
+    justify-content: space-between; /* Align labels and values on opposite sides */
+    margin-bottom: 15px; /* Add space between rows */
 }
 
 .receipt-row strong {
-    color: #003366;
-    width: 40%; /* Label width */
-    text-align: left;
-}
-
-.receipt-row span {
-    width: 60%; /* Value width */
-    text-align: left;
+    flex-basis: 40%; /* Set label width */
+    text-align: left; /* Align labels to the left */
     color: #333;
 }
 
+.receipt-value {
+    flex-basis: 60%; /* Set value width */
+    text-align: right; /* Align values to the right */
+    color: #666; /* Slightly lighter color for values */
+}
+
 .note {
-    text-align: center;
-    font-style: italic;
     margin-top: 20px;
-    color: #cc0000;
+    color: red;
+    font-style: italic;
+    font-size: 14px;
+    text-align: center;
 }
 
 .cancel-button {
     display: block;
     width: 100%;
-    max-width: 200px; 
-    margin: 20px auto 0; 
-    background-color: #ff4d4d;
-    color: white;
+    margin-top: 20px;
     padding: 10px;
+    background-color: #f44336;
+    color: white;
     border: none;
     border-radius: 5px;
-    cursor: pointer;
     font-size: 16px;
+    cursor: pointer;
     text-align: center;
-    transition: background-color 0.3s ease;
 }
 
 .cancel-button:hover {
-    background-color: #cc0000;
+    background-color: #d32f2f;
 }
 
 /* */
