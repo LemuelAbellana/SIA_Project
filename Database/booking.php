@@ -1,18 +1,13 @@
 <?php
 session_start();
-require 'bookingdatabase.php'; // Ensure this file contains the correct database connection setup
-
-// Enable error reporting for debugging (remove in production)
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+require 'bookingdatabase.php'; // Database connection
 
 $response = ['success' => false, 'message' => ''];
 $booking_data = null;
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $action = $_GET['action'] ?? $_POST['action'] ?? null;
-
     // Retrieve and sanitize inputs
+    $action = $_POST['action'] ?? $_GET['action'] ?? null; // Priority to POST action first
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $contact_number = trim($_POST['contact_number'] ?? '');
@@ -21,12 +16,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $arrival_date = $_POST['arrival_date'] ?? '';
     $leaving_date = $_POST['leaving_date'] ?? '';
 
+    if (!$action) {
+        $response['message'] = "No action specified.";
+        echo json_encode($response);
+        exit;
+    }
+
+    // Handle 'check_availability' action
     if ($action === 'check_availability') {
-        // Check for overlapping dates
+        // Check for overlapping dates in the booking information
         $query = "SELECT * FROM booking_information 
-                  WHERE (? < leaving_date AND ? > arrival_date)";
+                  WHERE (arrival_date < ? AND leaving_date > ?) OR (arrival_date BETWEEN ? AND ? OR leaving_date BETWEEN ? AND ?)";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param('ss', $arrival_date, $leaving_date);
+        $stmt->bind_param('ssssss', $arrival_date, $leaving_date, $arrival_date, $leaving_date, $arrival_date, $leaving_date);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -40,6 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         exit;
     }
 
+    // Handle 'book_now' action
     if ($action === 'book_now') {
         // Validate required fields
         if (!$name || !$email || !$contact_number || !$event_type || $number_of_people <= 0 || !$arrival_date || !$leaving_date) {
@@ -57,9 +60,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         // Check for overlapping dates before proceeding with booking
         $query = "SELECT * FROM booking_information 
-                  WHERE (? < leaving_date AND ? > arrival_date)";
+                  WHERE (arrival_date < ? AND leaving_date > ?) OR (arrival_date BETWEEN ? AND ? OR leaving_date BETWEEN ? AND ?)";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param('ss', $arrival_date, $leaving_date);
+        $stmt->bind_param('ssssss', $arrival_date, $leaving_date, $arrival_date, $leaving_date, $arrival_date, $leaving_date);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -69,7 +72,27 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             exit;
         }
 
-        // Process booking
+        // Check if the event type already exists
+        $query = "SELECT event_id FROM event WHERE event_type = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('s', $event_type);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            // Event exists, get the event_id
+            $event_data = $result->fetch_assoc();
+            $event_id = $event_data['event_id'];
+        } else {
+            // Event doesn't exist, insert it
+            $query = "INSERT INTO event (event_type) VALUES (?)";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param('s', $event_type);
+            $stmt->execute();
+            $event_id = $stmt->insert_id;
+        }
+
+        // Begin database transaction
         $conn->begin_transaction();
 
         try {
@@ -80,14 +103,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt->execute();
             $customer_id = $stmt->insert_id;
 
-            // Insert event data
-            $query = "INSERT INTO event (event_type) VALUES (?)";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param('s', $event_type);
-            $stmt->execute();
-            $event_id = $stmt->insert_id;
-
-            // Insert booking data
+            // Insert booking data (with existing or new event_id)
             $query = "INSERT INTO booking_information (customer_id, event_id, arrival_date, leaving_date) VALUES (?, ?, ?, ?)";
             $stmt = $conn->prepare($query);
             $stmt->bind_param('iiss', $customer_id, $event_id, $arrival_date, $leaving_date);
@@ -100,8 +116,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $stmt->bind_param('ii', $booking_id, $number_of_people);
             $stmt->execute();
 
+            // Commit transaction
             $conn->commit();
 
+            // Save booking data in session
             $_SESSION['booking_data'] = [
                 'booking_id' => $booking_id,
                 'name' => $name,
@@ -118,20 +136,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             echo json_encode($response);
             exit;
         } catch (Exception $e) {
+            // Rollback transaction if something goes wrong
             $conn->rollback();
-            $response['message'] = "Booking failed. Please try again later.";
+            $response['message'] = "Booking failed. Please try again later. Error: " . $e->getMessage();
             echo json_encode($response);
             exit;
         }
     }
 }
-
-// Render receipt
+// Render receipt if booking exists
 $booking_data = $_SESSION['booking_data'] ?? null;
 ?>
 
-
-
+<!-- HTML Code for displaying booking receipt -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
