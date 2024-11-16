@@ -610,6 +610,7 @@ button {
   
   .receipt-container {
     width: 400px;
+    margin-top: 50px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 50px;
@@ -732,4 +733,9 @@ button {
   
   .receipt-container .receipt-row .receipt-value .confirm{
     color: rgb(14, 214, 34);
+  }
+
+  #contact_error, #people_error {
+    color: red;
+    font-size: 0.9em;
   }
