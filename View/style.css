@@ -600,6 +600,7 @@ button {
 }
 
   .title-booking {
+    margin-bottom: 15px;
     font-size: 36px;
     font-weight: bold;
     text-align: center;
