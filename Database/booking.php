@@ -136,17 +136,56 @@ $booking_data = $_SESSION['booking_data'] ?? null;
   <img class="homepage-image" src="../Assets/my_booking.png" alt="">
 
   <div class="receipt-container">
-    <h2>Booking Receipt</h2>
+    <h2 class="title-booking">Booking Receipt</h2>
+
+    <div class="receipt-row">
     <p><strong>ID Number:</strong> <?= $booking_data['booking_id'] ?></p>
+    </div>
+
+    <div class="receipt-row">
     <p><strong>Name:</strong> <?= $booking_data['name'] ?></p>
+    </div>
+
+    <div class="receipt-row">
     <p><strong>Email:</strong> <?= $booking_data['email'] ?></p>
+    </div>
+
+    <div class="receipt-row">
     <p><strong>Contact Number:</strong> <?= $booking_data['contact_number'] ?></p>
+    </div>
+
+    <div class="receipt-row">
     <p><strong>Event Type:</strong> <?= $booking_data['event_type'] ?></p>
+    </div>
+
+    <div class="receipt-row">
     <p><strong>Number of People:</strong> <?= $booking_data['number_of_people'] ?></p>
+    </div>
+
+    <div class="receipt-row">
     <p><strong>Arrival Date:</strong> <?= $booking_data['arrival_date'] ?></p>
+    </div>
+
+    <div class="receipt-row">
     <p><strong>Leaving Date:</strong> <?= $booking_data['leaving_date'] ?></p>
+    </div>
+
+    <div class="receipt-row">
     <p><strong>Status:</strong> <span style="color: green;"><?= $booking_data['status'] ?></span></p>
+    </div>
+
+    <div class="note">
+      <strong>Note:</strong> <span>Thank you for booking with Escape Avenue!</span> <span>Please take a screenshot of your receipt</span>
+    </div>
+    <form id="cancelForm" action="cancelBooking.php" method="POST">
+      <input type="hidden" name="booking_id" value="<?php echo $booking_id; ?>">
+      <button type="button" class="cancel-button" onclick="confirmCancellation()">Cancel Booking</button>
+    </form>
 </div>
+
+
+
+
 <?php endif; ?>
 
 <footer class="footer">

@@ -610,7 +610,6 @@ button {
   
   .receipt-container {
     width: 400px;
-    margin-top: 30px;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 50px;
@@ -624,10 +623,13 @@ button {
 
 }
 
+
 .receipt-row {
     display: flex; /* Arrange labels and values horizontally */
     justify-content: space-between; /* Align labels and values on opposite sides */
+    text-align: center;
     margin-bottom: 15px; /* Add space between rows */
+    
 }
 
 .receipt-row strong {
@@ -638,7 +640,7 @@ button {
 
 .receipt-value {
     flex-basis: 60%; /* Set value width */
-    text-align: right; /* Align values to the right */
+    text-align: center; /* Align values to the right */
     color: #666; /* Slightly lighter color for values */
 }
 
