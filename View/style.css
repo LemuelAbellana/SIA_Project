@@ -93,6 +93,7 @@ body {
     grid-template-columns: repeat(2, 1fr);
     align-items: center;
     margin-bottom: 250px;
+    width: 75%;
 
 }
 
@@ -669,7 +670,7 @@ button {
 /* */
 
   .faq-section {
-    max-width: 800px;
+    max-width: 1000px;
     padding: 40px 20px;
     min-height: 75vh;
     margin: auto;
@@ -700,6 +701,7 @@ button {
   .faq-item {
     border-top: 1px solid #ddd;
     padding: 15px 0;
+    
   }
   
   .faq-question {
@@ -715,14 +717,17 @@ button {
   }
   
   .faq-answer {
-    display: none;
-    padding: 10px 0;
-    font-size: 16px;
-    color: #555;
+  display: block;
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: max-height 0.3s ease, opacity 0.3s ease;
   }
   
   .faq-item.active .faq-answer {
     display: block;
+    max-height: 200px; /* Set to a value that fits your content */
+    opacity: 1;
   }
   
   .receipt-container .receipt-row .receipt-value .confirm{
