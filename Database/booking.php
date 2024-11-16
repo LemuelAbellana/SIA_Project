@@ -22,10 +22,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $leaving_date = $_POST['leaving_date'] ?? '';
 
     if ($action === 'check_availability') {
-        // Check for date overlap
-        $query = "SELECT * FROM booking_information WHERE arrival_date < ? AND leaving_date > ?";
+        // Check for overlapping dates
+        $query = "SELECT * FROM booking_information 
+                  WHERE (? < leaving_date AND ? > arrival_date)";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param('ss', $leaving_date, $arrival_date);
+        $stmt->bind_param('ss', $arrival_date, $leaving_date);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -40,18 +41,35 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     if ($action === 'book_now') {
+        // Validate required fields
         if (!$name || !$email || !$contact_number || !$event_type || $number_of_people <= 0 || !$arrival_date || !$leaving_date) {
             $response['message'] = "All fields are required.";
             echo json_encode($response);
             exit;
         }
 
+        // Validate date range
         if (strtotime($arrival_date) >= strtotime($leaving_date)) {
             $response['message'] = "Arrival date must be before leaving date.";
             echo json_encode($response);
             exit;
         }
 
+        // Check for overlapping dates before proceeding with booking
+        $query = "SELECT * FROM booking_information 
+                  WHERE (? < leaving_date AND ? > arrival_date)";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('ss', $arrival_date, $leaving_date);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result->num_rows > 0) {
+            $response['message'] = "The venue is not available for the selected dates.";
+            echo json_encode($response);
+            exit;
+        }
+
+        // Process booking
         $conn->begin_transaction();
 
         try {
@@ -111,6 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 // Render receipt
 $booking_data = $_SESSION['booking_data'] ?? null;
 ?>
+
 
 
 <!DOCTYPE html>

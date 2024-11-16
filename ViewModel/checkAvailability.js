@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const formData = new FormData(bookingForm);
 
-        // Fetch request to check date availability
         fetch('../Database/booking.php?action=check_availability', {
             method: 'POST',
             body: formData
@@ -21,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         title: 'Available',
                         text: data.message,
                         showCancelButton: true,
-                        confirmButtonText: 'Yes, Book Now',
+                        confirmButtonText: 'Book Now',
                         cancelButtonText: 'Cancel',
                     }).then(result => {
                         if (result.isConfirmed) {
