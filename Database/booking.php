@@ -162,13 +162,13 @@ $booking_data = $_SESSION['booking_data'] ?? null;
 <header class="header">
   <div class="navigation-bar">
     <div class="nav-links">
-      <a href="./index.html">Home</a>
-      <a href="./services.html">Services</a>
-      <a href="./contact.html">Contact</a>
-      <a href="./index.html"><img src="../Assets/SIA_LOGO_wobg1.png" alt="Escape Avenue" class="logo"></a>
-      <a href="./booking.html">Book Now</a>
-      <a href="./myBooking.html">My Booking</a>
-      <a href="./faq.html">FAQ</a>
+      <a href="../View/index.html">Home</a>
+      <a href="../View/services.html">Services</a>
+      <a href="../View/contact.html">Contact</a>
+      <a href="../View/index.html"><img src="../Assets/SIA_LOGO_wobg1.png" alt="Escape Avenue" class="logo"></a>
+      <a href="../View/booking.html">Book Now</a>
+      <a href="../View/myBooking.html">My Booking</a>
+      <a href="../View/faq.html">FAQ</a>
     </div>
   </div>
 </header>
