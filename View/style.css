@@ -609,7 +609,9 @@ button {
   
   .receipt-container {
     width: 400px;
-    margin: 20px auto; /* Center align horizontally */
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 50px;
     padding: 30px;
     border: 2px solid #000;
     border-radius: 10px;
@@ -617,7 +619,7 @@ button {
     background-color: #f9f9f9;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position: relative; /* Ensure it respects top positioning */
-    top: 50px; /* Moves the container closer to the top */
+
 }
 
 .receipt-row {
