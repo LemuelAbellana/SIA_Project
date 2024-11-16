@@ -1,28 +1,35 @@
 <?php
 session_start();
-include 'bookingdatabase.php';
+require 'bookingdatabase.php'; // Ensure this file contains the correct database connection setup
+
+// Enable error reporting for debugging (remove in production)
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 $response = ['success' => false, 'message' => ''];
 $booking_data = null;
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $action = $_POST['action'];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $action = $_GET['action'] ?? $_POST['action'] ?? null;
 
-    // Sanitize and validate inputs
-    $name = mysqli_real_escape_string($conn, trim($_POST['name']));
-    $email = mysqli_real_escape_string($conn, trim($_POST['email']));
-    $contact_number = mysqli_real_escape_string($conn, trim($_POST['contact_number']));
-    $event_type = mysqli_real_escape_string($conn, trim($_POST['event_type']));
-    $number_of_people = (int)$_POST['number_of_people'];
-    $arrival_date = mysqli_real_escape_string($conn, $_POST['arrival_date']);
-    $leaving_date = mysqli_real_escape_string($conn, $_POST['leaving_date']);
+    // Retrieve and sanitize inputs
+    $name = trim($_POST['name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $contact_number = trim($_POST['contact_number'] ?? '');
+    $event_type = trim($_POST['event_type'] ?? '');
+    $number_of_people = (int)($_POST['number_of_people'] ?? 0);
+    $arrival_date = $_POST['arrival_date'] ?? '';
+    $leaving_date = $_POST['leaving_date'] ?? '';
 
-    if ($action == 'check_availability') {
-        $check_query = "SELECT * FROM booking_information 
-                        WHERE (arrival_date < '$leaving_date' AND leaving_date > '$arrival_date')";
-        $check_result = mysqli_query($conn, $check_query);
+    if ($action === 'check_availability') {
+        // Check for date overlap
+        $query = "SELECT * FROM booking_information WHERE arrival_date < ? AND leaving_date > ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param('ss', $leaving_date, $arrival_date);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-        if (mysqli_num_rows($check_result) > 0) {
+        if ($result->num_rows > 0) {
             $response['message'] = "The venue is not available for the selected dates.";
         } else {
             $response['success'] = true;
@@ -32,59 +39,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    if ($action == 'book_now') {
-        $check_query = "SELECT * FROM booking_information 
-                        WHERE (arrival_date < '$leaving_date' AND leaving_date > '$arrival_date')";
-        $check_result = mysqli_query($conn, $check_query);
-
-        if (mysqli_num_rows($check_result) > 0) {
-            header("Location: ../View/booking.html?error=unavailable");
+    if ($action === 'book_now') {
+        if (!$name || !$email || !$contact_number || !$event_type || $number_of_people <= 0 || !$arrival_date || !$leaving_date) {
+            $response['message'] = "All fields are required.";
+            echo json_encode($response);
             exit;
         }
 
-        // Proceed with booking
-        mysqli_begin_transaction($conn);
+        if (strtotime($arrival_date) >= strtotime($leaving_date)) {
+            $response['message'] = "Arrival date must be before leaving date.";
+            echo json_encode($response);
+            exit;
+        }
+
+        $conn->begin_transaction();
+
         try {
-            $customer_query = "SELECT customer_id FROM customer WHERE contact_number = '$contact_number'";
-            $customer_result = mysqli_query($conn, $customer_query);
+            // Insert customer data
+            $query = "INSERT INTO customer (name, email, contact_number) VALUES (?, ?, ?)";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param('sss', $name, $email, $contact_number);
+            $stmt->execute();
+            $customer_id = $stmt->insert_id;
 
-            if (mysqli_num_rows($customer_result) > 0) {
-                $customer_id = mysqli_fetch_assoc($customer_result)['customer_id'];
-            } else {
-                $insert_customer = "INSERT INTO customer (name, email, contact_number) VALUES ('$name', '$email', '$contact_number')";
-                if (!mysqli_query($conn, $insert_customer)) {
-                    throw new Exception("Error adding customer: " . mysqli_error($conn));
-                }
-                $customer_id = mysqli_insert_id($conn);
-            }
+            // Insert event data
+            $query = "INSERT INTO event (event_type) VALUES (?)";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param('s', $event_type);
+            $stmt->execute();
+            $event_id = $stmt->insert_id;
 
-            $event_query = "SELECT event_id FROM event WHERE event_type = '$event_type'";
-            $event_result = mysqli_query($conn, $event_query);
+            // Insert booking data
+            $query = "INSERT INTO booking_information (customer_id, event_id, arrival_date, leaving_date) VALUES (?, ?, ?, ?)";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param('iiss', $customer_id, $event_id, $arrival_date, $leaving_date);
+            $stmt->execute();
+            $booking_id = $stmt->insert_id;
 
-            if (mysqli_num_rows($event_result) > 0) {
-                $event_id = mysqli_fetch_assoc($event_result)['event_id'];
-            } else {
-                $insert_event = "INSERT INTO event (event_type) VALUES ('$event_type')";
-                if (!mysqli_query($conn, $insert_event)) {
-                    throw new Exception("Error adding event: " . mysqli_error($conn));
-                }
-                $event_id = mysqli_insert_id($conn);
-            }
+            // Insert number of people
+            $query = "INSERT INTO number_of_people (booking_id, number_of_people) VALUES (?, ?)";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param('ii', $booking_id, $number_of_people);
+            $stmt->execute();
 
-            $insert_booking = "INSERT INTO booking_information (customer_id, event_id, arrival_date, leaving_date) 
-                               VALUES ($customer_id, $event_id, '$arrival_date', '$leaving_date')";
-            if (!mysqli_query($conn, $insert_booking)) {
-                throw new Exception("Error adding booking information: " . mysqli_error($conn));
-            }
+            $conn->commit();
 
-            $booking_id = mysqli_insert_id($conn);
-            $insert_people = "INSERT INTO number_of_people (booking_id, number_of_people) 
-                              VALUES ($booking_id, $number_of_people)";
-            if (!mysqli_query($conn, $insert_people)) {
-                throw new Exception("Error adding number of people: " . mysqli_error($conn));
-            }
-
-            mysqli_commit($conn);
             $_SESSION['booking_data'] = [
                 'booking_id' => $booking_id,
                 'name' => $name,
@@ -96,16 +95,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'leaving_date' => $leaving_date,
                 'status' => 'Confirmed'
             ];
+
+            $response['success'] = true;
+            echo json_encode($response);
+            exit;
         } catch (Exception $e) {
-            mysqli_rollback($conn);
-            header("Location: ../View/booking.html?error=booking_failed");
+            $conn->rollback();
+            $response['message'] = "Booking failed. Please try again later.";
+            echo json_encode($response);
             exit;
         }
     }
 }
 
+// Render receipt
 $booking_data = $_SESSION['booking_data'] ?? null;
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -132,60 +138,20 @@ $booking_data = $_SESSION['booking_data'] ?? null;
 </header>
 
 <?php if ($booking_data): ?>
-
-  <img class="homepage-image" src="../Assets/my_booking.png" alt="">
-
-  <div class="receipt-container">
-    <h2 class="title-booking">Booking Receipt</h2>
-
-    <div class="receipt-row">
-    <p><strong>ID Number:</strong> <?= $booking_data['booking_id'] ?></p>
+    <div>
+        <h2>Booking Details</h2>
+        <p><strong>ID:</strong> <?= $booking_data['booking_id'] ?></p>
+        <p><strong>Name:</strong> <?= $booking_data['name'] ?></p>
+        <p><strong>Email:</strong> <?= $booking_data['email'] ?></p>
+        <p><strong>Contact:</strong> <?= $booking_data['contact_number'] ?></p>
+        <p><strong>Event:</strong> <?= $booking_data['event_type'] ?></p>
+        <p><strong>People:</strong> <?= $booking_data['number_of_people'] ?></p>
+        <p><strong>Arrival:</strong> <?= $booking_data['arrival_date'] ?></p>
+        <p><strong>Leaving:</strong> <?= $booking_data['leaving_date'] ?></p>
+        <p><strong>Status:</strong> <?= $booking_data['status'] ?></p>
     </div>
-
-    <div class="receipt-row">
-    <p><strong>Name:</strong> <?= $booking_data['name'] ?></p>
-    </div>
-
-    <div class="receipt-row">
-    <p><strong>Email:</strong> <?= $booking_data['email'] ?></p>
-    </div>
-
-    <div class="receipt-row">
-    <p><strong>Contact Number:</strong> <?= $booking_data['contact_number'] ?></p>
-    </div>
-
-    <div class="receipt-row">
-    <p><strong>Event Type:</strong> <?= $booking_data['event_type'] ?></p>
-    </div>
-
-    <div class="receipt-row">
-    <p><strong>Number of People:</strong> <?= $booking_data['number_of_people'] ?></p>
-    </div>
-
-    <div class="receipt-row">
-    <p><strong>Arrival Date:</strong> <?= $booking_data['arrival_date'] ?></p>
-    </div>
-
-    <div class="receipt-row">
-    <p><strong>Leaving Date:</strong> <?= $booking_data['leaving_date'] ?></p>
-    </div>
-
-    <div class="receipt-row">
-    <p><strong>Status:</strong> <span style="color: green;"><?= $booking_data['status'] ?></span></p>
-    </div>
-
-    <div class="note">
-      <strong>Note:</strong> <span>Thank you for booking with Escape Avenue!</span> <span>Please take a screenshot of your receipt</span>
-    </div>
-    <form id="cancelForm" action="cancelBooking.php" method="POST">
-      <input type="hidden" name="booking_id" value="<?php echo $booking_id; ?>">
-      <button type="button" class="cancel-button" onclick="confirmCancellation()">Cancel Booking</button>
-    </form>
-</div>
-
-
-
-
+<?php else: ?>
+    <p>No booking data found. Please try again.</p>
 <?php endif; ?>
 
 <footer class="footer">
