@@ -4,29 +4,31 @@ include 'bookingdatabase.php';
 
 $success_msg = [];
 $error_msg = [];
-$booking_data = null; // Initialize the variable to avoid undefined warnings.
+$booking_data = $_SESSION['booking_data'] ?? null;
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sanitize and validate inputs
     $name = mysqli_real_escape_string($conn, trim($_POST['name']));
-    $email = mysqli_real_escape_string($conn, trim($_POST['email']));
+    $email = filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL);
     $contact_number = mysqli_real_escape_string($conn, trim($_POST['contact_number']));
     $event_type = mysqli_real_escape_string($conn, trim($_POST['event_type']));
-    $number_of_people = (int)$_POST['number_of_people'];
+    $number_of_people = filter_var($_POST['number_of_people'], FILTER_VALIDATE_INT);
     $arrival_date = mysqli_real_escape_string($conn, $_POST['arrival_date']);
     $leaving_date = mysqli_real_escape_string($conn, $_POST['leaving_date']);
     $action = $_POST['action'];
 
     // Validation
     if (
-        empty($name) || empty($email) || empty($contact_number) || empty($event_type) ||
+        empty($name) || !$email || empty($contact_number) || empty($event_type) ||
         empty($number_of_people) || empty($arrival_date) || empty($leaving_date)
     ) {
-        $error_msg[] = "Please fill in all fields.";
+        $error_msg[] = "Please fill in all fields with valid data.";
     } elseif (!preg_match('/^\d{11}$/', $contact_number)) {
         $error_msg[] = "Invalid contact number. Please enter an 11-digit number.";
     } elseif ($number_of_people < 1 || $number_of_people > 1000) {
-        $error_msg[] = "Invalid number of people. Please enter a number between 1 and 1000.";
+        $error_msg[] = "Invalid number of people. Enter a value between 1 and 1000.";
+    } elseif ($arrival_date >= $leaving_date) {
+        $error_msg[] = "Invalid date range. Leaving date must be after the arrival date.";
     } else {
         // Check availability
         $check_query = "SELECT * FROM booking_information 
@@ -103,6 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         'status' => 'Confirmed'
                     ];
                     $success_msg[] = "Booking successful!";
+                    $booking_data = $_SESSION['booking_data'];
                 } catch (Exception $e) {
                     mysqli_rollback($conn);
                     $error_msg[] = $e->getMessage();
@@ -111,11 +114,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
     mysqli_close($conn);
-}
-
-// Retrieve booking data if it exists in the session
-if (isset($_SESSION['booking_data'])) {
-    $booking_data = $_SESSION['booking_data'];
 }
 ?>
 

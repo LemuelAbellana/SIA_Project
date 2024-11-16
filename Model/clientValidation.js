@@ -1,38 +1,53 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const bookingForm = document.querySelector("#bookingForm");
+// Select the "Book Now" button and form
+const bookNowButton = document.querySelector('.submit-btn');
+const bookingForm = document.getElementById('bookingForm');
 
-    if (bookingForm) {
-        bookingForm.addEventListener("submit", function (event) {
-            const contactNumber = document.getElementById("contact_number").value.trim();
-            const numberOfPeople = document.getElementById("number_of_people").value.trim();
-            let isValid = true;
+// Add event listener to the "Book Now" button
+bookNowButton.addEventListener('click', function (e) {
+  // Prevent default form submission
+  e.preventDefault();
 
-            // Clear previous error messages
-            document.getElementById("contact_error").textContent = "";
-            document.getElementById("people_error").textContent = "";
+  // Validate the contact number
+  const contactNumber = document.getElementById('contact_number').value.trim();
+  const contactError = document.getElementById('contact_error');
+  if (!/^\d{11}$/.test(contactNumber)) {
+    contactError.textContent = "Invalid contact number. It must be an 11-digit number.";
+    return;
+  } else {
+    contactError.textContent = "";
+  }
 
-            // Validate contact number format (e.g., an 11-digit number)
-            if (!/^\d{11}$/.test(contactNumber)) {
-                document.getElementById("contact_error").textContent = "Please enter a valid 11-digit contact number.";
-                isValid = false;
-            }
+  // Validate the number of people
+  const numberOfPeople = parseInt(document.getElementById('number_of_people').value.trim(), 10);
+  const peopleError = document.getElementById('people_error');
+  if (isNaN(numberOfPeople) || numberOfPeople < 1 || numberOfPeople > 1000) {
+    peopleError.textContent = "Please enter a number between 1 and 1000.";
+    return;
+  } else {
+    peopleError.textContent = "";
+  }
 
-            // Validate number of people (should be a reasonable number, e.g., 1 to 1000)
-            if (numberOfPeople < 1 || numberOfPeople > 1000) {
-                document.getElementById("people_error").textContent = "Please enter a number between 1 and 1000.";
-                isValid = false;
-            }
+  // Show SweetAlert confirmation dialog
+  Swal.fire({
+    title: "Are you sure?",
+    text: "Do you want to proceed with booking this event?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, book it!",
+    cancelButtonText: "Cancel",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Add a hidden input for the action value
+      const actionInput = document.createElement('input');
+      actionInput.type = 'hidden';
+      actionInput.name = 'action';
+      actionInput.value = 'book_now';
+      bookingForm.appendChild(actionInput);
 
-            // Prevent form submission if validation fails
-            if (!isValid) {
-                event.preventDefault();
-                // Optionally, you can focus the first invalid input
-                if (document.getElementById("contact_error").textContent !== "") {
-                    document.getElementById("contact_number").focus();
-                } else if (document.getElementById("people_error").textContent !== "") {
-                    document.getElementById("number_of_people").focus();
-                }
-            }
-        });
+      // Submit the form programmatically
+      bookingForm.submit();
     }
+  });
 });
