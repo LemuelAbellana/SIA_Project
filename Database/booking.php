@@ -121,7 +121,7 @@ $booking_data = $_SESSION['booking_data'] ?? null;
 
 <?php if ($booking_data): ?>
 <div class="receipt-container">
-  <h2 class="title-booking">Booking Receipt</h2>
+<h2 class="title-booking">Booking Receipt</h2>
   <div class="receipt-row"><strong>ID Number:</strong> <?php echo $booking_data['booking_id']; ?></div>
   <div class="receipt-row"><strong>Name:</strong> <?php echo $booking_data['name']; ?></div>
   <div class="receipt-row"><strong>Email:</strong> <?php echo $booking_data['email']; ?></div>
