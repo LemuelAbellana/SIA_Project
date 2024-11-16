@@ -186,11 +186,20 @@ $booking_data = $_SESSION['booking_data'] ?? null;
   <div class="receipt-row"><strong>Arrival Date:</strong> <?php echo $booking_data['arrival_date']; ?></div>
   <div class="receipt-row"><strong>Leaving Date:</strong> <?php echo $booking_data['leaving_date']; ?></div>
   <div class="receipt-row"><strong>Status:</strong> <span style="color: green;"><?php echo $booking_data['status']; ?></span></div>
-  <div class="note"><strong>Note:</strong> Thank you for booking with Escape Avenue!</div>
-  <form id="cancelForm" action="cancelBooking.php" method="POST">
+<div class="note"><strong>Note:</strong> Thank you for booking with Escape Avenue!</div>
+<form id="cancelForm" action="cancelBooking.php" method="POST">
     <input type="hidden" name="booking_id" value="<?php echo $booking_data['booking_id']; ?>">
-    <button type="button" class="cancel-button" onclick="confirmCancellation()">Cancel Booking</button>
-  </form>
+    <button 
+        type="button" 
+        class="cancel-button" 
+        onclick="confirmCancellation(
+            '<?php echo $booking_data['booking_id']; ?>', 
+            '<?php echo $booking_data['arrival_date']; ?>'
+        )"
+    >
+        Cancel Booking
+    </button>
+</form>
 </div>
 <?php else: ?>
     <p>No booking data found. Please try again.</p>
