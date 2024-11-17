@@ -9,88 +9,52 @@
         crossorigin="anonymous" referrerpolicy="no-referrer">
     <link rel="stylesheet" href="./admin.css">
 
-    <title>Admin</title>
+    <title>Booking Information</title>
 </head>
 
 <body>
     <div id="mySidebar" class="sidebar">
         <div class="logo-container">
             <img src="../../Assets/SIA_LOGO_wobg1.png" alt="Logo" class="logo">
-
         </div>
         <a href="#"><button class="sidebar-button"><i class="fa-solid fa-book"></i> Booking</button></a>
         <a href="./customer.html"><button class="sidebar-button"><i class="fa-solid fa-receipt"></i> Customer</button></a>
         <a href="./event.html"><button class="sidebar-button"><i class="fa-solid fa-hotel"></i> Event</button></a>
         <a href="../loginpage.html"><button class="sidebar-button"><i class="fa-regular fa-user"></i> Logout</button></a>
     </div>
+
     <div id="main">
         <div class="booking_info_date">
-            <h1>Customer</h1>
-            <div id="clock"></div>
-          </div>
-          <script src="../../ViewModel/timerdisplay.js"></script>
+            <h1>Booking Information</h1>
+        </div>
 
-    <div class="table">
-        <table>
-            
-            <tr>
-                <th>Booking ID</th>
-                <th>Customer ID</th>
-                <th>Event ID</th>
-                <th>Arrival Date</th>
-                <th>Leaving Date</th>
-                <th>Number of People</th>
-                <th>Contact Number</th>
-            </tr>
-            
-            <tr>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-            </tr>
-            <tr> 
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-            </tr>
-            <tr>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-            </tr>
-            <tr>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-            </tr>
-            <tr>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-                <td>0001</td>
-            </tr>
-        </table>
-    </div>
-          
+        <div class="table">
+            <table>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Customer ID</th>
+                    <th>Event ID</th>
+                    <th>Arrival Date</th>
+                    <th>Leaving Date</th>
+                    <th>Number of People</th>
+                    <th>Contact Number</th>
+                </tr>
+                <?php
+                include 'fetch_data.php'; // Include the PHP file fetching booking data
+                foreach ($bookings as $booking) {
+                    echo "<tr>
+                        <td>{$booking['booking_id']}</td>
+                        <td>{$booking['customer_id']}</td>
+                        <td>{$booking['event_id']}</td>
+                        <td>{$booking['arrival_date']}</td>
+                        <td>{$booking['leaving_date']}</td>
+                        <td>{$booking['number_of_people']}</td>
+                        <td>{$booking['contact_number']}</td>
+                    </tr>";
+                }
+                ?>
+            </table>
+        </div>
     </div>
 </body>
 
