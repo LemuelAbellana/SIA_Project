@@ -1,4 +1,5 @@
 <?php 
+session_start();
 require_once 'Database.php';
 require_once 'BookingDatabase.php';
 
@@ -12,73 +13,13 @@ $bookingDb = new BookingDatabase($database);
 $response = ["success" => false, "message" => "Invalid action"];
 
 // Helper function to validate and format datetime values
-// Helper function to validate and format datetime values
 function validateAndFormatDate($dateTime, $format = 'Y-m-d H:i:s') {
-    $dateTimeObject = DateTime::createFromFormat('Y-m-d\TH:i', $dateTime); // Parse ISO format
+    $dateTimeObject = DateTime::createFromFormat('Y-m-d\TH:i', $dateTime);
     if (!$dateTimeObject) {
-        return null; // Return null if the date is invalid
+        return null;
     }
-    return $dateTimeObject->format($format); // Convert to database-compatible format
+    return $dateTimeObject->format($format);
 }
-
-// Action handling
-if ($action === 'check_availability') {
-    $arrivalDate = validateAndFormatDate($_POST['arrival_date'] ?? '');
-    $leavingDate = validateAndFormatDate($_POST['leaving_date'] ?? '');
-
-    if (!$arrivalDate || !$leavingDate) {
-        $response = ["success" => false, "message" => "Invalid or improperly formatted dates."];
-    } elseif (strtotime($arrivalDate) >= strtotime($leavingDate)) {
-        $response = ["success" => false, "message" => "Leaving date must be after arrival date."];
-    } else {
-        $result = $bookingDb->checkAvailability($arrivalDate, $leavingDate);
-        $response = $result->num_rows > 0
-            ? ["success" => false, "message" => "Dates are not available."]
-            : ["success" => true, "message" => "Dates are available!"];
-    }
-} elseif ($action === 'book_now') {
-    $requiredFields = ['name', 'email', 'contact_number', 'event_type', 'number_of_people', 'arrival_date', 'leaving_date'];
-    foreach ($requiredFields as $field) {
-        if (empty($_POST[$field])) {
-            $response = ["success" => false, "message" => "Missing required field: $field"];
-            echo json_encode($response);
-            $database->close();
-            exit;
-        }
-    }
-
-    $arrivalDate = validateAndFormatDate($_POST['arrival_date']);
-    $leavingDate = validateAndFormatDate($_POST['leaving_date']);
-
-    if (!$arrivalDate || !$leavingDate || strtotime($arrivalDate) >= strtotime($leavingDate)) {
-        $response = ["success" => false, "message" => "Invalid or improperly formatted dates."];
-    } else {
-        try {
-            $result = $bookingDb->book(
-                $_POST['name'],
-                $_POST['email'],
-                $_POST['contact_number'],
-                $_POST['event_type'],
-                $arrivalDate,
-                $leavingDate,
-                $_POST['number_of_people']
-            );
-
-            $response = $result
-                ? ["success" => true, "message" => "Booking successful!"]
-                : ["success" => false, "message" => "Booking failed. Please try again later."];
-        } catch (Exception $e) {
-            error_log("Booking error: " . $e->getMessage());
-            $response = ["success" => false, "message" => "Error processing booking: " . $e->getMessage()];
-        }
-    }
-} else {
-    $response = ["success" => false, "message" => "Unknown action: $action"];
-}
-
-
-// Log the incoming request for debugging
-error_log("Request received: " . print_r($_POST, true));
 
 try {
     if ($action === 'check_availability') {
@@ -97,22 +38,34 @@ try {
         }
     } elseif ($action === 'book_now') {
         $requiredFields = ['name', 'email', 'contact_number', 'event_type', 'number_of_people', 'arrival_date', 'leaving_date'];
+        $missingFields = [];
+        
         foreach ($requiredFields as $field) {
             if (empty($_POST[$field])) {
-                $response = ["success" => false, "message" => "Missing required field: $field"];
-                echo json_encode($response);
-                $database->close();
-                exit;
+                $missingFields[] = $field;
             }
         }
 
-        $arrivalDate = validateAndFormatDate($_POST['arrival_date']);
-        $leavingDate = validateAndFormatDate($_POST['leaving_date']);
-
-        if (!$arrivalDate || !$leavingDate || strtotime($arrivalDate) >= strtotime($leavingDate)) {
-            $response = ["success" => false, "message" => "Invalid or improperly formatted dates."];
+        if (!empty($missingFields)) {
+            $response = ["success" => false, "message" => "Missing required fields: " . implode(', ', $missingFields)];
         } else {
-            try {
+            $arrivalDate = validateAndFormatDate($_POST['arrival_date']);
+            $leavingDate = validateAndFormatDate($_POST['leaving_date']);
+
+            if (!$arrivalDate || !$leavingDate || strtotime($arrivalDate) >= strtotime($leavingDate)) {
+                $response = ["success" => false, "message" => "Invalid or improperly formatted dates."];
+            } else {
+                // Store booking details in session before making the database call
+                $_SESSION['booking_details'] = [
+                    'name' => $_POST['name'],
+                    'email' => $_POST['email'],
+                    'contact_number' => $_POST['contact_number'],
+                    'event_type' => $_POST['event_type'],
+                    'number_of_people' => $_POST['number_of_people'],
+                    'arrival_date' => $arrivalDate,
+                    'leaving_date' => $leavingDate
+                ];
+
                 $result = $bookingDb->book(
                     $_POST['name'],
                     $_POST['email'],
@@ -123,20 +76,27 @@ try {
                     $_POST['number_of_people']
                 );
 
-                $response = $result
-                    ? ["success" => true, "message" => "Booking successful!"]
-                    : ["success" => false, "message" => "Booking failed. Please try again later."];
-            } catch (Exception $e) {
-                error_log("Booking error: " . $e->getMessage());
-                $response = ["success" => false, "message" => "Error processing booking: " . $e->getMessage()];
+                if ($result) {
+                    // Add booking ID to session
+                    $_SESSION['booking_details']['booking_id'] = $bookingDb->getLastBookingId();
+                    $response = [
+                        "success" => true, 
+                        "message" => "Booking successful!",
+                        "redirect" => "receipt.php"
+                    ];
+                } else {
+                    $response = ["success" => false, "message" => "Booking failed. Please try again later."];
+                    // Clear session if booking fails
+                    unset($_SESSION['booking_details']);
+                }
             }
         }
-    } else {
-        $response = ["success" => false, "message" => "Unknown action: $action"];
     }
 } catch (Exception $e) {
-    error_log("Error: " . $e->getMessage());
-    $response = ["success" => false, "message" => "An error occurred. Please try again later."];
+    error_log("Error in booking.php: " . $e->getMessage());
+    $response = ["success" => false, "message" => "An error occurred: " . $e->getMessage()];
+    // Clear session if there's an error
+    unset($_SESSION['booking_details']);
 }
 
 // Return the response as JSON

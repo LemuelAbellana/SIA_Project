@@ -2,9 +2,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const bookingForm = document.getElementById('bookingForm');
     const checkAvailabilityButton = document.querySelector('.availability-btn');
     const bookNowButton = document.querySelector('.submit-btn');
+    const API_URL = '../Database/booking.php'; // Centralized URL
 
     // Event: Check Availability
-    checkAvailabilityButton.addEventListener('click', function (event) {
+    checkAvailabilityButton.addEventListener('click', async function (event) {
         event.preventDefault();
 
         // Validate dates
@@ -13,45 +14,65 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!validateDates(arrivalDate, leavingDate)) return;
 
-        // Prepare form data
-        const formData = new FormData(bookingForm);
-        formData.append('action', 'check_availability');
+        // Disable button to prevent duplicate clicks
+        checkAvailabilityButton.disabled = true;
 
-        // Check availability
-        sendRequest(formData, '../Database/booking.php')
-            .then((data) => {
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Available',
-                        text: data.message,
-                        showCancelButton: true,
-                        confirmButtonText: 'Book Now',
-                        cancelButtonText: 'Cancel',
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            bookNow(formData);
-                        }
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Not Available',
-                        text: data.message,
-                    });
-                }
-            })
-            .catch((error) => handleError(error));
+        try {
+            // Prepare form data
+            const formData = new FormData(bookingForm);
+            formData.append('action', 'check_availability');
+
+            // Check availability
+            const data = await sendRequest(formData, API_URL);
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Available',
+                    text: data.message,
+                    showCancelButton: true,
+                    confirmButtonText: 'Book Now',
+                    cancelButtonText: 'Cancel',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        bookNow(formData); // Use updated bookNow function
+                    }
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Not Available',
+                    text: data.message,
+                });
+            }
+        } catch (error) {
+            handleError(error);
+        } finally {
+            checkAvailabilityButton.disabled = false; // Re-enable button
+        }
     });
 
     // Event: Book Now
-    bookNowButton.addEventListener('click', function (event) {
+    bookNowButton.addEventListener('click', async function (event) {
         event.preventDefault();
 
-        const formData = new FormData(bookingForm);
-        formData.append('action', 'book_now');
+        // Validate dates
+        const arrivalDate = document.getElementById('arrival_date').value.trim();
+        const leavingDate = document.getElementById('leaving_date').value.trim();
 
-        bookNow(formData);
+        if (!validateDates(arrivalDate, leavingDate)) return;
+
+        // Disable button to prevent duplicate clicks
+        bookNowButton.disabled = true;
+
+        try {
+            const formData = new FormData(bookingForm);
+            formData.append('action', 'book_now');
+            await bookNow(formData); // Use updated bookNow function
+        } catch (error) {
+            handleError(error);
+        } finally {
+            bookNowButton.disabled = false; // Re-enable button
+        }
     });
 
     // Function: Validate Dates
@@ -100,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
-            return response.json();
+            return await response.json();
         } catch (error) {
             console.error('Request Error:', error);
             throw error;
@@ -118,26 +139,27 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Function: Book Now
-    function bookNow(formData) {
-        sendRequest(formData, '../Database/booking.php')
-            .then((data) => {
-                if (data.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Booking Confirmed',
-                        text: data.message,
-                        confirmButtonText: 'View Receipt',
-                    }).then(() => {
-                        window.location.href = 'receipt.php'; // Adjust redirection URL
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Booking Failed',
-                        text: data.message,
-                    });
-                }
-            })
-            .catch((error) => handleError(error));
+    async function bookNow(formData) {
+        try {
+            const data = await sendRequest(formData, API_URL);
+            if (data.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Booking Confirmed',
+                    text: data.message,
+                    confirmButtonText: 'View Receipt',
+                }).then(() => {
+                    window.location.href = 'receipt.php'; // Redirect to receipt page
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Booking Failed',
+                    text: data.message,
+                });
+            }
+        } catch (error) {
+            handleError(error);
+        }
     }
 });

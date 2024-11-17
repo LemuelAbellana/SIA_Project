@@ -1,20 +1,28 @@
 <?php
 
 class Database {
-    private $host = 'localhost'; // Your database host
-    private $username = 'root';  // Your database username
-    private $password = '';      // Your database password
-    private $dbName = 'escape_avenue'; // Your database name
+    private $host;
+    private $username;
+    private $password;
+    private $dbName;
     private $connection;
 
     public function __construct() {
+        // Use environment variables for credentials
+        $this->host = $_ENV['DB_HOST'] ?? 'localhost';
+        $this->username = $_ENV['DB_USERNAME'] ?? 'root';
+        $this->password = $_ENV['DB_PASSWORD'] ?? '';
+        $this->dbName = $_ENV['DB_NAME'] ?? 'escape_avenue';
+
+        // Establish the database connection
         $this->connection = new mysqli($this->host, $this->username, $this->password, $this->dbName);
-        
+
         if ($this->connection->connect_error) {
-            // Log the connection error and stop script execution
             error_log("Connection failed: " . $this->connection->connect_error);
-            die("Connection failed: " . $this->connection->connect_error);
+            die("A database error occurred. Please try again later.");
         }
+
+        $this->connection->set_charset('utf8mb4');
     }
 
     public function getConnection() {
@@ -25,4 +33,5 @@ class Database {
         $this->connection->close();
     }
 }
+
 ?>

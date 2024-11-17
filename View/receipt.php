@@ -1,3 +1,26 @@
+<?php
+session_start();
+
+// Redirect to booking page if no booking details are found
+if (!isset($_SESSION['booking_details'])) {
+    header("Location: booking.html");
+    exit;
+}
+
+// Retrieve booking details from the session
+$bookingDetails = $_SESSION['booking_details'];
+
+// Sanitize data for HTML output
+$booking_id = htmlspecialchars($bookingDetails['booking_id'] ?? 'N/A');
+$name = htmlspecialchars($bookingDetails['name'] ?? 'N/A');
+$email = htmlspecialchars($bookingDetails['email'] ?? 'N/A');
+$contact_number = htmlspecialchars($bookingDetails['contact_number'] ?? 'N/A');
+$event_type = htmlspecialchars($bookingDetails['event_type'] ?? 'N/A');
+$number_of_people = htmlspecialchars($bookingDetails['number_of_people'] ?? 'N/A');
+$arrival_date = htmlspecialchars($bookingDetails['arrival_date'] ?? 'N/A');
+$leaving_date = htmlspecialchars($bookingDetails['leaving_date'] ?? 'N/A');
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,7 +49,7 @@
     </div>
   </header>
 
-  <img class="homepage-image" src="../Assets/my_booking.png" alt="">
+  <img class="homepage-image" src="../Assets/my_booking.png" alt="My Booking">
 
   <div class="receipt-container">
     <h2 class="title-booking">Booking Receipt</h2>
@@ -55,7 +78,7 @@
       <strong>Leaving Date:</strong> <span class="receipt-value"><?php echo $leaving_date; ?></span>
     </div>
     <div class="receipt-row">
-      <strong>Status:</strong> <span class="receipt-value"> <strong class="confirm">Confirmed</strong></span>
+      <strong>Status:</strong> <span class="receipt-value"><strong class="confirm">Confirmed</strong></span>
     </div>
     <div class="note">
       <strong>Note:</strong> <span>Thank you for booking with Escape Avenue!</span> <span>Please take a screenshot of your receipt</span>
@@ -65,10 +88,6 @@
       <button type="button" class="cancel-button" onclick="confirmCancellation()">Cancel Booking</button>
     </form>
   </div>
-  </div>
-  
-    
-
 
   <footer class="footer">
     <div class="footer-container">
@@ -82,11 +101,29 @@
       </div>
       <div class="footer-right">
         <p>Follow us:</p>
-        <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
-        <a href="https://instagram.com" target="_blank"><i class="fab fa-instagram"></i></a>
-        <a href="https://twitter.com" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="https://facebook.com" target="_blank" aria-label="Follow us on Facebook"><i class="fab fa-facebook"></i></a>
+        <a href="https://instagram.com" target="_blank" aria-label="Follow us on Instagram"><i class="fab fa-instagram"></i></a>
+        <a href="https://twitter.com" target="_blank" aria-label="Follow us on Twitter"><i class="fab fa-twitter"></i></a>
       </div>
     </div>
   </footer>
+
+  <script>
+    function confirmCancellation() {
+      Swal.fire({
+        title: 'Are you sure?',
+        text: "You are about to cancel your booking.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, cancel it!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          document.getElementById('cancelForm').submit();
+        }
+      });
+    }
+  </script>
 </body>
 </html>
