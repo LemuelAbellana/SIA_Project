@@ -56,16 +56,6 @@ try {
                 $response = ["success" => false, "message" => "Invalid or improperly formatted dates."];
             } else {
                 // Store booking details in session before making the database call
-                $_SESSION['booking_details'] = [
-                    'name' => $_POST['name'],
-                    'email' => $_POST['email'],
-                    'contact_number' => $_POST['contact_number'],
-                    'event_type' => $_POST['event_type'],
-                    'number_of_people' => $_POST['number_of_people'],
-                    'arrival_date' => $arrivalDate,
-                    'leaving_date' => $leavingDate
-                ];
-
                 $result = $bookingDb->book(
                     $_POST['name'],
                     $_POST['email'],
@@ -77,8 +67,19 @@ try {
                 );
 
                 if ($result) {
-                    // Add booking ID to session
+                    $_SESSION['booking_details'] = [
+                        'booking_id' => $result,
+                        'name' => $_POST['name'],
+                        'email' => $_POST['email'],
+                        'contact_number' => $_POST['contact_number'],
+                        'event_type' => $_POST['event_type'],
+                        'number_of_people' => $_POST['number_of_people'],
+                        'arrival_date' => $arrivalDate,
+                        'leaving_date' => $leavingDate
+                    ];
+                    
                     $_SESSION['booking_details']['booking_id'] = $bookingDb->getLastBookingId();
+                    
                     $response = [
                         "success" => true, 
                         "message" => "Booking successful!",

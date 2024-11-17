@@ -19,6 +19,8 @@ $event_type = htmlspecialchars($bookingDetails['event_type'] ?? 'N/A');
 $number_of_people = htmlspecialchars($bookingDetails['number_of_people'] ?? 'N/A');
 $arrival_date = htmlspecialchars($bookingDetails['arrival_date'] ?? 'N/A');
 $leaving_date = htmlspecialchars($bookingDetails['leaving_date'] ?? 'N/A');
+
+print_r($bookingDetails); 
 ?>
 
 <!DOCTYPE html>

@@ -18,7 +18,7 @@ if (isset($_POST["login"])) {
         // Verifying password
         if (password_verify($password, $user["password"])) {
             $_SESSION["user_id"] = $user["id"];
-            header("Location: user.html");
+            header("Location: ../View/admin/booking_information.html");
             exit();
         } else {
             echo "<div class='alert alert-danger'>Password does not match</div>";
