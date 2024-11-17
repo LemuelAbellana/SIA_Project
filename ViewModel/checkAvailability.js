@@ -56,11 +56,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function: Validate Dates
     function validateDates(arrivalDate, leavingDate) {
+        const isoDateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
+
         if (!arrivalDate || !leavingDate) {
             Swal.fire({
                 icon: 'error',
                 title: 'Missing Dates',
                 text: 'Please select both arrival and leaving dates.',
+            });
+            return false;
+        }
+
+        if (!isoDateFormat.test(arrivalDate) || !isoDateFormat.test(leavingDate)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid Date Format',
+                text: 'Dates must be in the format YYYY-MM-DDTHH:mm.',
             });
             return false;
         }
