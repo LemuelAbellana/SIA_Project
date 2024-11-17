@@ -29,7 +29,7 @@
   background-image: url('../../Assets/bckgroundgradientauth.png');
   background-size: cover;
   background-position: center;
-  opacity: 0.1;
+  opacity: 0.5;
   z-index: -1;
 }
 
@@ -155,15 +155,11 @@ table {
   text-align: center;
   }
 
-.summary_report{
+.action-btn {
 margin-top: 30px;
 display: flex;
 justify-content: center;
 gap: 10px;
-}
-
-.summarization {
-  border: none;
 }
 
 button {
@@ -171,7 +167,6 @@ button {
   height: auto;
   border: none;
   background-color: #f0f0f0;
-  color: #000;
   transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
   cursor: pointer;
 }
@@ -181,3 +176,4 @@ button:hover {
   background-color: #e0e0e0; 
   transform: scale(1.1); 
 }
+
