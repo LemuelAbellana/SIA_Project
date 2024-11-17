@@ -1,0 +1,139 @@
+* {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* The sidebar menu */
+.sidebar {
+  height: 100%;
+  width: 250px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #c1c1c1;
+  overflow-x: hidden;
+  padding-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sidebar a {
+  padding: 8px 8px 8px 2px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: flex;
+  transition: 0.3s;
+}
+
+.sidebar a:hover {
+  color: #f1f1f1;
+}
+
+#main {
+  margin-left: 250px;
+  padding: 20px;
+  display: block;
+  justify-content: center;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+}
+
+.logo-container {
+  margin-bottom: 10px;
+}
+
+.sidebar-button {
+  padding: 12px 20px; /* Increased padding for larger click area */
+  border-radius: 0px;
+  cursor: pointer;
+  font-size: 18px; /* Increased font size for better readability */
+  background-color: #00226b;
+  color: #ffffff;
+  transition: background-color 0.3s, color 0.3s;
+  width: 300px; /* Increased width */
+  height: 50px; /* Increased height */
+  font-weight: bold;
+}
+
+.sidebar-button:hover {
+  background-color: #01162C;
+  color: #ffffff;
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 8px;
+  text-align: center;
+}
+
+.booking_info_date {
+  margin-bottom: 10px;
+  text-align: center;
+  padding: 13px;
+}
+
+.table {
+  display: flex;
+  justify-content: center;
+
+}
+
+.customer_info_title {
+  text-align: center;
+}
+
+.customer_info_date {
+  text-align: center;
+}
+
+.receipt-container {
+  width: 400px;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid #000;
+  border-radius: 5px;
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.receipt-row strong {
+  color: #000;
+  width: 40%;
+  /* Label width */
+  text-align: left;
+}
+
+.receipt-row span {
+  width: 60%;
+  /* Value width */
+  text-align: left;
+  color: #333;
+}
+
+.event_info_title{
+  text-align: center;
+  }
+  
+  .event_info_date{
+  text-align: center;
+  }
+
+.summary_report{
+margin-top: 30px;
+display: flex;
+justify-content: center;
+}

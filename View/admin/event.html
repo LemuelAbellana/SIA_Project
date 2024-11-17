@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <link rel="stylesheet" href="./admin.css">
+
+    <title>Admin</title>
+</head>
+
+<body>
+    <div id="mySidebar" class="sidebar">
+        <div class="logo-container">
+            <img src="../../Assets/SIA_LOGO_wobg1.png" alt="Logo" class="logo">
+
+        </div>
+        <a href="./booking_information.html"><button class="sidebar-button"><i class="fa-solid fa-book"></i>
+                Booking</button></a>
+        <a href="./customer.html"><button class="sidebar-button"><i class="fa-solid fa-receipt"></i>
+                Customer</button></a>
+        <a href="#"><button class="sidebar-button"><i class="fa-solid fa-hotel"></i> Event</button></a>
+        <a href="../loginpage.html"><button class="sidebar-button"><i class="fa-regular fa-user"></i>
+                Logout</button></a>
+    </div>
+
+    <div id="main">
+        <div class="booking_info_date">
+            <h1>Event</h1>
+            <div id="clock"></div>
+        </div>
+        <script src="../../ViewModel/timerdisplay.js"></script>
+        <div class="table">
+            <table>
+
+                <tr>
+                    <th>Event ID</th>
+                    <th>Event Type</th>
+                    <th>Total Number of People</th>
+                </tr>
+
+                <tr>
+                    <td>0001</td>
+                    <td>0001</td>
+                    <td>0001</td>
+                </tr>
+                <tr>
+                    <td>0001</td>
+                    <td>0001</td>
+                    <td>0001</td>
+                </tr>
+                <tr>
+                    <td>0001</td>
+                    <td>0001</td>
+                    <td>0001</td>
+                </tr>
+                <tr>
+                    <td>0001</td>
+                    <td>0001</td>
+                    <td>0001</td>
+                </tr>
+                <tr>
+                    <td>0001</td>
+                    <td>0001</td>
+                    <td>0001</td>
+                </tr>
+            </table>
+        </div>
+        <div class="summary_report">
+            <button href="summarization">See Report</button>
+        </div>
+    </div>
+</body>
+
+</html>
