@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         const formData = new FormData(bookingForm);
 
-        fetch('../Database/booking.php?action=check_availability', {
+        fetch('../Model/Database/booking.php?action=check_availability', {
             method: 'POST',
             body: formData
         })
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const formData = new FormData(bookingForm);
         formData.append('action', 'book_now');
 
-        fetch('../Database/booking.php', {
+        fetch('../Model/Database/booking.php', {
             method: 'POST',
             body: formData
         })

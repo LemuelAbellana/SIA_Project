@@ -4,16 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-    integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" href="style.css">
   <title>Booking</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 </head>
 
 <body>
-
   <header class="header">
     <div class="navigation-bar">
       <div class="nav-links">
@@ -39,67 +36,50 @@
   <img class="homepage-image" src="../Assets/book_now.png" alt="">
 
   <section class="booking">
-    
     <div class="booking-row">
       <div class="booking-img">
         <img src="../Assets/avenuegraphic.png" alt="Graphical Representation of Escape Avenue">
       </div>
-    
-      <!-- Added id="bookingForm" to the form -->
+
       <form id="bookingForm" action="../Database/booking.php" method="post">
         <div class="form-input-box">
-          <label for="name">
-            <h3>Name:</h3>
-          </label>
+          <label for="name"><h3>Name:</h3></label>
           <input type="text" id="name" name="name" placeholder="Full name" required>
         </div>
         <div class="form-input-box">
-          <label for="email">
-            <h3>Email:</h3>
-          </label>
+          <label for="email"><h3>Email:</h3></label>
           <input type="email" id="email" name="email" placeholder="sample123@gmail.com" required>
         </div>
         <div class="form-input-box">
-          <label for="contact_number">
-            <h3>Contact Number:</h3>
-          </label>
+          <label for="contact_number"><h3>Contact Number:</h3></label>
           <input type="tel" id="contact_number" name="contact_number" placeholder="09512575802" required>
-          <!-- Added span for contact number error -->
           <span id="contact_error"></span>
         </div>
         <div class="form-input-box">
-          <label for="event_type">
-            <h3>Event Type:</h3>
-          </label>
+          <label for="event_type"><h3>Event Type:</h3></label>
           <input type="text" id="event_type" name="event_type" placeholder="Birthday Party" required>
         </div>
         <div class="form-input-box">
-          <label for="number_of_people">
-            <h3>Number of People:</h3>
-          </label>
+          <label for="number_of_people"><h3>Number of People:</h3></label>
           <input type="number" id="number_of_people" name="number_of_people" placeholder="25" required>
-          <!-- Added span for number of people error -->
           <span id="people_error"></span>
         </div>
         <div class="form-input-box">
-          <label for="arrival_date">
-            <h3>Arrivals:</h3>
-          </label>
+          <label for="arrival_date"><h3>Arrivals:</h3></label>
           <input type="datetime-local" id="arrival_date" name="arrival_date" required>
         </div>
         <div class="form-input-box">
-          <label for="leaving_date">
-            <h3>Leaving:</h3>
-          </label>
+          <label for="leaving_date"><h3>Leaving:</h3></label>
           <input type="datetime-local" id="leaving_date" name="leaving_date" required>
         </div>
+        <form action="bookingForm">
         <div class="form-submit-box">
-          <button type="submit" name="action" value="check_availability" class="availability-btn">Check
-            Availability</button>
+          <button type="submit" name="action" value="check_availability" class="availability-btn">Check Availability</button>
         </div>
         <div class="form-submit-box">
           <button type="submit" name="action" value="book_now" class="submit-btn">Book Now</button>
         </div>
+      </form>
       </form>
     </div>
   </section>
@@ -109,13 +89,11 @@
       <div class="footer-left">
         <p>&copy; 2024 Escape Avenue. All rights reserved.</p>
       </div>
-
       <div class="footer-middle">
         <a href="./index.html" class="footer-logo">
           <img src="../Assets/footer_logo.png" alt="Escape Avenue Logo" class="footer-logo-image">
         </a>
       </div>
-
       <div class="footer-right">
         <p>Follow us:</p>
         <a href="https://facebook.com" target="_blank"><i class="fab fa-facebook"></i></a>
@@ -125,9 +103,11 @@
     </div>
   </footer>
 
-  <script src="../Model/datedisable.js"></script>
+  <script src="../ViewModel/datedisable.js"></script>
   <script src="../ViewModel/checkAvailability.js"></script>
-  <script src="../Model/clientValidation.js"></script>
+  <script src="../ViewModel/clientValidation.js"></script>
+  <script src="../ViewModel/BookingPage.js"></script> <!-- The new script -->
 </body>
 
 </html>
+  
