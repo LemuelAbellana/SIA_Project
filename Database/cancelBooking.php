@@ -1,17 +1,24 @@
 <?php
+require_once 'BookingDatabase.php';
+require_once 'Database.php';
 
-require_once '../model/BookingDatabase.php';
+$database = new Database();
+$bookingDb = new BookingDatabase($database);
 
-$bookingId = $_POST['booking_id'];
+$bookingId = $_POST['booking_id'] ?? null;
 
 if ($bookingId) {
-    $db = new mysqli('localhost', 'root', '', 'booking_db');
-    $bookingDb = new BookingDatabase($db);
     $result = $bookingDb->cancelBooking($bookingId);
-
-    if ($result) {
-        echo json_encode(["success" => true, "message" => "Booking canceled"]);
-    } else {
-        echo json_encode(["success" => false, "message" => "Cancellation failed"]);
-    }
+    echo json_encode([
+        "success" => $result,
+        "message" => $result ? "Booking canceled" : "Cancellation failed"
+    ]);
+} else {
+    echo json_encode([
+        "success" => false,
+        "message" => "Booking ID is required."
+    ]);
 }
+
+$database->close();
+?>

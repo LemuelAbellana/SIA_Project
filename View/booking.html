@@ -41,7 +41,7 @@
         <img src="../Assets/avenuegraphic.png" alt="Graphical Representation of Escape Avenue">
       </div>
 
-      <form id="bookingForm" action="../Database/booking.php" method="post">
+      <form id="bookingForm" method="post">
         <div class="form-input-box">
           <label for="name"><h3>Name:</h3></label>
           <input type="text" id="name" name="name" placeholder="Full name" required>
@@ -72,14 +72,12 @@
           <label for="leaving_date"><h3>Leaving:</h3></label>
           <input type="datetime-local" id="leaving_date" name="leaving_date" required>
         </div>
-        <form action="bookingForm">
         <div class="form-submit-box">
-          <button type="submit" name="action" value="check_availability" class="availability-btn">Check Availability</button>
+          <button type="button" class="availability-btn" id="checkAvailabilityBtn">Check Availability</button>
         </div>
         <div class="form-submit-box">
-          <button type="submit" name="action" value="book_now" class="submit-btn">Book Now</button>
+          <button type="button" class="submit-btn" id="bookNowBtn">Book Now</button>
         </div>
-      </form>
       </form>
     </div>
   </section>
@@ -105,9 +103,8 @@
 
   <script src="../ViewModel/datedisable.js"></script>
   <script src="../ViewModel/checkAvailability.js"></script>
-  <script src="../ViewModel/clientValidation.js"></script>
+  <script src="../Model/clientValidation.js"></script>
   <script src="../ViewModel/BookingPage.js"></script> <!-- The new script -->
 </body>
 
 </html>
-  
