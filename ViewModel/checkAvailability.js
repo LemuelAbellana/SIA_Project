@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const bookingForm = document.getElementById('bookingForm');
     const checkAvailabilityButton = document.querySelector('.availability-btn');
     const bookNowButton = document.querySelector('.submit-btn');
-    const API_URL = '../Database/booking.php'; // Centralized URL
+    const API_URL = '../Model/booking.php'; // Centralized URL
 
     // Event: Check Availability
     checkAvailabilityButton.addEventListener('click', async function (event) {
@@ -77,8 +77,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Function: Validate Dates
     function validateDates(arrivalDate, leavingDate) {
-        const isoDateFormat = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/;
-
         if (!arrivalDate || !leavingDate) {
             Swal.fire({
                 icon: 'error',
@@ -87,27 +85,20 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             return false;
         }
-
-        if (!isoDateFormat.test(arrivalDate) || !isoDateFormat.test(leavingDate)) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Invalid Date Format',
-                text: 'Dates must be in the format YYYY-MM-DDTHH:mm.',
-            });
-            return false;
-        }
-
-        if (new Date(leavingDate) <= new Date(arrivalDate)) {
+    
+        const arrival = new Date(arrivalDate);
+        const leaving = new Date(leavingDate);
+        if (leaving <= arrival) {
             Swal.fire({
                 icon: 'error',
                 title: 'Invalid Dates',
-                text: 'Leaving date must be after the arrival date.',
+                text: 'Leaving date must be after arrival date.',
             });
             return false;
         }
-
+    
         return true;
-    }
+    }    
 
     // Function: Send Request
     async function sendRequest(formData, url) {

@@ -14,7 +14,6 @@ class Database {
         $this->password = $_ENV['DB_PASSWORD'] ?? '';
         $this->dbName = $_ENV['DB_NAME'] ?? 'escape_avenue';
 
-        // Establish the database connection
         $this->connect();
     }
 
@@ -25,8 +24,8 @@ class Database {
         $this->connection = new mysqli($this->host, $this->username, $this->password, $this->dbName);
 
         if ($this->connection->connect_error) {
-            error_log("Connection failed: " . $this->connection->connect_error);
-            die("A database error occurred. Please try again later.");
+            error_log("Database connection failed: " . $this->connection->connect_error);
+            die("Database connection failed. Please try again later.");
         }
 
         $this->connection->set_charset('utf8mb4');
@@ -34,6 +33,8 @@ class Database {
 
     /**
      * Get the current database connection.
+     *
+     * @return mysqli
      */
     public function getConnection() {
         return $this->connection;
@@ -48,5 +49,4 @@ class Database {
         }
     }
 }
-
 ?>
