@@ -119,20 +119,22 @@ table {
 }
 
 .receipt-container {
-  width: 400px;
-  margin: 0 auto;
+  width: 60%;
+  margin: 20px auto;
   padding: 20px;
   border: 1px solid #000;
   border-radius: 5px;
-  font-family: Arial, sans-serif;
+  box-shadow: 0 0 10px rgba (0, 0, 0, 0.1);
   background-color: #f9f9f9;
 }
 
 .receipt-row {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
   font-size: 16px;
+  padding: 15px;
+  border-bottom: 2px solid #ddd;
+  
 }
 
 .receipt-row strong {
@@ -159,33 +161,84 @@ table {
 margin-top: 30px;
 display: flex;
 justify-content: center;
-gap: 10px;
+gap: 15px;
 }
 
-.add-button {
+/* btn */
+
+.add-btn {
   background-color: #3da9e7; 
   color: white;
-  padding: 10px 20px;
-  width: 30%;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  width: 150px;
+  height: 35px;
 }
 
-.add-button:hover {
-  background-color: blue;
+.add-btn:hover {
+  background-color:  #3da9e7;
+  color: white;
+}
+
+.remove-btn {
+  background-color: rgb(229, 79, 79);
+  color: white;
+  width: 150px;
+  height: 35px;
+}
+
+.remove-btn:hover {
+  background-color: rgb(212, 72, 72);
+  color: white;
+}
+
+.add-custo {
+  background-color: rgb(75, 216, 75);
+  color: white;
+  width: auto;
+  height: 28px;
+}
+
+.add-custo:hover {
+  background-color: rgb(63, 188, 63);
+  color: white;
+}
+
+.dlt-custo {
+  background-color: rgb(229, 79, 79);
+  color: white;
+  width: auto;
+  height: 28px;
+
+}
+
+.dlt-custo:hover {
+  background-color: rgb(212, 72, 72);
+  color: white;
+}
+
+.shw-custo {
+  background-color: gray;
+  color: white; 
+  width: auto;
+  height: 28px;
+}
+
+.shw-custo:hover {
+  background-color: rgb(198, 198, 198);
+  color: white;
+}
+
+
+
+
+
+
+
+
+.btn:hover {
+  background-color: rgb(113, 113, 186);
   color: white; 
 }
 
-.delete-button {
-  background-color: #ff474c; 
-  color: white;
-  padding: 10px 20px;
-  width: 30%;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
 
 .delete-button:hover {
   background-color: red; 
@@ -199,6 +252,8 @@ button {
   background-color: #f0f0f0;
   transition: color 0.3s ease, background-color 0.3s ease, transform 0.3s ease;
   cursor: pointer;
+  padding: auto;
+  border-radius: 5px;
 }
 
 button:hover {
@@ -207,57 +262,4 @@ button:hover {
   transform: scale(1.1); 
 }
 
-.delete-customer{
-  background-color: #ff474c; 
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.delete-customer:hover{
-  background-color: red; 
-  color: white;
-}
-
-.show-customer{
-  background-color: #3da9e7; 
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.show-customer:hover{
-  background-color: blue;
-  color: white; 
-}
-
-.show-guest{
-  background-color: #ff474c; 
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-.show-guest:hover{
-  background-color: red; 
-  color: white;
-}
-
-.show-events{
-  background-color: #3da9e7; 
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-.show-events:hover{
-  background-color: blue;
-  color: white; 
-}
 
