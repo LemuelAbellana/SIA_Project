@@ -22,13 +22,13 @@ class RegisterViewModel {
         };
 
         try {
-            const response = await fetch("../ViewModel/RegisterController.php", {
+            const response = await fetch("../Model/RegisterController.php", { // Adjust base URL as needed
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify(data),
-            });
+            });            
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
