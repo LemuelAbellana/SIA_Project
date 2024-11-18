@@ -1,4 +1,5 @@
 <?php
+
 abstract class BaseDatabase {
     protected $db;
 
@@ -6,3 +7,4 @@ abstract class BaseDatabase {
         $this->db = $database->getConnection();
     }
 }
+?>

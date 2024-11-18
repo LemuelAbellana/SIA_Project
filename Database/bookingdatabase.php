@@ -1,12 +1,8 @@
 <?php
-// Include the BaseDatabase class
-require_once 'BaseDatabase.php'; // Make sure the file path is correct
-
-// Include the Database connection class (or any other necessary classes)
-require_once 'database.php';
+require_once 'BaseDatabase.php';
+require_once 'Database.php';
 
 class BookingDatabase extends BaseDatabase {
-
     // Check availability for a given event and dates
     public function checkAvailability($arrivalDate, $leavingDate) {
         $query = "SELECT * FROM booking_information 
@@ -16,7 +12,8 @@ class BookingDatabase extends BaseDatabase {
                   OR (? BETWEEN arrival_date AND leaving_date)";
         $stmt = $this->db->prepare($query);
         if ($stmt === false) {
-            throw new Exception("Prepare failed in checkAvailability: " . $this->db->error);
+            error_log("Prepare failed in checkAvailability: " . $this->db->error);
+            throw new Exception("A database error occurred. Please contact support.");
         }
 
         $stmt->bind_param("ssssss", $arrivalDate, $leavingDate, $arrivalDate, $leavingDate, $arrivalDate, $leavingDate);
@@ -24,7 +21,8 @@ class BookingDatabase extends BaseDatabase {
         $result = $stmt->get_result();
 
         if ($result === false) {
-            throw new Exception("Execute failed in checkAvailability: " . $this->db->error);
+            error_log("Execute failed in checkAvailability: " . $this->db->error);
+            throw new Exception("A database error occurred. Please contact support.");
         }
 
         return $result;
@@ -32,35 +30,29 @@ class BookingDatabase extends BaseDatabase {
 
     // Book a new event
     public function book($name, $email, $contactNumber, $eventType, $arrivalDate, $leavingDate, $numberOfPeople) {
-        $this->db->begin_transaction(); // Start a transaction
+        $this->db->begin_transaction();
 
         try {
-            // Validate and check dates
             if (strtotime($arrivalDate) >= strtotime($leavingDate)) {
                 throw new Exception("Arrival date must be before leaving date.");
             }
 
-            // Get or create customer ID
             $customerId = $this->getCustomerIdByContactNumber($contactNumber);
             if (!$customerId) {
                 $customerId = $this->addCustomer($name, $email, $contactNumber);
             }
 
-            // Get or create event ID
             $eventId = $this->getEventId($eventType);
-
-            // Insert booking information
             $bookingId = $this->addBookingInformation($customerId, $eventId, $arrivalDate, $leavingDate);
-
-            // Insert number of people
             $this->addNumberOfPeople($bookingId, $numberOfPeople);
 
-            $this->db->commit(); // Commit the transaction
-            return $bookingId; // Return bookingId 
+            $this->db->commit();
+            return $bookingId;
+
         } catch (Exception $e) {
-            $this->db->rollback(); // Roll back the transaction on error
+            $this->db->rollback();
             error_log("Booking error: " . $e->getMessage());
-            throw $e; // Re-throw the exception for further handling
+            throw new Exception("An error occurred while processing your booking. Please try again.");
         }
     }
 
