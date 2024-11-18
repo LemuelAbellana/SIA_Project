@@ -162,6 +162,36 @@ justify-content: center;
 gap: 10px;
 }
 
+.add-button {
+  background-color: #3da9e7; 
+  color: white;
+  padding: 10px 20px;
+  width: 30%;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-button:hover {
+  background-color: blue;
+  color: white; 
+}
+
+.delete-button {
+  background-color: #ff474c; 
+  color: white;
+  padding: 10px 20px;
+  width: 30%;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: red; 
+  color: white;
+}
+
 button {
   width: auto;
   height: auto;
@@ -175,5 +205,59 @@ button:hover {
   color: #333; 
   background-color: #e0e0e0; 
   transform: scale(1.1); 
+}
+
+.delete-customer{
+  background-color: #ff474c; 
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delete-customer:hover{
+  background-color: red; 
+  color: white;
+}
+
+.show-customer{
+  background-color: #3da9e7; 
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.show-customer:hover{
+  background-color: blue;
+  color: white; 
+}
+
+.show-guest{
+  background-color: #ff474c; 
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.show-guest:hover{
+  background-color: red; 
+  color: white;
+}
+
+.show-events{
+  background-color: #3da9e7; 
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.show-events:hover{
+  background-color: blue;
+  color: white; 
 }
 
