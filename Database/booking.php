@@ -52,41 +52,47 @@ try {
             $arrivalDate = validateAndFormatDate($_POST['arrival_date']);
             $leavingDate = validateAndFormatDate($_POST['leaving_date']);
 
-            if (!$arrivalDate || !$leavingDate || strtotime($arrivalDate) >= strtotime($leavingDate)) {
+            if (!$arrivalDate || !$leavingDate) {
                 $response = ["success" => false, "message" => "Invalid or improperly formatted dates."];
+            } elseif (strtotime($arrivalDate) >= strtotime($leavingDate)) {
+                $response = ["success" => false, "message" => "Leaving date must be after arrival date."];
             } else {
-                // Store booking details in session before making the database call
-                $result = $bookingDb->book(
-                    $_POST['name'],
-                    $_POST['email'],
-                    $_POST['contact_number'],
-                    $_POST['event_type'],
-                    $arrivalDate,
-                    $leavingDate,
-                    $_POST['number_of_people']
-                );
-
-                if ($result) {
-                    $_SESSION['booking_details'] = [
-                        'booking_id' => $result,
-                        'name' => $_POST['name'],
-                        'email' => $_POST['email'],
-                        'contact_number' => $_POST['contact_number'],
-                        'event_type' => $_POST['event_type'],
-                        'number_of_people' => $_POST['number_of_people'],
-                        'arrival_date' => $arrivalDate,
-                        'leaving_date' => $leavingDate
-                    ];
-                                        
-                    $response = [
-                        "success" => true, 
-                        "message" => "Booking successful!",
-                        "redirect" => "receipt.php"
-                    ];
+                $availabilityResult = $bookingDb->checkAvailability($arrivalDate, $leavingDate);
+                
+                if ($availabilityResult->num_rows > 0) {
+                    $response = ["success" => false, "message" => "Dates are not available."];
                 } else {
-                    $response = ["success" => false, "message" => "Booking failed. Please try again later."];
-                    // Clear session if booking fails
-                    unset($_SESSION['booking_details']);
+                    $bookingResult = $bookingDb->book(
+                        $_POST['name'],
+                        $_POST['email'],
+                        $_POST['contact_number'],
+                        $_POST['event_type'],
+                        $arrivalDate,
+                        $leavingDate,
+                        $_POST['number_of_people']
+                    );
+
+                    if ($bookingResult) {
+                        $_SESSION['booking_details'] = [
+                            'booking_id' => $bookingResult,
+                            'name' => $_POST['name'],
+                            'email' => $_POST['email'],
+                            'contact_number' => $_POST['contact_number'],
+                            'event_type' => $_POST['event_type'],
+                            'number_of_people' => $_POST['number_of_people'],
+                            'arrival_date' => $arrivalDate,
+                            'leaving_date' => $leavingDate
+                        ];
+                        
+                        $response = [
+                            "success" => true, 
+                            "message" => "Booking successful!",
+                            "redirect" => "receipt.php"
+                        ];
+                    } else {
+                        $response = ["success" => false, "message" => "Booking failed. Please try again later."];
+                        unset($_SESSION['booking_details']);
+                    }
                 }
             }
         }
@@ -94,7 +100,6 @@ try {
 } catch (Exception $e) {
     error_log("Error in booking.php: " . $e->getMessage());
     $response = ["success" => false, "message" => "An error occurred: " . $e->getMessage()];
-    // Clear session if there's an error
     unset($_SESSION['booking_details']);
 }
 
