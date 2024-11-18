@@ -19,7 +19,6 @@ $event_type = htmlspecialchars($bookingDetails['event_type'] ?? 'N/A');
 $number_of_people = htmlspecialchars($bookingDetails['number_of_people'] ?? 'N/A');
 $arrival_date = htmlspecialchars($bookingDetails['arrival_date'] ?? 'N/A');
 $leaving_date = htmlspecialchars($bookingDetails['leaving_date'] ?? 'N/A');
-
 ?>
 
 <!DOCTYPE html>
@@ -84,9 +83,11 @@ $leaving_date = htmlspecialchars($bookingDetails['leaving_date'] ?? 'N/A');
     <div class="note">
       <strong>Note:</strong> <span>Thank you for booking with Escape Avenue!</span> <span>Please take a screenshot of your receipt</span>
     </div>
-    <form id="cancelForm" action="cancelBooking.php" method="POST">
+    <form id="cancelForm">
       <input type="hidden" name="booking_id" value="<?php echo $booking_id; ?>">
-      <button type="button" class="cancel-button" onclick="confirmCancellation()">Cancel Booking</button>
+      <button type="button" class="cancel-button" 
+        data-booking-id="<?php echo $booking_id; ?>" 
+        data-arrival-date="<?php echo $arrival_date; ?>">Cancel Booking</button>
     </form>
   </div>
 
@@ -109,22 +110,6 @@ $leaving_date = htmlspecialchars($bookingDetails['leaving_date'] ?? 'N/A');
     </div>
   </footer>
 
-  <script>
-    function confirmCancellation() {
-      Swal.fire({
-        title: 'Are you sure?',
-        text: "You are about to cancel your booking.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, cancel it!'
-      }).then((result) => {
-        if (result.isConfirmed) {
-          document.getElementById('cancelForm').submit();
-        }
-      });
-    }
-  </script>
+  <script src="../ViewModel/confirm_cancel.js"></script>
 </body>
 </html>
