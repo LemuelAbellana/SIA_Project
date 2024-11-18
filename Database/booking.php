@@ -77,9 +77,7 @@ try {
                         'arrival_date' => $arrivalDate,
                         'leaving_date' => $leavingDate
                     ];
-                    
-                    $_SESSION['booking_details']['booking_id'] = $bookingDb->getLastBookingId();
-                    
+                                        
                     $response = [
                         "success" => true, 
                         "message" => "Booking successful!",

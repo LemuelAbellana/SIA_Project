@@ -34,35 +34,41 @@ try {
             throw new Exception("Database error: " . $conn->error);
         }
 
-        $stmt->bind_param("s", $username);
+        $stmt->bind_param("s", $username);  // Bind email parameter
         $stmt->execute();
         $result = $stmt->get_result();
 
+        // If the user is found
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
 
-            // Check if 'admin_id' exists in the fetched user array
-            if (isset($user["admin_id"]) && isset($user["password"])) {
-                // Verify password
+            // Ensure 'password' field is present before verifying it
+            if (isset($user["password"])) {
+                // Verify the password (hashed password in the database)
                 if (password_verify($password, $user["password"])) {
-                    $_SESSION["user_id"] = $user["admin_id"];  // Set the session with 'admin_id'
-                    $_SESSION["username"] = $user["email"];  // Store the email as username (or adjust if necessary)
+                    // Set session variables
+                    $_SESSION["user_id"] = $user["admin_id"];  // Store admin_id in session
+                    $_SESSION["username"] = $user["email"];  // Store email as username
 
-                    // Success response
+                    // Success response with redirect URL
                     $response = [
                         "status" => "success",
-                        "redirect" => "../View/admin/booking_information.html",
+                        "redirect" => "../View/admin/booking_information.html",  // Adjust this URL as needed
                     ];
                 } else {
+                    // Incorrect password
                     $response["message"] = "Incorrect password. Please try again.";
                 }
             } else {
-                $response["message"] = "User data is missing. Please contact support.";
+                // Missing password field in the user record
+                $response["message"] = "Password data is missing. Please contact support.";
             }
         } else {
+            // User not found
             $response["message"] = "User not found. Please check your credentials.";
         }
 
+        // Clean up
         $stmt->close();
         $conn->close();
     }

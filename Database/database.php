@@ -15,6 +15,13 @@ class Database {
         $this->dbName = $_ENV['DB_NAME'] ?? 'escape_avenue';
 
         // Establish the database connection
+        $this->connect();
+    }
+
+    /**
+     * Establish the database connection.
+     */
+    private function connect() {
         $this->connection = new mysqli($this->host, $this->username, $this->password, $this->dbName);
 
         if ($this->connection->connect_error) {
@@ -25,12 +32,20 @@ class Database {
         $this->connection->set_charset('utf8mb4');
     }
 
+    /**
+     * Get the current database connection.
+     */
     public function getConnection() {
         return $this->connection;
     }
 
+    /**
+     * Close the database connection.
+     */
     public function close() {
-        $this->connection->close();
+        if ($this->connection) {
+            $this->connection->close();
+        }
     }
 }
 

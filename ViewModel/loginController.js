@@ -23,7 +23,6 @@ $(document).ready(function () {
             },
             success: function (response) {
                 try {
-                    // Ensure response is parsed correctly
                     const result = typeof response === 'string' ? JSON.parse(response) : response;
 
                     if (result.status === 'success') {
@@ -32,8 +31,7 @@ $(document).ready(function () {
                             title: 'Login Successful',
                             text: 'Redirecting to admin panel...',
                         }).then(() => {
-                            // Redirect to the page specified in the backend response
-                            window.location.href = result.redirect; 
+                            window.location.href = result.redirect;
                         });
                     } else {
                         Swal.fire({

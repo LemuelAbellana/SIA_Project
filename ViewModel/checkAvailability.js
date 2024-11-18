@@ -141,6 +141,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Function: Book Now
     async function bookNow(formData) {
         try {
+            formData.set('action','book_now');
             const data = await sendRequest(formData, API_URL);
             if (data.success) {
                 Swal.fire({

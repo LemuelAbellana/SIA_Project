@@ -60,7 +60,7 @@ class BookingDatabase extends BaseDatabase {
             $this->addNumberOfPeople($bookingId, $numberOfPeople);
 
             $this->db->commit(); // Commit the transaction
-            return true; // Return true if all steps succeed
+            return $bookingId; // Return bookingId 
         } catch (Exception $e) {
             $this->db->rollback(); // Roll back the transaction on error
             error_log("Booking error: " . $e->getMessage());
