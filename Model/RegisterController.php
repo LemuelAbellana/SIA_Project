@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/../Database/adminModel.php"; // Corrected the path
+require_once __DIR__ . "/../Database/registerAction.php"; // Corrected the path
 
 header("Content-Type: application/json");
 
@@ -10,7 +10,7 @@ try {
             throw new Exception("Invalid JSON data.");
         }
 
-        $adminModel = new AdminModel();
+        $RegisterAction = new registerAction();
 
         // Validation logic
         $errors = [];
@@ -26,7 +26,7 @@ try {
         if ($data['password'] !== $data['repeat_password']) {
             $errors[] = "Passwords do not match.";
         }
-        if ($adminModel->isEmailExists($data['email'])) {
+        if ($RegisterAction->isEmailExists($data['email'])) {
             $errors[] = "Email already exists.";
         }
 
@@ -38,7 +38,7 @@ try {
 
         // Hash the password and register the user
         $passwordHash = password_hash($data['password'], PASSWORD_DEFAULT);
-        $isRegistered = $adminModel->registerAdmin($data['username'], $data['email'], $passwordHash);
+        $isRegistered = $RegisterAction->registerAdmin($data['username'], $data['email'], $passwordHash);
 
         // Return success or failure
         echo json_encode(["success" => $isRegistered]);
