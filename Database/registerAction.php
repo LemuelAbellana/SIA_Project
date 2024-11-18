@@ -1,7 +1,7 @@
 <?php
 require_once "Database.php";
 
-class AdminModel {
+class RegisterAction {
     private $db;
 
     public function __construct() {

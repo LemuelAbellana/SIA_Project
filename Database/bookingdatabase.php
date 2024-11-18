@@ -1,14 +1,6 @@
 <?php
 require_once 'database.php';
 
-abstract class BaseDatabase {
-    protected $db;
-
-    public function __construct(Database $database) {
-        $this->db = $database->getConnection();
-    }
-}
-
 class BookingDatabase extends BaseDatabase {
 
     // Check availability for a given event and dates
