@@ -20,25 +20,30 @@
             <div class="login-panel">
                 <h2>Welcome To Escape Avenue</h2>
                 <p>Please Login to Admin Panel</p>
-                <form id="login-form">
-                    <div class="input-group mb-3">
-                        <label for="username" class="form-label">
-                            <i class="fas fa-user"></i> Email
+                <form id="register-form">
+                    <div class="input-group">
+                        <label>
+                            <i class="fas fa-user"></i>
+                            <input type="text" placeholder="Username">
                         </label>
-                        <input type="text" id="username" name="username" class="form-control" placeholder="Enter your email" required>
                     </div>
-                    <div class="input-group mb-3">
-                        <label for="password" class="form-label">
-                            <i class="fas fa-lock"></i> Password
+                    <div class="input-group">
+                        <label>
+                            <i class="fas fa-lock"></i>
+                            <input type="password" id="password" placeholder="Password">
                         </label>
-                        <input type="password" id="password" name="password" class="form-control" placeholder="Enter your password" required>
+                    </div>
+                    <div class="form-check mt-2">
+                        <input type="checkbox" class="form-check-input" id="showPassword">
+                        <label class="form-check-label" for="showPassword">Show Password</label>
                     </div>
                     <div class="btn-group mt-3">
-                        <button type="submit" class="auth-btn btn btn-primary">LOGIN</button>
+                        <button class="auth-btn">LOGIN</button>
                     </div>
                     <hr>
                     <p>Don't have an account? <a href="registerpage.html">Register here</a>.</p>
-                </form>
+                </div>
+            </form>
             </div>
         </div>
     </div>
