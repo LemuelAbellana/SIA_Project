@@ -1,4 +1,4 @@
-<?php 
+<?php
 session_start();
 require_once 'Database.php';
 require_once 'BookingDatabase.php';

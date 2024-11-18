@@ -6,4 +6,3 @@ abstract class BaseDatabase {
         $this->db = $database->getConnection();
     }
 }
-?>

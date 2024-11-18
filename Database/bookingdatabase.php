@@ -1,4 +1,8 @@
 <?php
+// Include the BaseDatabase class
+require_once 'BaseDatabase.php'; // Make sure the file path is correct
+
+// Include the Database connection class (or any other necessary classes)
 require_once 'database.php';
 
 class BookingDatabase extends BaseDatabase {
