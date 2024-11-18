@@ -2,8 +2,8 @@ $(document).ready(function () {
     $('#login-form').on('submit', function (e) {
         e.preventDefault(); // Prevent normal form submission
 
-        const username = $('#username').val().trim();
-        const password = $('#password').val().trim();
+        const username = $('#username').val().trim();  // Correct ID for username field
+        const password = $('#password').val().trim();  // Correct ID for password field
 
         if (!username || !password) {
             Swal.fire({
@@ -23,7 +23,7 @@ $(document).ready(function () {
             },
             success: function (response) {
                 try {
-                    // Verify response is JSON
+                    // Ensure response is parsed correctly
                     const result = typeof response === 'string' ? JSON.parse(response) : response;
 
                     if (result.status === 'success') {
@@ -32,7 +32,8 @@ $(document).ready(function () {
                             title: 'Login Successful',
                             text: 'Redirecting to admin panel...',
                         }).then(() => {
-                            window.location.href = result.redirect; // Redirect to the admin panel
+                            // Redirect to the page specified in the backend response
+                            window.location.href = result.redirect; 
                         });
                     } else {
                         Swal.fire({
