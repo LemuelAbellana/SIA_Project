@@ -14,15 +14,6 @@ body {
     padding: 0;
   }
 
-.header {
-    background-color: #08142c;
-    position: sticky;
-    top: 0;
-    z-index: 500;
-    height: 150px;
-    text-align: center; 
-}
-
 .image {
     display: grid;
     place-items: center;
@@ -141,6 +132,16 @@ body {
 
 /* Nav-Bar */
 
+.header {
+    background-color: #08142c;
+    position: sticky;
+    top: 0;
+    z-index: 500;
+    height: 150px;
+    text-align: center; 
+}
+
+
 .navigation-bar {
     display: flex;
     justify-content: center;
@@ -176,6 +177,8 @@ body {
 .nav-links img {
     display: block;
 }
+
+
 
 /* Side-by-side Image */
 
