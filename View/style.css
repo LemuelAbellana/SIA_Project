@@ -20,13 +20,20 @@
     --faq-border-color: rgb(87, 87, 87);
     --faq-question-color: #08142c;
 
+    --service-info-color: #01162C;
+    --service-h1-color: #01162C;
+
+    --footer-bg-color: #08142c;
+    --footer-text-color: #fff;
+    --footer-icon-color: #fff;
+
 }
 
 [data-theme="dark"] {
     --header-bg-color: #ffffff;
     --nav-text-color: #01162C;
     --nav-hover-color: #ff5722;
-    --body-bg-color: #161718;
+    --body-bg-color: #01162C;
     --body-text-color: #ffffff;
     --icon-color: #01162C;
 
@@ -35,7 +42,13 @@
     --faq-text-colr: #fff;
     --faq-border-color: rgb(87, 87, 87);
     --faq-question-color: #fff;
-    
+
+    --service-info-color: #01162C;
+    --service-h1-color: #01162C;
+
+    --footer-bg-color: #fff;
+    --footer-text-color: #08142c; 
+    --footer-icon-color: #08142c; 
 }
 
 /* General body styling */
@@ -51,7 +64,9 @@ body {
 /* Theme Toggle Button */
 .theme-toggle-container {
     display: flex;
+    justify-content: flex-end;
     align-items: center;
+    
 }
 
 .theme-toggle {
@@ -278,7 +293,11 @@ body {
 
 .service-info p {
     font-size: 20px;
+    color: var(--service-info-color);
+}
 
+.service-info h1 {
+    color: var(--service-h1-color);
 }
 
 
@@ -298,8 +317,8 @@ body {
 /* Footer */
 
 .footer {
-    background-color: #01162C;
-    color: white;
+    background-color: var(--footer-bg-color);
+    color: var(--footer-text-color);
     padding: 20px;
     text-align: center;
     position: relative;
@@ -337,7 +356,7 @@ body {
 
 .footer-right a {
     margin: 0 10px;
-    color: white;
+    color: var(--footer-icon-color);
     text-decoration: none;
 }
 
