@@ -7,7 +7,7 @@ require_once __DIR__ . '/../Database/bookingdatabase.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// Send a JSON response header once
+// Send a JSON response header
 header('Content-Type: application/json');
 
 class Booking
@@ -17,8 +17,9 @@ class Booking
 
     public function __construct()
     {
+        // Initialize the Database and pass its connection to BookingDatabase
         $this->database = new Database();
-        $this->bookingDb = new BookingDatabase($this->database);
+        $this->bookingDb = new BookingDatabase($this->database->getConnection());
     }
 
     // Helper function to validate and format datetime
@@ -61,7 +62,6 @@ class Booking
     // Make a booking
     public function bookNow()
     {
-        // Validate required fields
         $requiredFields = ['name', 'email', 'contact_number', 'event_type', 'number_of_people', 'arrival_date', 'leaving_date'];
         $missingFields = array_filter($requiredFields, fn($field) => empty($_POST[$field]));
 
