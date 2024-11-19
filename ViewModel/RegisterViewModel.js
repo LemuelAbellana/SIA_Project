@@ -1,4 +1,3 @@
-// Handles registration logic and communicates with the backend
 class RegisterViewModel {
     constructor(formElement) {
         this.formElement = formElement;
@@ -22,7 +21,7 @@ class RegisterViewModel {
         };
 
         try {
-            const response = await fetch("../Model/RegisterController.php", { // Adjust base URL as needed
+            const response = await fetch("../Model/RegisterController.php", { // Make sure path is correct
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

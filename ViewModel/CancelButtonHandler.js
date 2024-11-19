@@ -1,19 +1,25 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const cancelButton = document.querySelector(".cancel-button");
-    
-    // Ensure the cancel button exists
-    if (!cancelButton) return;
-
-    // Get the booking ID and arrival date from data attributes
-    const bookingId = cancelButton.getAttribute("data-booking-id");
-    const arrivalDate = cancelButton.getAttribute("data-arrival-date");
-
-    // Handle cancel button click
-    cancelButton.addEventListener("click", () => {
-        const cancelHandler = new ConfirmCancel(bookingId, arrivalDate);
-        cancelHandler.confirmCancellation();
-    });
+    const cancelButtonHandler = new CancelButtonHandler(".cancel-button");
+    cancelButtonHandler.init();
 });
+
+class CancelButtonHandler {
+    constructor(cancelButtonSelector) {
+        this.cancelButtonSelector = cancelButtonSelector;
+    }
+
+    init() {
+        const cancelButton = document.querySelector(this.cancelButtonSelector);
+
+        if (!cancelButton) return;
+
+        const bookingId = cancelButton.getAttribute("data-booking-id");
+        const arrivalDate = cancelButton.getAttribute("data-arrival-date");
+
+        const cancelHandler = new ConfirmCancel(bookingId, arrivalDate);
+        cancelButton.addEventListener("click", () => cancelHandler.confirmCancellation());
+    }
+}
 
 class ConfirmCancel {
     constructor(bookingId, arrivalDateStr) {
@@ -50,7 +56,7 @@ class ConfirmCancel {
         }).then((result) => {
             if (result.isConfirmed) {
                 this.performCancellation();
-            } else if (result.dismiss === Swal.DismissReason.cancel) {
+            } else {
                 Swal.fire({
                     icon: "info",
                     title: "Cancelled",
@@ -65,12 +71,7 @@ class ConfirmCancel {
         formData.append("booking_id", this.bookingId);
 
         fetch("../Model/cancelBooking.php", { method: "POST", body: formData })
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
+            .then((response) => response.json())
             .then((data) => {
                 Swal.fire({
                     icon: data.success ? "success" : "error",
@@ -78,7 +79,7 @@ class ConfirmCancel {
                     text: data.message,
                 }).then(() => {
                     if (data.success) {
-                        location.href = "booking.html";
+                        location.href = "booking.html"; 
                     }
                 });
             })
@@ -88,7 +89,6 @@ class ConfirmCancel {
                     title: "Something went wrong",
                     text: "Please try again later.",
                 });
-                console.error("Error:", error);
             });
     }
 }

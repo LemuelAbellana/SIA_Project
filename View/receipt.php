@@ -26,10 +26,12 @@ $leaving_date = htmlspecialchars($bookingDetails['leaving_date'] ?? 'N/A');
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Booking details and cancellation for Escape Avenue.">
+  <meta name="author" content="Escape Avenue">
+  <title>Booking Receipt</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
     integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
     crossorigin="anonymous" referrerpolicy="no-referrer">
-  <title>Booking Receipt</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 </head>
@@ -110,6 +112,6 @@ $leaving_date = htmlspecialchars($bookingDetails['leaving_date'] ?? 'N/A');
     </div>
   </footer>
 
-  <script src="../ViewModel/confirm_cancel.js"></script>
+  <script src="../ViewModel/CancelButtonHandler.js"></script>
 </body>
 </html>

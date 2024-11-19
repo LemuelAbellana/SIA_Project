@@ -5,7 +5,7 @@ class RegisterAction {
     private $db;
 
     public function __construct() {
-        // Use the Database class to establish a connection
+        // Initialize database connection
         $this->db = (new Database())->getConnection();
     }
 
