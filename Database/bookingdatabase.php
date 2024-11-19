@@ -3,7 +3,6 @@ require_once 'BaseDatabase.php';
 require_once 'Database.php';
 
 class BookingDatabase extends BaseDatabase {
-    // Check availability for a given event and dates
     public function checkAvailability($arrivalDate, $leavingDate) {
         $query = "SELECT * FROM booking_information 
                   WHERE (arrival_date BETWEEN ? AND ?) 
@@ -11,24 +10,16 @@ class BookingDatabase extends BaseDatabase {
                   OR (? BETWEEN arrival_date AND leaving_date) 
                   OR (? BETWEEN arrival_date AND leaving_date)";
         $stmt = $this->db->prepare($query);
-        if ($stmt === false) {
-            error_log("Prepare failed in checkAvailability: " . $this->db->error);
-            throw new Exception("A database error occurred. Please contact support.");
+
+        if (!$stmt) {
+            throw new Exception("Error preparing statement: " . $this->db->error);
         }
 
         $stmt->bind_param("ssssss", $arrivalDate, $leavingDate, $arrivalDate, $leavingDate, $arrivalDate, $leavingDate);
         $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result === false) {
-            error_log("Execute failed in checkAvailability: " . $this->db->error);
-            throw new Exception("A database error occurred. Please contact support.");
-        }
-
-        return $result;
+        return $stmt->get_result();
     }
 
-    // Book a new event
     public function book($name, $email, $contactNumber, $eventType, $arrivalDate, $leavingDate, $numberOfPeople) {
         $this->db->begin_transaction();
 
@@ -37,13 +28,10 @@ class BookingDatabase extends BaseDatabase {
                 throw new Exception("Arrival date must be before leaving date.");
             }
 
-            $customerId = $this->getCustomerIdByContactNumber($contactNumber);
-            if (!$customerId) {
-                $customerId = $this->addCustomer($name, $email, $contactNumber);
-            }
-
+            $customerId = $this->getCustomerIdByContactNumber($contactNumber) ?? $this->addCustomer($name, $email, $contactNumber);
             $eventId = $this->getEventId($eventType);
             $bookingId = $this->addBookingInformation($customerId, $eventId, $arrivalDate, $leavingDate);
+
             $this->addNumberOfPeople($bookingId, $numberOfPeople);
 
             $this->db->commit();
@@ -51,8 +39,7 @@ class BookingDatabase extends BaseDatabase {
 
         } catch (Exception $e) {
             $this->db->rollback();
-            error_log("Booking error: " . $e->getMessage());
-            throw new Exception("An error occurred while processing your booking. Please try again.");
+            throw new Exception("Booking failed: " . $e->getMessage());
         }
     }
 
@@ -246,6 +233,80 @@ public function getBookingDetails($bookingId) {
         }
     }
 
+        // Fetch all bookings with search, pagination, and encapsulated logic
+        public function getAll($limit, $offset, $search = '') {
+            // Prepare query for paginated results
+            $query = "SELECT 
+                        b.booking_id,
+                        b.customer_id,
+                        c.name,
+                        c.email,
+                        b.event_id,
+                        e.event_type,
+                        b.arrival_date,
+                        b.leaving_date,
+                        np.number_of_people,
+                        c.contact_number
+                      FROM booking_information b
+                      INNER JOIN customer c ON b.customer_id = c.customer_id
+                      INNER JOIN event e ON b.event_id = e.event_id
+                      LEFT JOIN number_of_people np ON b.booking_id = np.booking_id
+                      WHERE c.name LIKE ? OR c.email LIKE ?
+                      LIMIT ? OFFSET ?";
+            
+            $stmt = $this->db->prepare($query);
+            if (!$stmt) {
+                throw new Exception("Error preparing paginated query: " . $this->db->error);
+            }
+        
+            $searchTerm = "%$search%";
+            $stmt->bind_param("ssii", $searchTerm, $searchTerm, $limit, $offset);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $bookings = $result->fetch_all(MYSQLI_ASSOC);
+        
+            // Prepare query for total count
+            $countQuery = "SELECT COUNT(*) AS total 
+                           FROM booking_information b
+                           INNER JOIN customer c ON b.customer_id = c.customer_id
+                           WHERE c.name LIKE ? OR c.email LIKE ?";
+            
+            $countStmt = $this->db->prepare($countQuery);
+            if (!$countStmt) {
+                throw new Exception("Error preparing count query: " . $this->db->error);
+            }
+        
+            $countStmt->bind_param("ss", $searchTerm, $searchTerm);
+            $countStmt->execute();
+            $total = $countStmt->get_result()->fetch_assoc()['total'];
+        
+            return ['bookings' => $bookings, 'totalEntries' => $total];
+        }
+        
+        
+        public function getDetailsById($id) {
+            $query = "SELECT * FROM booking_information WHERE booking_id = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            return $stmt->get_result()->fetch_assoc();
+        }
+    
+        public function updateById($id, $name, $email, $arrivalDate, $leavingDate, $numberOfPeople, $contactNumber) {
+            $query = "UPDATE booking_information 
+                      SET name = ?, email = ?, arrival_date = ?, leaving_date = ?, number_of_people = ?, contact_number = ?
+                      WHERE booking_id = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->bind_param("ssssisi", $name, $email, $arrivalDate, $leavingDate, $numberOfPeople, $contactNumber, $id);
+            return $stmt->execute();
+        }
+    
+        public function deleteById($id) {
+            $query = "DELETE FROM booking_information WHERE booking_id = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->bind_param("i", $id);
+            return $stmt->execute();
+        }
     // Get last inserted booking ID
     public function getLastBookingId() {
         return $this->db->insert_id;
