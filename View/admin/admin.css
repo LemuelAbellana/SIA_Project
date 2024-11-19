@@ -190,9 +190,9 @@ body {
 
 
 .search-bar input {
-  background-color: #132e32;
+  background-color: #ffffff;
   border: 1px solid #555;
-  color: white;
+  color: #132e32;
   padding: 5px;
   border-radius: 4px;
 }
