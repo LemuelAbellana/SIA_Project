@@ -12,68 +12,142 @@
     <title>Admin</title>
 </head>
 
-<body>
-    <div id="mySidebar" class="sidebar">
-        <div class="logo-container">
-            <img src="../../Assets/SIA_LOGO_wobg1.png" alt="Logo" class="logo">
-
-        </div>
-        <a href="./booking_information.html"><button class="sidebar-button"><i class="fa-solid fa-book"></i>
-                Booking</button></a>
-        <a href="./customer.html"><button class="sidebar-button"><i class="fa-solid fa-receipt"></i>
-                Customer</button></a>
-        <a href="#"><button class="sidebar-button"><i class="fa-solid fa-hotel"></i> Event</button></a>
-        <a href="../loginpage.html"><button class="sidebar-button"><i class="fa-regular fa-user"></i>
-                Logout</button></a>
+<body class="backgrndimg">
+    <span class="burger" onclick="openNav()">&#9776;</span>
+<div id="Navigation" class="sidenav">
+    <div class="logo-container">
+        <img src="../../Assets/ESCAPE-AVE-.png" alt="Logo">
     </div>
+    <a href="javascript:void(0)" class="closebutton" onclick="closeNav()">&times;</a>
+    <a href="#" onclick="openAction(event, 'Booking'); closeNav();"><i class="fa-solid fa-book"></i> Booking</a>
+    <a href="#" onclick="openAction(event, 'Customer'); closeNav();"><i class="fa-solid fa-receipt"></i> Customer</a>
+    <a href="#" onclick="openAction(event, 'Event'); closeNav();"><i class="fa-solid fa-hotel"></i> Event</a>
+    <a href="#" onclick="openAction(event, '#'); closeNav();"><i class="fa-regular fa-user"></i> Logout</a>
+</div>
 
-    <div id="main">
-        <div class="booking_info_date">
-            <h1>Event</h1>
-            <div id="clock"></div>
-        </div>
-        <script src="../../ViewModel/timerdisplay.js"></script>
-        <div class="table">
-            <table>
-
-                <tr>
-                    <th>Event ID</th>
-                    <th>Event Type</th>
-                    <th>Total Number of People</th>
-                </tr>
-
-                <tr>
-                    <td>0001</td>
-                    <td>0001</td>
-                    <td>0001</td>
-                </tr>
-                <tr>
-                    <td>0001</td>
-                    <td>0001</td>
-                    <td>0001</td>
-                </tr>
-                <tr>
-                    <td>0001</td>
-                    <td>0001</td>
-                    <td>0001</td>
-                </tr>
-                <tr>
-                    <td>0001</td>
-                    <td>0001</td>
-                    <td>0001</td>
-                </tr>
-                <tr>
-                    <td>0001</td>
-                    <td>0001</td>
-                    <td>0001</td>
-                </tr>
-            </table>
-        </div>
-        <div class="action-btn">
-            <button href="" class="shw-custo" >Show guest count per event</button>
-            <button href="" class="shw-custo">Show total events booked</button>
-        </div>
+<div id="Booking" class="table-container">
+  <div id="brand-container" class="brand-container">
+    <img src="../../Assets/ESCAPE-AVE-.png" alt="Logo" class="escape">
+  </div>
+    <div class="table-header-top">
+        <h1>Booking Management System <div id="clock"></div></h1>    
     </div>
+    <div class="table-header">
+      <button class="new-member">New member</button>
+      <div class="search-bar">
+        <label for="search">Search:</label>
+        <input type="text" id="search" placeholder="Enter name/date/id">
+        <label for="entries">Show 
+            <select id="entries">
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+            </select> entries
+          </label>
+      </div>
+    </div>
+    <table class="custom-table">
+      <thead>
+        <tr>
+          <th>Booking ID</th>
+          <th>Customer ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Event ID</th>
+          <th>Arrival Date</th>
+          <th>Leaving Date</th>
+          <th>Number of People</th>
+          <th>Contact Number</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>1</td>
+          <td>Troy Wendell</td>
+          <td>t_peralta@gmail.com</td>
+          <td>Wedding</td>
+          <td>11-18-24</td>
+          <td>11-20-24</td>
+          <td>25</td>
+          <td>09266858019</td>
+          <td>
+            <button><i class="fa-regular fa-eye"></i></button>
+            <button><i class="fa-regular fa-pen-to-square"></i></button>
+            <button><i class="fa-regular fa-trash-can"></i></button>
+          </td>
+        </tr>
+
+        <tr>
+            <td>1</td>
+            <td>1</td>
+            <td>Troy Wendell</td>
+            <td>t_peralta@gmail.com</td>
+            <td>Wedding</td>
+            <td>11-18-24</td>
+            <td>11-20-24</td>
+            <td>25</td>
+            <td>09266858019</td>
+            <td>
+                <button><i class="fa-regular fa-eye"></i></button>
+                <button><i class="fa-regular fa-pen-to-square"></i></button>
+                <button><i class="fa-regular fa-trash-can"></i></button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>1</td>
+            <td>1</td>
+            <td>Troy Wendell</td>
+            <td>t_peralta@gmail.com</td>
+            <td>Wedding</td>
+            <td>11-18-24</td>
+            <td>11-20-24</td>
+            <td>25</td>
+            <td>09266858019</td>
+            <td>
+                <button><i class="fa-regular fa-eye"></i></button>
+                <button><i class="fa-regular fa-pen-to-square"></i></button>
+                <button><i class="fa-regular fa-trash-can"></i></button>
+            </td>
+          </tr>
+
+          <tr>
+            <td>1</td>
+            <td>1</td>
+            <td>Troy Wendell</td>
+            <td>t_peralta@gmail.com</td>
+            <td>Wedding</td>
+            <td>11-18-24</td>
+            <td>11-20-24</td>
+            <td>25</td>
+            <td>09266858019</td>
+            <td>
+                <button><i class="fa-regular fa-eye"></i></button>
+                <button><i class="fa-regular fa-pen-to-square"></i></button>
+                <button><i class="fa-regular fa-trash-can"></i></button>
+            </td>
+          </tr>
+          
+      </tbody>
+    </table>
+    <div class="pagination">
+      <p>Showing 1 to 10 of 50 entries</p>
+      <div>
+        <button class="page-btn">Prev</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button> 
+        <button class="page-btn">3</button>
+        <button class="page-btn">4</button>
+        <button class="page-btn">5</button>
+        <button class="page-btn">Next</button>
+      </div>
+    </div>
+  </div>
+
+    <script src="../../ViewModel/sidenavFunc.js"></script>
+    <script src="../../ViewModel/timerdisplay.js"></script>
+    <script src="../../ViewModel/paginationFunc.js"></script>
 </body>
-
 </html>

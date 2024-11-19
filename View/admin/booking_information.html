@@ -12,8 +12,7 @@
     <title>Admin</title>
 </head>
 
-<body>
-    
+<body class="backgrndimg">
     <span class="burger" onclick="openNav()">&#9776;</span>
 <div id="Navigation" class="sidenav">
     <div class="logo-container">
@@ -26,11 +25,12 @@
     <a href="#" onclick="openAction(event, '#'); closeNav();"><i class="fa-regular fa-user"></i> Logout</a>
 </div>
 
-
 <div id="Booking" class="table-container">
+  <div id="brand-container" class="brand-container">
+    <img src="../../Assets/ESCAPE-AVE-.png" alt="Logo" class="escape">
+  </div>
     <div class="table-header-top">
-        <h1>Booking Management System <div id="clock"></div></h1>
-        
+        <h1>Booking Management System <div id="clock"></div></h1>    
     </div>
     <div class="table-header">
       <button class="new-member">New member</button>
@@ -137,7 +137,7 @@
       <div>
         <button class="page-btn">Prev</button>
         <button class="page-btn active">1</button>
-        <button class="page-btn">2</button>
+        <button class="page-btn">2</button> 
         <button class="page-btn">3</button>
         <button class="page-btn">4</button>
         <button class="page-btn">5</button>

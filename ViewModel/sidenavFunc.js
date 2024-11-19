@@ -1,7 +1,7 @@
 function openNav() {
     const nav = document.getElementById("Navigation");
     if (nav) {
-        nav.style.width = "200px";
+        nav.style.width = "250px";
     }
 }
 
