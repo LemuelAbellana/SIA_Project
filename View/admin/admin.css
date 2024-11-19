@@ -199,6 +199,7 @@ body {
 
 .custom-table {
   width: 100%;
+  table-layout: auto;
   border-collapse: collapse;
   margin-bottom: 30px;
 }
@@ -223,6 +224,40 @@ body {
   background-color: #a6cfd5;
 }
 
+/* Custom Table 2 */
+
+.custom-table-2 {
+  width: 50%;
+  table-layout: auto;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+}
+
+.custom-table-2 thead {
+  background-color: #26408b;
+  color: white;
+}
+
+.custom-table-2 th, .custom-table-2 td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid #444;
+  color: #000000;
+}
+
+.custom-table-2 th {
+  color: #ffffff;
+}
+
+.custom-table-2 tbody tr:hover {
+  background-color: #a6cfd5;
+}
+
+
+
+
+
+
 .action-btn {
   background: none;
   border: none;
@@ -235,6 +270,7 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: #26408B;
 }
 
 .page-btn {
