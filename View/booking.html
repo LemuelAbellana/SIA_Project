@@ -4,14 +4,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+    integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" href="style.css">
   <title>Booking</title>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 </head>
 
 <body>
+
   <header class="header">
+
     <div class="navigation-bar">
       <div class="nav-links">
         <a href="./index.html"><img src="../Assets/SIA_LOGO_wobg1.png" alt="Escape Avenue" class="logo"></a>
@@ -21,8 +25,12 @@
         <a href="./booking.html">Book Now</a>
         <a href="./faq.html">FAQ</a>
       </div>
+      <div class="theme-toggle-container">
+        <button class="theme-toggle" aria-label="Toggle Dark Mode">
+          <i class="fas fa-sun"></i>
+        </button>
+      </div>
     </div>
-    
   </header>
 
   <div class="image-header">
@@ -45,33 +53,47 @@
 
       <form id="bookingForm" method="post">
         <div class="form-input-box">
-          <label for="name"><h3>Name:</h3></label>
+          <label for="name">
+            <h3>Name:</h3>
+          </label>
           <input type="text" id="name" name="name" placeholder="Full name" required>
         </div>
         <div class="form-input-box">
-          <label for="email"><h3>Email:</h3></label>
+          <label for="email">
+            <h3>Email:</h3>
+          </label>
           <input type="email" id="email" name="email" placeholder="sample123@gmail.com" required>
         </div>
         <div class="form-input-box">
-          <label for="contact_number"><h3>Contact Number:</h3></label>
+          <label for="contact_number">
+            <h3>Contact Number:</h3>
+          </label>
           <input type="tel" id="contact_number" name="contact_number" placeholder="09512575802" required>
           <span id="contact_error"></span>
         </div>
         <div class="form-input-box">
-          <label for="event_type"><h3>Event Type:</h3></label>
+          <label for="event_type">
+            <h3>Event Type:</h3>
+          </label>
           <input type="text" id="event_type" name="event_type" placeholder="Birthday Party" required>
         </div>
         <div class="form-input-box">
-          <label for="number_of_people"><h3>Number of People:</h3></label>
+          <label for="number_of_people">
+            <h3>Number of People:</h3>
+          </label>
           <input type="number" id="number_of_people" name="number_of_people" placeholder="25" required>
           <span id="people_error"></span>
         </div>
         <div class="form-input-box">
-          <label for="arrival_date"><h3>Arrivals:</h3></label>
+          <label for="arrival_date">
+            <h3>Arrivals:</h3>
+          </label>
           <input type="datetime-local" id="arrival_date" name="arrival_date" required>
         </div>
         <div class="form-input-box">
-          <label for="leaving_date"><h3>Leaving:</h3></label>
+          <label for="leaving_date">
+            <h3>Leaving:</h3>
+          </label>
           <input type="datetime-local" id="leaving_date" name="leaving_date" required>
         </div>
         <div class="form-submit-box">
@@ -102,7 +124,7 @@
       </div>
     </div>
   </footer>
-
+  <script src="../ViewModel/darkMode.js"></script>
   <script src="../ViewModel/datedisable.js"></script>
   <script src="../ViewModel/BookingHandler.js"></script>
   <script src="../Model/clientValidation.js"></script>
