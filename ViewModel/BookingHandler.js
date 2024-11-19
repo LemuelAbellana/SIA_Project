@@ -1,29 +1,37 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const bookingForm = document.getElementById('bookingForm');
-    const checkAvailabilityButton = document.querySelector('.availability-btn');
-    const bookNowButton = document.querySelector('.submit-btn');
-    const API_URL = '../Model/booking.php'; // Centralized URL
+class BookingHandler {
+    constructor(bookingFormId, checkAvailabilityButtonClass, bookNowButtonClass, apiUrl) {
+        this.bookingForm = document.getElementById(bookingFormId);
+        this.checkAvailabilityButton = document.querySelector(checkAvailabilityButtonClass);
+        this.bookNowButton = document.querySelector(bookNowButtonClass);
+        this.API_URL = apiUrl;
+        
+        this.init();
+    }
 
-    // Event: Check Availability
-    checkAvailabilityButton.addEventListener('click', async function (event) {
+    init() {
+        this.checkAvailabilityButton.addEventListener('click', (event) => this.handleCheckAvailability(event));
+        this.bookNowButton.addEventListener('click', (event) => this.handleBookNow(event));
+    }
+
+    async handleCheckAvailability(event) {
         event.preventDefault();
 
         // Validate dates
         const arrivalDate = document.getElementById('arrival_date').value.trim();
         const leavingDate = document.getElementById('leaving_date').value.trim();
 
-        if (!validateDates(arrivalDate, leavingDate)) return;
+        if (!this.validateDates(arrivalDate, leavingDate)) return;
 
         // Disable button to prevent duplicate clicks
-        checkAvailabilityButton.disabled = true;
+        this.checkAvailabilityButton.disabled = true;
 
         try {
             // Prepare form data
-            const formData = new FormData(bookingForm);
+            const formData = new FormData(this.bookingForm);
             formData.append('action', 'check_availability');
 
             // Check availability
-            const data = await sendRequest(formData, API_URL);
+            const data = await this.sendRequest(formData);
             if (data.success) {
                 Swal.fire({
                     icon: 'success',
@@ -34,7 +42,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     cancelButtonText: 'Cancel',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        bookNow(formData); // Use updated bookNow function
+                        this.bookNow(formData); // Use updated bookNow function
                     }
                 });
             } else {
@@ -45,38 +53,37 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         } catch (error) {
-            handleError(error);
+            this.handleError(error);
         } finally {
-            checkAvailabilityButton.disabled = false; // Re-enable button
+            this.checkAvailabilityButton.disabled = false; // Re-enable button
         }
-    });
+    }
 
-    // Event: Book Now
-    bookNowButton.addEventListener('click', async function (event) {
+    async handleBookNow(event) {
         event.preventDefault();
 
         // Validate dates
         const arrivalDate = document.getElementById('arrival_date').value.trim();
         const leavingDate = document.getElementById('leaving_date').value.trim();
 
-        if (!validateDates(arrivalDate, leavingDate)) return;
+        if (!this.validateDates(arrivalDate, leavingDate)) return;
 
         // Disable button to prevent duplicate clicks
-        bookNowButton.disabled = true;
+        this.bookNowButton.disabled = true;
 
         try {
-            const formData = new FormData(bookingForm);
+            const formData = new FormData(this.bookingForm);
             formData.append('action', 'book_now');
-            await bookNow(formData); // Use updated bookNow function
+            await this.bookNow(formData); // Use updated bookNow function
         } catch (error) {
-            handleError(error);
+            this.handleError(error);
         } finally {
-            bookNowButton.disabled = false; // Re-enable button
+            this.bookNowButton.disabled = false; // Re-enable button
         }
-    });
+    }
 
     // Function: Validate Dates
-    function validateDates(arrivalDate, leavingDate) {
+    validateDates(arrivalDate, leavingDate) {
         if (!arrivalDate || !leavingDate) {
             Swal.fire({
                 icon: 'error',
@@ -85,7 +92,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             return false;
         }
-    
+
         const arrival = new Date(arrivalDate);
         const leaving = new Date(leavingDate);
         if (leaving <= arrival) {
@@ -96,14 +103,14 @@ document.addEventListener('DOMContentLoaded', function () {
             });
             return false;
         }
-    
+
         return true;
-    }    
+    }
 
     // Function: Send Request
-    async function sendRequest(formData, url) {
+    async sendRequest(formData) {
         try {
-            const response = await fetch(url, {
+            const response = await fetch(this.API_URL, {
                 method: 'POST',
                 body: formData,
             });
@@ -120,7 +127,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Function: Handle Errors
-    function handleError(error) {
+    handleError(error) {
         console.error('Error:', error);
         Swal.fire({
             icon: 'error',
@@ -130,10 +137,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // Function: Book Now
-    async function bookNow(formData) {
+    async bookNow(formData) {
         try {
-            formData.set('action','book_now');
-            const data = await sendRequest(formData, API_URL);
+            formData.set('action', 'book_now');
+            const data = await this.sendRequest(formData);
             if (data.success) {
                 Swal.fire({
                     icon: 'success',
@@ -151,7 +158,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
         } catch (error) {
-            handleError(error);
+            this.handleError(error);
         }
     }
+}
+
+// Instantiate the BookingHandler class
+document.addEventListener('DOMContentLoaded', function () {
+    new BookingHandler('bookingForm', '.availability-btn', '.submit-btn', '../Model/booking.php');
 });

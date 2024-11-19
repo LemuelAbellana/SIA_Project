@@ -1,44 +1,44 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const bookingForm = document.getElementById('bookingForm');
-    const checkAvailabilityButton = document.getElementById('checkAvailabilityBtn');
-    const bookNowButton = document.getElementById('bookNowBtn');
-    const contactNumberField = document.getElementById('contact_number');
-    const numberOfPeopleField = document.getElementById('number_of_people');
-    const errorMessages = document.getElementById('errorMessages'); // The div for error messages
+class ClientValidation {
+    constructor(formId, checkAvailabilityBtnId, bookNowBtnId, errorMessagesId, apiUrl) {
+        this.bookingForm = document.getElementById(formId);
+        this.checkAvailabilityButton = document.getElementById(checkAvailabilityBtnId);
+        this.bookNowButton = document.getElementById(bookNowBtnId);
+        this.errorMessages = document.getElementById(errorMessagesId) || this.createErrorDiv();
+        this.apiUrl = apiUrl;
 
-    // Create a div for displaying error messages if it doesn't exist
-    if (!errorMessages) {
-        const newErrorDiv = document.createElement('div');
-        newErrorDiv.id = 'errorMessages';
-        document.body.insertBefore(newErrorDiv, bookingForm);
+        this.init();
     }
 
-    // Event listener for Check Availability button
-    checkAvailabilityButton.addEventListener('click', async function (event) {
+    init() {
+        this.checkAvailabilityButton.addEventListener('click', (event) => this.handleCheckAvailability(event));
+        this.bookNowButton.addEventListener('click', (event) => this.handleBookNow(event));
+    }
+
+    // Handle Check Availability click
+    async handleCheckAvailability(event) {
         event.preventDefault();
 
-        // Validate contact number and number of people
-        if (!validateContactNumber(contactNumberField.value) || !validateNumberOfPeople(numberOfPeopleField.value)) {
-            showError("Contact number must be 11 digits and number of people must be between 1 and 1000.");
+        const contactNumberField = document.getElementById('contact_number');
+        const numberOfPeopleField = document.getElementById('number_of_people');
+        
+        if (!this.validateContactNumber(contactNumberField.value) || !this.validateNumberOfPeople(numberOfPeopleField.value)) {
+            this.showError("Contact number must be 11 digits and number of people must be between 1 and 1000.");
             return;
         }
 
-        // Validate dates
         const arrivalDate = document.getElementById('arrival_date').value.trim();
         const leavingDate = document.getElementById('leaving_date').value.trim();
 
-        if (!validateDates(arrivalDate, leavingDate)) return;
+        if (!this.validateDates(arrivalDate, leavingDate)) return;
 
         // Disable button to prevent duplicate clicks
-        checkAvailabilityButton.disabled = true;
+        this.checkAvailabilityButton.disabled = true;
+
+        const formData = new FormData(this.bookingForm);
+        formData.append('action', 'check_availability');
 
         try {
-            // Prepare form data
-            const formData = new FormData(bookingForm);
-            formData.append('action', 'check_availability');
-
-            // Check availability (API request)
-            const data = await sendRequest(formData, API_URL);
+            const data = await this.sendRequest(formData);
             if (data.success) {
                 Swal.fire({
                     icon: 'success',
@@ -49,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     cancelButtonText: 'Cancel',
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        bookNow(formData); // Proceed to booking
+                        this.bookNow(formData); // Proceed to booking
                     }
                 });
             } else {
@@ -60,70 +60,84 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         } catch (error) {
-            handleError(error);
+            this.handleError(error);
         } finally {
-            checkAvailabilityButton.disabled = false;
+            this.checkAvailabilityButton.disabled = false;
         }
-    });
+    }
 
-    // Event listener for Book Now button
-    bookNowButton.addEventListener('click', async function (event) {
+    // Handle Book Now click
+    async handleBookNow(event) {
         event.preventDefault();
 
-        // Validate contact number and number of people
-        if (!validateContactNumber(contactNumberField.value) || !validateNumberOfPeople(numberOfPeopleField.value)) {
-            showError("Contact number must be 11 digits and number of people must be between 1 and 1000.");
+        const contactNumberField = document.getElementById('contact_number');
+        const numberOfPeopleField = document.getElementById('number_of_people');
+        
+        if (!this.validateContactNumber(contactNumberField.value) || !this.validateNumberOfPeople(numberOfPeopleField.value)) {
+            this.showError("Contact number must be 11 digits and number of people must be between 1 and 1000.");
             return;
         }
 
-        // Validate dates
         const arrivalDate = document.getElementById('arrival_date').value.trim();
         const leavingDate = document.getElementById('leaving_date').value.trim();
 
-        if (!validateDates(arrivalDate, leavingDate)) return;
+        if (!this.validateDates(arrivalDate, leavingDate)) return;
 
         // Disable button to prevent duplicate clicks
-        bookNowButton.disabled = true;
+        this.bookNowButton.disabled = true;
+
+        const formData = new FormData(this.bookingForm);
+        formData.append('action', 'book_now');
 
         try {
-            // Prepare form data
-            const formData = new FormData(bookingForm);
-            formData.append('action', 'book_now');
-
-            // Send the booking request
-            const data = await sendRequest(formData, API_URL);
+            const data = await this.sendRequest(formData);
             if (data.success) {
                 Swal.fire('Success', data.message, 'success').then(() => {
-                    window.location.href = data.redirect; // Redirect to receipt page
+                    window.location.href = data.redirect;
                 });
             } else {
                 Swal.fire('Error', data.message, 'error');
             }
         } catch (error) {
-            handleError(error);
+            this.handleError(error);
         } finally {
-            bookNowButton.disabled = false;
+            this.bookNowButton.disabled = false;
         }
-    });
-
-    // Helper function to validate the contact number
-    function validateContactNumber(contactNumber) {
-        return /^\d{11}$/.test(contactNumber); // Must be exactly 11 digits
     }
 
-    // Helper function to validate the number of people
-    function validateNumberOfPeople(numberOfPeople) {
+    // Send request using fetch
+    async sendRequest(formData) {
+        try {
+            const response = await fetch(this.apiUrl, {
+                method: 'POST',
+                body: formData,
+            });
+
+            const data = await response.json();
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || 'An error occurred');
+            }
+
+            return data;
+        } catch (error) {
+            throw new Error(error.message || 'An error occurred');
+        }
+    }
+
+    validateContactNumber(contactNumber) {
+        return /^\d{11}$/.test(contactNumber);
+    }
+
+    validateNumberOfPeople(numberOfPeople) {
         const num = parseInt(numberOfPeople, 10);
-        return num >= 1 && num <= 1000; // Must be between 1 and 1000
+        return num >= 1 && num <= 1000;
     }
 
-    // Function to show error message
-    function showError(message) {
-        errorMessages.innerHTML = `<p style="color: red">${message}</p>`;
+    showError(message) {
+        this.errorMessages.innerHTML = `<p style="color: red">${message}</p>`;
     }
 
-    // Function to validate dates
-    function validateDates(arrivalDate, leavingDate) {
+    validateDates(arrivalDate, leavingDate) {
         const isoDateFormat = /^\d{4}-\d{2}-\d{2}(T\d{2}:\d{2})?$/;
 
         if (!arrivalDate || !leavingDate) {
@@ -141,26 +155,23 @@ document.addEventListener('DOMContentLoaded', () => {
             return false;
         }
 
-        return true; // Validation passed
+        return true;
     }
 
-    // Dummy function to simulate the API request
-    async function sendRequest(formData, apiUrl) {
-        // Simulate sending data to the server and getting a response
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve({
-                    success: true,
-                    message: "Dates are available!",
-                    redirect: "receipt.php"
-                });
-            }, 1000);
-        });
-    }
-
-    // Function to handle errors (generic)
-    function handleError(error) {
-        Swal.fire('Error', 'There was a problem processing your request.', 'error');
+    handleError(error) {
+        Swal.fire('Error', error.message, 'error');
         console.error(error);
     }
+
+    createErrorDiv() {
+        const newErrorDiv = document.createElement('div');
+        newErrorDiv.id = 'errorMessages';
+        document.body.insertBefore(newErrorDiv, this.bookingForm);
+        return newErrorDiv;
+    }
+}
+
+// Instantiate the class when the document is ready
+document.addEventListener('DOMContentLoaded', () => {
+    new ClientValidation('bookingForm', 'checkAvailabilityBtn', 'bookNowBtn', 'errorMessages', 'Booking.php');
 });
