@@ -12,7 +12,7 @@ class CancelBooking
     public function __construct()
     {
         $this->database = new Database();
-        $this->bookingDb = new BookingDatabase($this->database);
+        $this->bookingDb = new BookingDatabase($this->database->getConnection());
     }
 
     /**
