@@ -280,8 +280,19 @@ public function getBookingDetails($bookingId) {
             $countStmt->execute();
             $total = $countStmt->get_result()->fetch_assoc()['total'];
         
-            return ['bookings' => $bookings, 'totalEntries' => $total];
+            // Calculate startIndex and endIndex
+            $startIndex = $offset + 1;
+            $endIndex = min($offset + $limit, $total);
+        
+            // Return bookings, total count, startIndex, and endIndex
+            return [
+                'bookings' => $bookings,
+                'totalEntries' => $total,
+                'startIndex' => $startIndex,
+                'endIndex' => $endIndex
+            ];
         }
+        
         
         
         public function getDetailsById($id) {

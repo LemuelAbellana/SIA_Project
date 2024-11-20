@@ -3,7 +3,7 @@ class PaginationFunc {
         this.apiUrl = apiUrl; // Base URL for API
         this.currentPage = 1;
         this.searchTerm = "";
-        this.entries = document.getElementById("entries").value;
+        this.entries = parseInt(document.getElementById("entries").value);
 
         // Initialize event listeners
         this.initEventListeners();
@@ -24,7 +24,7 @@ class PaginationFunc {
             })
             .then(data => {
                 this.populateTable(data.bookings);
-                this.updatePagination(data.totalEntries, this.entries);
+                this.updatePagination(data.totalEntries, this.entries, data.startIndex, data.endIndex);
             })
             .catch(error => {
                 console.error("Error fetching data:", error);
@@ -62,8 +62,9 @@ class PaginationFunc {
         });
     }
 
-    updatePagination(totalEntries, entriesPerPage) {
+    updatePagination(totalEntries, entriesPerPage, startIndex, endIndex) {
         const paginationContainer = document.querySelector(".pagination div");
+        const paginationInfo = document.querySelector(".pagination p");
         paginationContainer.innerHTML = ""; // Clear existing pagination
 
         const totalPages = Math.ceil(totalEntries / entriesPerPage);
@@ -72,6 +73,23 @@ class PaginationFunc {
             return;
         }
 
+        // Update "Showing X to Y of Z entries"
+        paginationInfo.textContent = `Showing ${startIndex} to ${endIndex} of ${totalEntries} entries`;
+
+        // Prev button
+        const prevButton = document.createElement("button");
+        prevButton.textContent = "Prev";
+        prevButton.classList.add("page-btn");
+        prevButton.disabled = this.currentPage === 1;
+        prevButton.onclick = () => {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+                this.fetchData();
+            }
+        };
+        paginationContainer.appendChild(prevButton);
+
+        // Page buttons
         for (let i = 1; i <= totalPages; i++) {
             const button = document.createElement("button");
             button.textContent = i;
@@ -85,16 +103,31 @@ class PaginationFunc {
 
             paginationContainer.appendChild(button);
         }
+
+        // Next button
+        const nextButton = document.createElement("button");
+        nextButton.textContent = "Next";
+        nextButton.classList.add("page-btn");
+        nextButton.disabled = this.currentPage === totalPages;
+        nextButton.onclick = () => {
+            if (this.currentPage < totalPages) {
+                this.currentPage++;
+                this.fetchData();
+            }
+        };
+        paginationContainer.appendChild(nextButton);
     }
 
     initEventListeners() {
         document.getElementById("search").addEventListener("input", e => {
             this.searchTerm = e.target.value;
+            this.currentPage = 1; // Reset to the first page
             this.fetchData();
         });
 
         document.getElementById("entries").addEventListener("change", () => {
-            this.entries = document.getElementById("entries").value;
+            this.entries = parseInt(document.getElementById("entries").value);
+            this.currentPage = 1; // Reset to the first page
             this.fetchData();
         });
     }
