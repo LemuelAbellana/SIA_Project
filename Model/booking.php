@@ -10,8 +10,7 @@ ini_set('display_errors', 1);
 // Send a JSON response header
 header('Content-Type: application/json');
 
-class Booking
-{
+class Booking{
     private $database;
     private $bookingDb;
 
