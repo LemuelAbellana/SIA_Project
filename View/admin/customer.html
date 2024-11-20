@@ -47,7 +47,7 @@
           </label>
       </div>
     </div>
-    <table class="custom-table">
+    <table class="custom-table" id="event-summary-table">
       <thead>
         <tr>
           <th>Event Type</th>
@@ -78,21 +78,21 @@
       </tbody>
     </table>
     <div class="pagination">
-      <p>Showing 1 to 10 of 50 entries</p>
+      <p>Showing <span id="pagination-info">1 to 10 of 50 entries</span></p>
       <div>
-        <button class="page-btn">Prev</button>
-        <button class="page-btn active">1</button>
-        <button class="page-btn">2</button> 
-        <button class="page-btn">3</button>
-        <button class="page-btn">4</button>
-        <button class="page-btn">5</button>
-        <button class="page-btn">Next</button>
+          <button class="page-btn" id="prev-button">Prev</button>
+          <button class="page-btn active" id="page-1">1</button>
+          <button class="page-btn" id="page-2">2</button>
+          <button class="page-btn" id="page-3">3</button>
+          <button class="page-btn" id="page-4">4</button>
+          <button class="page-btn" id="page-5">5</button>
+          <button class="page-btn" id="next-button">Next</button>
       </div>
-    </div>
   </div>
+  
 
     <script src="../../ViewModel/sidenavFunc.js"></script>
     <script src="../../ViewModel/timerdisplay.js"></script>
-    <script src="../../ViewModel/paginationFunc.js"></script>
+    <script src="../../ViewModel/PaginationFunction2.js"></script>
 </body>
 </html>
