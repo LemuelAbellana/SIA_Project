@@ -262,7 +262,7 @@ button {
 }
 
 /* Popup Form Styles */
-.popup-form {
+.popup-form, .view-form, .edit-form {
   position: fixed;
   top: 0;
   left: 0;
@@ -317,12 +317,45 @@ button {
   gap: 10px;
 }
 
+.edit-group {
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center; 
+  gap: 10px;
+}
 
 .form-group label { 
   flex: 0.7;
   color: #26408B;
   font-weight: bold;
   font-size: 14px;
+  white-space: nowrap;
+}
+
+.edit-group label {
+  flex: 0.7;
+  color: #26408B;
+  font-weight: bold;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.edit-group input {
+  flex: 2; 
+  padding: 12px;
+  border: 1px solid #555;
+  border-radius: 6px;
+  background-color: #ffffff;
+  color: #01162C;
+  font-size: 14px;
+}
+
+.view-group label {
+  flex: 0.6;
+  color: #26408B;
+  font-weight: bolder;
+  font-size: 18px;
+  line-height: 2.5rem;
   white-space: nowrap;
 }
 
@@ -375,6 +408,10 @@ button {
     opacity: 1;
   }
 }
+
+
+
+
 
 
 
