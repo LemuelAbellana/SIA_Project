@@ -276,7 +276,7 @@ button {
 }
 
 .popup-content {
-  background-color: #ddf2ff;
+  background-color: #fff;
   padding: 20px;
   border-radius: 12px;
   width: 90%;
@@ -314,7 +314,7 @@ button {
   margin-bottom: 20px;
   display: flex;
   align-items: center; 
-  gap: 10px; 
+  gap: 10px;
 }
 
 
@@ -340,7 +340,6 @@ button {
   border-color: #26408B;
   outline: none;
 }
-
 
 .frmbutton-group {
   display: flex; 
