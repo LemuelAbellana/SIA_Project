@@ -54,14 +54,24 @@ class BookingAPI {
         $limit = isset($_GET['entries']) ? (int)$_GET['entries'] : 10;
         $offset = ($page - 1) * $limit;
         $search = $_GET['search'] ?? "";
-
+    
+        // Fetch data and total entry count from the database
         $data = $this->bookingDb->getAll($limit, $offset, $search);
-
+    
+        // Calculate start and end indices
+        $totalEntries = $data['totalEntries'];
+        $startIndex = $offset + 1;
+        $endIndex = min($offset + $limit, $totalEntries);
+    
+        // Send the response
         $this->sendSuccessResponse([
             "bookings" => $data['bookings'],
-            "totalEntries" => $data['totalEntries']
+            "totalEntries" => $totalEntries,
+            "startIndex" => $startIndex,
+            "endIndex" => $endIndex
         ]);
     }
+    
 
     private function handlePost() {
         $data = json_decode(file_get_contents("php://input"), true);

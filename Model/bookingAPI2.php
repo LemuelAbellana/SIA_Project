@@ -1,82 +1,86 @@
 <?php
+
 require_once "../Database/database.php";
-require_once "../Database/bookingdatabase2.php";  // Correctly include the new file
+require_once "../Database/bookingdatabase2.php";
 
-$method = $_SERVER['REQUEST_METHOD'];
+// Main Controller Class for Booking API
+class BookingAPI2 {
+    private $db;
+    private $bookingDb;
+    private $method;
 
-try {
-    // Initialize the Database and BookingDatabase2
-    $db = new Database();
-    $conn = $db->getConnection();
-    $bookingDb = new BookingDatabase2($conn);  // Instantiate BookingDatabase2
-} catch (Exception $e) {
-    error_log("Database initialization error: " . $e->getMessage());
-    http_response_code(500);
-    echo json_encode(["error" => "Database connection failed."]);
-    exit;
-}
+    public function __construct() {
+        $this->initializeDatabase();
+        $this->method = $_SERVER['REQUEST_METHOD'];
+        header("Content-Type: application/json");
+    }
 
-header("Content-Type: application/json");
+    // Initialize the database connection and BookingDatabase
+    private function initializeDatabase() {
+        try {
+            $this->db = new Database();
+            $conn = $this->db->getConnection();
+            $this->bookingDb = new BookingDatabase2($conn);
+        } catch (Exception $e) {
+            $this->handleError("Database initialization error", $e, 500);
+        }
+    }
 
-try {
-    if ($method === 'POST') {
+    // Process the incoming API request
+    public function processRequest() {
+        try {
+            if ($this->method === 'POST') {
+                $this->handlePostRequest();
+            } else {
+                $this->sendResponse(["error" => "Method not allowed."], 405);
+            }
+        } catch (Exception $e) {
+            $this->handleError("Error processing request", $e, 500);
+        }
+    }
+
+    // Handle POST requests
+    private function handlePostRequest() {
         $data = json_decode(file_get_contents("php://input"), true);
 
         if (isset($data['action']) && $data['action'] === 'get_event_summary') {
-            // Fetch event guest summary with pagination
-            $limit = isset($data['limit']) ? $data['limit'] : 10;  // Default to 10 entries per page
-            $offset = isset($data['offset']) ? $data['offset'] : 0;  // Default to the first page
-            
-            // Fetch event summary and total count
-            $summary = $bookingDb->getEventGuestSummary($limit, $offset);
-            echo json_encode(["success" => true, "data" => $summary['data'], "totalCount" => $summary['totalCount']]);
+            $this->handleGetEventSummary($data);
         } else {
-            echo json_encode(["success" => false, "message" => "Invalid action"]);
+            $this->sendResponse(["success" => false, "message" => "Invalid action"], 400);
         }
-    } else {
-        http_response_code(405);
-        echo json_encode(["error" => "Method not allowed."]);
-    }
-} catch (Exception $e) {
-    error_log("Error in bookingAPI: " . $e->getMessage());
-    http_response_code(500);
-    echo json_encode(["error" => $e->getMessage()]);
-}
-
-// Ensure getEventGuestSummary is inside the BookingDatabase class
-class BookingDatabase {
-    private $db;
-
-    // Constructor to initialize the database connection
-    public function __construct($db) {
-        $this->db = $db;
     }
 
-    // Public method to fetch event guest summary with pagination
-    public function getEventGuestSummary($limit = 10, $offset = 0) {
-        $query = "SELECT e.event_type AS EventName, SUM(n.number_of_people) AS NumberOfGuests
-                  FROM booking_information b
-                  JOIN event e ON e.event_id = b.event_id
-                  JOIN number_of_people n ON b.booking_id = n.booking_id
-                  GROUP BY e.event_type
-                  ORDER BY e.event_type DESC
-                  LIMIT ? OFFSET ?";
+    // Fetch event guest summary with pagination
+    private function handleGetEventSummary($data) {
+        $limit = isset($data['limit']) ? (int)$data['limit'] : 10;
+        $offset = isset($data['offset']) ? (int)$data['offset'] : 0;
 
-        $stmt = $this->db->prepare($query);
-        if (!$stmt) {
-            throw new Exception("Error preparing event summary query: " . $this->db->error);
-        }
+        $summary = $this->bookingDb->getEventGuestSummary($limit, $offset);
 
-        $stmt->bind_param("ii", $limit, $offset);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $response = [
+            "success" => true,
+            "data" => $summary['data'],
+            "totalCount" => $summary['totalCount']
+        ];
+        $this->sendResponse($response);
+    }
 
-        if ($result === false) {
-            throw new Exception("Error executing event summary query: " . $this->db->error);
-        }
+    // Send a JSON response with the given data and HTTP status code
+    private function sendResponse($data, $statusCode = 200) {
+        http_response_code($statusCode);
+        echo json_encode($data);
+        exit;
+    }
 
-        return $result->fetch_all(MYSQLI_ASSOC);
+    // Handle errors by logging them and sending an error response
+    private function handleError($message, Exception $e, $statusCode = 500) {
+        error_log("$message: " . $e->getMessage());
+        $this->sendResponse(["error" => $e->getMessage()], $statusCode);
     }
 }
+
+// Instantiate and process the API request
+$bookingAPI = new BookingAPI2();
+$bookingAPI->processRequest();
+
 ?>
-    
