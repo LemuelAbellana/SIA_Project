@@ -13,10 +13,5 @@ document.addEventListener("DOMContentLoaded", () => {
     popupForm.style.display = "none";
   });
 
-  // Close popup when clicking outside the content
-  popupForm.addEventListener("click", (e) => {
-    if (e.target === popupForm) {
-      popupForm.style.display = "none";
-    }
-  });
+
 });
