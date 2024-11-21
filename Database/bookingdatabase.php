@@ -286,6 +286,7 @@ public function deleteBooking($bookingId) {
             $stmt->bind_param("i", $id);
             return $stmt->execute();
         }
+        
     // Get last inserted booking ID
     public function getLastBookingId() {
         return $this->db->insert_id;

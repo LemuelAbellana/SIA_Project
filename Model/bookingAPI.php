@@ -50,26 +50,42 @@ class BookingAPI {
     }
 
     private function handleGet() {
+        if (isset($_GET['id'])) {
+            $this->handleGetById();
+        } else {
+            $this->handleGetAll();
+        }
+    }
+
+    private function handleGetAll() {
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
         $limit = isset($_GET['entries']) ? (int)$_GET['entries'] : 10;
         $offset = ($page - 1) * $limit;
         $search = $_GET['search'] ?? "";
-    
-        // Fetch data and total entry count from the database
+
         $data = $this->bookingDb->getAll($limit, $offset, $search);
-    
-        // Calculate start and end indices
+
         $totalEntries = $data['totalEntries'];
         $startIndex = $offset + 1;
         $endIndex = min($offset + $limit, $totalEntries);
-    
-        // Send the response
+
         $this->sendSuccessResponse([
             "bookings" => $data['bookings'],
             "totalEntries" => $totalEntries,
             "startIndex" => $startIndex,
             "endIndex" => $endIndex
         ]);
+    }
+
+    private function handleGetById() {
+        $bookingId = (int)$_GET['id'];  // Get the booking ID from the request
+        $booking = $this->bookingDb->getDetailsById($bookingId);  // Call the existing method to fetch booking data by ID
+    
+        if ($booking) {
+            $this->sendSuccessResponse($booking);  // Send the response if booking is found
+        } else {
+            $this->sendErrorResponse("Booking not found.", 404);  // Error response if booking is not found
+        }
     }
     
 
