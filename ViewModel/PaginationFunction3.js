@@ -43,27 +43,56 @@ class PaginationFunction3 {
     }
 
     updatePagination(totalCount, limit, offset) {
-        const paginationInfo = document.querySelector(`${this.paginationSelector} p`);
-        const paginationButtons = document.querySelector(`${this.paginationSelector} div`);
-        const currentPage = Math.floor(offset / limit) + 1;
         const totalPages = Math.ceil(totalCount / limit);
-
-        paginationInfo.textContent = `Showing ${offset + 1} to ${Math.min(offset + limit, totalCount)} of ${totalCount} entries`;
-
-        paginationButtons.innerHTML = `
-            <button ${currentPage === 1 ? "disabled" : ""} onclick="paginationFunction3.changePage(${limit}, ${(currentPage - 2) * limit})">Prev</button>
-        `;
-
+        const paginationContainer = document.querySelector(`${this.paginationSelector} div`);
+        const startIndex = offset + 1;
+        const endIndex = Math.min(offset + limit, totalCount);
+        const currentPage = Math.floor(offset / limit) + 1;
+    
+        paginationContainer.innerHTML = ''; // Clear existing buttons
+    
+        // Helper function to create buttons
+        const createButton = (text, disabled, onClick) => {
+            const button = document.createElement('button');
+            button.classList.add('page-btn');
+            button.textContent = text;
+            button.disabled = disabled;
+            button.addEventListener('click', onClick);
+            return button;
+        };
+    
+        // Previous button
+        const prevButton = createButton('Prev', currentPage === 1, () => {
+            this.changePage(limit, (currentPage - 2) * limit);
+        });
+        paginationContainer.appendChild(prevButton);
+    
+        // Page number buttons
         for (let i = 1; i <= totalPages; i++) {
-            paginationButtons.innerHTML += `
-                <button ${i === currentPage ? "class='active'" : ""} onclick="paginationFunction3.changePage(${limit}, ${(i - 1) * limit})">${i}</button>
-            `;
+            const pageButton = createButton(
+                i,
+                false,
+                () => {
+                    this.changePage(limit, (i - 1) * limit);
+                }
+            );
+            if (i === currentPage) {
+                pageButton.classList.add('active');
+            }
+            paginationContainer.appendChild(pageButton);
         }
-
-        paginationButtons.innerHTML += `
-            <button ${currentPage === totalPages ? "disabled" : ""} onclick="paginationFunction3.changePage(${limit}, ${currentPage * limit})">Next</button>
-        `;
+    
+        // Next button
+        const nextButton = createButton('Next', currentPage === totalPages, () => {
+            this.changePage(limit, currentPage * limit);
+        });
+        paginationContainer.appendChild(nextButton);
+    
+        // Display the "Showing X to Y of Z entries" text
+        const paginationInfo = document.querySelector(`${this.paginationSelector} p`);
+        paginationInfo.textContent = `Showing ${startIndex} to ${endIndex} of ${totalCount} entries`;
     }
+    
 
     changePage(limit, offset) {
         this.limit = limit;

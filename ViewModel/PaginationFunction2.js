@@ -59,7 +59,7 @@ class PaginationFunction2 {
         const totalPages = Math.ceil(totalCount / this.entriesPerPage);
         const paginationContainer = document.querySelector(this.paginationSelector);
         paginationContainer.innerHTML = ''; // Clear existing buttons
-
+    
         const createButton = (text, disabled, onClick) => {
             const button = document.createElement('button');
             button.classList.add('page-btn');
@@ -68,14 +68,14 @@ class PaginationFunction2 {
             button.addEventListener('click', onClick);
             return button;
         };
-
+    
         // Previous button
         const prevButton = createButton('Prev', this.currentPage === 1, () => {
             this.currentPage--;
             this.fetchEventSummary();
         });
         paginationContainer.appendChild(prevButton);
-
+    
         // Page number buttons
         for (let i = 1; i <= totalPages; i++) {
             const pageButton = createButton(
@@ -91,19 +91,17 @@ class PaginationFunction2 {
             }
             paginationContainer.appendChild(pageButton);
         }
-
+    
         // Next button
         const nextButton = createButton('Next', this.currentPage === totalPages, () => {
             this.currentPage++;
             this.fetchEventSummary();
         });
         paginationContainer.appendChild(nextButton);
-
-        // Display real-time entry count
-        const entryStatus = document.createElement('div');
-        entryStatus.classList.add('entry-status');
-        entryStatus.textContent = `Showing ${startIndex} to ${endIndex} of ${totalCount} entries`;
-        paginationContainer.appendChild(entryStatus);
+    
+        // Ensure the "Showing X to Y of Z entries" text is at the right place
+        const paginationInfo = document.querySelector("#pagination-info");
+        paginationInfo.textContent = `Showing ${startIndex} to ${endIndex} of ${totalCount} entries`;
     }
 }
 
