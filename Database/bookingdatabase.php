@@ -70,35 +70,6 @@ public function deleteBooking($bookingId) {
         return false; // Return false if there was an error
     }
 }
-public function getBookingDetails($bookingId) {
-    try {
-        $query = "SELECT b.booking_id, c.name, c.email, c.contact_number, e.event_type, b.arrival_date, b.leaving_date, np.number_of_people
-                  FROM booking_information b
-                  JOIN customer c ON b.customer_id = c.customer_id
-                  JOIN event e ON b.event_id = e.event_id
-                  JOIN number_of_people np ON b.booking_id = np.booking_id
-                  WHERE b.booking_id = ?";
-        $stmt = $this->db->prepare($query);
-        
-        if ($stmt === false) {
-            throw new Exception("Prepare failed in getBookingDetails: " . $this->db->error);
-        }
-
-        $stmt->bind_param("i", $bookingId);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result === false) {
-            throw new Exception("Execute failed in getBookingDetails: " . $this->db->error);
-        }
-
-        // If booking found, return the result as an associative array
-        return $result->num_rows > 0 ? $result->fetch_assoc() : null;
-    } catch (Exception $e) {
-        error_log("Error in getBookingDetails: " . $e->getMessage());
-        throw $e;
-    }
-}
 
     // Get customer ID by contact number
     private function getCustomerIdByContactNumber($contactNumber) {
@@ -292,9 +263,6 @@ public function getBookingDetails($bookingId) {
                 'endIndex' => $endIndex
             ];
         }
-        
-        
-        
         public function getDetailsById($id) {
             $query = "SELECT * FROM booking_information WHERE booking_id = ?";
             $stmt = $this->db->prepare($query);

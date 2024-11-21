@@ -49,7 +49,7 @@ class CancelBooking
     public function cancelBooking($bookingId)
     {
         // Retrieve booking details
-        $bookingDetails = $this->bookingDb->getBookingDetails($bookingId);
+        $bookingDetails = $this->bookingDb->getDetailsById($bookingId);
 
         // Check if booking exists
         if (!$bookingDetails) {

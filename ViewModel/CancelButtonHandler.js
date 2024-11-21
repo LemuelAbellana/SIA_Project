@@ -14,17 +14,48 @@ class CancelButtonHandler {
         if (!cancelButton) return;
 
         const bookingId = cancelButton.getAttribute("data-booking-id");
-        const arrivalDate = cancelButton.getAttribute("data-arrival-date");
 
-        const cancelHandler = new ConfirmCancel(bookingId, arrivalDate);
-        cancelButton.addEventListener("click", () => cancelHandler.confirmCancellation());
+        cancelButton.addEventListener("click", () => {
+            this.fetchBookingDetails(bookingId)
+                .then((details) => {
+                    const cancelHandler = new ConfirmCancel(details);
+                    cancelHandler.confirmCancellation();
+                })
+                .catch((error) => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Failed to retrieve booking details. Please try again later.",
+                    });
+                    console.error(error);
+                });
+        });
+    }
+
+    async fetchBookingDetails(bookingId) {
+        const formData = new FormData();
+        formData.append("action", "get_details");
+        formData.append("booking_id", bookingId);
+
+        const response = await fetch("../Model/cancelBooking.php", {
+            method: "POST",
+            body: formData,
+        });
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error(data.message);
+        }
+
+        return data.details;
     }
 }
 
 class ConfirmCancel {
-    constructor(bookingId, arrivalDateStr) {
-        this.bookingId = bookingId;
-        this.arrivalDate = new Date(arrivalDateStr);
+    constructor(details) {
+        this.bookingId = details.booking_id;
+        this.arrivalDate = new Date(details.arrival_date);
         this.currentDate = new Date();
     }
 
@@ -68,6 +99,7 @@ class ConfirmCancel {
 
     performCancellation() {
         const formData = new FormData();
+        formData.append("action", "cancel_booking");
         formData.append("booking_id", this.bookingId);
 
         fetch("../Model/cancelBooking.php", { method: "POST", body: formData })
@@ -79,7 +111,7 @@ class ConfirmCancel {
                     text: data.message,
                 }).then(() => {
                     if (data.success) {
-                        location.href = "booking.html"; 
+                        location.href = "booking.html";
                     }
                 });
             })
@@ -89,6 +121,7 @@ class ConfirmCancel {
                     title: "Something went wrong",
                     text: "Please try again later.",
                 });
+                console.error(error);
             });
     }
 }

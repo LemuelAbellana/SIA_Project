@@ -57,10 +57,16 @@ class BookingAPI2 {
 
         $summary = $this->bookingDb->getEventGuestSummary($limit, $offset);
 
+        // Get startIndex and endIndex based on offset and limit
+        $startIndex = $offset + 1;
+        $endIndex = min($offset + $limit, $summary['totalCount']);
+
         $response = [
             "success" => true,
             "data" => $summary['data'],
-            "totalCount" => $summary['totalCount']
+            "totalCount" => $summary['totalCount'],
+            "startIndex" => $startIndex,
+            "endIndex" => $endIndex
         ];
         $this->sendResponse($response);
     }

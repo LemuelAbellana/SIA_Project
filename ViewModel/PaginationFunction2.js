@@ -6,6 +6,7 @@ class PaginationFunction2 {
 
         this.currentPage = 1;
         this.entriesPerPage = 10;
+        this.totalEntries = 0;  // Track total entries for real-time updates
 
         document.addEventListener('DOMContentLoaded', () => {
             this.fetchEventSummary();
@@ -28,7 +29,7 @@ class PaginationFunction2 {
 
             if (data.success) {
                 this.populateEventSummaryTable(data.data);
-                this.setupPagination(data.totalCount);
+                this.setupPagination(data.totalCount, data.startIndex, data.endIndex);
             } else {
                 alert(data.message || 'Error fetching event summary.');
             }
@@ -54,7 +55,7 @@ class PaginationFunction2 {
         }
     }
 
-    setupPagination(totalCount) {
+    setupPagination(totalCount, startIndex, endIndex) {
         const totalPages = Math.ceil(totalCount / this.entriesPerPage);
         const paginationContainer = document.querySelector(this.paginationSelector);
         paginationContainer.innerHTML = ''; // Clear existing buttons
@@ -97,6 +98,12 @@ class PaginationFunction2 {
             this.fetchEventSummary();
         });
         paginationContainer.appendChild(nextButton);
+
+        // Display real-time entry count
+        const entryStatus = document.createElement('div');
+        entryStatus.classList.add('entry-status');
+        entryStatus.textContent = `Showing ${startIndex} to ${endIndex} of ${totalCount} entries`;
+        paginationContainer.appendChild(entryStatus);
     }
 }
 
