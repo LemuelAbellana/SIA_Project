@@ -263,10 +263,10 @@ public function deleteBooking($bookingId) {
                 'endIndex' => $endIndex
             ];
         }
-        public function getDetailsById($id) {
+        public function getDetailsById($bookingId) {
             $query = "SELECT * FROM booking_information WHERE booking_id = ?";
             $stmt = $this->db->prepare($query);
-            $stmt->bind_param("i", $id);
+            $stmt->bind_param("i", $bookingId);
             $stmt->execute();
             return $stmt->get_result()->fetch_assoc();
         }
