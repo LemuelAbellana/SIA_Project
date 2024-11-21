@@ -27,6 +27,9 @@
     --footer-text-color: #fff;
     --footer-icon-color: #fff;
 
+    --line-color: #08142c;
+    --subhead-color: #08142c;
+
 }
 
 [data-theme="dark"] {
@@ -40,7 +43,7 @@
     --faq-hrd-color: #ffffff;
     --faq-hdr-color: #fff;
     --faq-text-colr: #fff;
-    --faq-border-color: rgb(87, 87, 87);
+    --faq-border-color: rgb(255, 255, 255);
     --faq-question-color: #fff;
 
     --service-info-color: #01162C;
@@ -49,6 +52,9 @@
     --footer-bg-color: #fff;
     --footer-text-color: #08142c; 
     --footer-icon-color: #08142c; 
+
+    --line-color: #ffffff;
+    --subhead-color: #ffffff;
 }
 
 /* General body styling */
@@ -115,6 +121,34 @@ body {
     margin-top: 25px;
 }
 
+.subhead-container {
+    margin-top: 90px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px; /* Space between the lines and text */
+    margin-bottom: 45px;
+}
+
+.homepage-subhead {
+    font-weight: bold;
+    color: #000080; /* Navy color */
+    margin: 0;
+}
+
+.subhead {
+    font-size: 55px; 
+    font-weight: bold;
+    color: var(--subhead-color);
+    margin: 0;
+}
+
+.line {
+    width: 100px; /* Set a fixed width for the lines */
+    height: 2px; /* Thin horizontal line */
+    background-color: var(--line-color) /* Navy color */
+}
+
 
 .image-header {
     width: auto;
@@ -125,6 +159,7 @@ body {
     background-repeat: no-repeat;
     position: relative;
 }
+
 
 .image-overlay {
     position: absolute;
@@ -368,7 +403,6 @@ body {
 .footer-right i {
     font-size: 1.5em;
 }
-
 
 /* Contacts */
 
