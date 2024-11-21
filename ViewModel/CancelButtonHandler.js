@@ -9,64 +9,62 @@ class CancelButtonHandler {
     }
 
     init() {
-        const cancelButton = document.querySelector(this.cancelButtonSelector);
+        const cancelButtons = document.querySelectorAll(this.cancelButtonSelector);
 
-        if (!cancelButton) return;
+        cancelButtons.forEach((cancelButton) => {
+            const bookingId = cancelButton.getAttribute("data-booking-id");
 
-        const bookingId = cancelButton.getAttribute("data-booking-id");
-
-        cancelButton.addEventListener("click", () => {
-            this.fetchBookingDetails(bookingId)
-                .then((details) => {
-                    const cancelHandler = new ConfirmCancel(details);
-                    cancelHandler.confirmCancellation();
-                })
-                .catch((error) => {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Error",
-                        text: "Failed to retrieve booking details. Please try again later.",
+            cancelButton.addEventListener("click", () => {
+                this.fetchBookingDetails(bookingId)
+                    .then((details) => {
+                        const cancelHandler = new ConfirmCancel(details);
+                        cancelHandler.confirmCancellation();
+                    })
+                    .catch((error) => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Error",
+                            text: "Failed to retrieve booking details. Please try again later.",
+                        });
+                        console.error("Error fetching booking details:", error);
                     });
-                    console.error(error);
-                });
+            });
         });
     }
 
     async fetchBookingDetails(bookingId) {
-        const formData = new FormData();
-        formData.append("action", "get_details");
-        formData.append("booking_id", bookingId);
+        try {
+            const formData = new FormData();
+            formData.append("action", "get_details");
+            formData.append("booking_id", bookingId);
 
-        const response = await fetch("../Model/cancelBooking.php", {
-            method: "POST",
-            body: formData,
-        });
+            const response = await fetch("../Model/cancelBooking.php", {
+                method: "POST",
+                body: formData,
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (!data.success) {
-            throw new Error(data.message);
+            if (!response.ok || !data.success) {
+                throw new Error(data.message || "Failed to fetch booking details.");
+            }
+
+            return data.details;
+        } catch (error) {
+            throw error;
         }
-
-        return data.details;
     }
 }
 
 class ConfirmCancel {
     constructor(details) {
+        this.details = details;
         this.bookingId = details.booking_id;
-        this.arrivalDate = new Date(details.arrival_date);
-        this.currentDate = new Date();
-    }
-
-    canCancel() {
-        const twoDaysBeforeArrival = new Date(this.arrivalDate);
-        twoDaysBeforeArrival.setDate(this.arrivalDate.getDate() - 2);
-        return this.currentDate < twoDaysBeforeArrival;
+        this.canCancel = details.can_cancel; // Assuming `can_cancel` is part of the backend response.
     }
 
     confirmCancellation() {
-        if (!this.canCancel()) {
+        if (!this.canCancel) {
             Swal.fire({
                 icon: "error",
                 title: "Cancellation Not Allowed",
@@ -97,31 +95,35 @@ class ConfirmCancel {
         });
     }
 
-    performCancellation() {
-        const formData = new FormData();
-        formData.append("action", "cancel_booking");
-        formData.append("booking_id", this.bookingId);
+    async performCancellation() {
+        try {
+            const formData = new FormData();
+            formData.append("action", "cancel_booking");
+            formData.append("booking_id", this.bookingId);
 
-        fetch("../Model/cancelBooking.php", { method: "POST", body: formData })
-            .then((response) => response.json())
-            .then((data) => {
-                Swal.fire({
-                    icon: data.success ? "success" : "error",
-                    title: data.success ? "Booking Canceled" : "Error",
-                    text: data.message,
-                }).then(() => {
-                    if (data.success) {
-                        location.href = "booking.html";
-                    }
-                });
-            })
-            .catch((error) => {
-                Swal.fire({
-                    icon: "error",
-                    title: "Something went wrong",
-                    text: "Please try again later.",
-                });
-                console.error(error);
+            const response = await fetch("../Model/cancelBooking.php", {
+                method: "POST",
+                body: formData,
             });
+
+            const data = await response.json();
+
+            Swal.fire({
+                icon: data.success ? "success" : "error",
+                title: data.success ? "Booking Canceled" : "Error",
+                text: data.message,
+            }).then(() => {
+                if (data.success) {
+                    location.href = "booking.html"; // Reload the page or redirect
+                }
+            });
+        } catch (error) {
+            Swal.fire({
+                icon: "error",
+                title: "Something went wrong",
+                text: "Please try again later.",
+            });
+            console.error("Error during cancellation:", error);
+        }
     }
 }

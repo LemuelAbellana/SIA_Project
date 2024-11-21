@@ -15,108 +15,106 @@ class CancelBooking
         $this->bookingDb = new BookingDatabase($this->database->getConnection());
     }
 
-    /**
-     * Validate the booking ID from the POST request
-     *
-     * @return int|null Returns booking ID if valid, otherwise null
-     */
     private function validateBookingId()
     {
-        return filter_input(INPUT_POST, 'booking_id', FILTER_VALIDATE_INT);
+        $bookingId = filter_input(INPUT_POST, 'booking_id', FILTER_VALIDATE_INT);
+        if (!$bookingId) {
+            error_log("Invalid booking ID provided.");
+        }
+        return $bookingId;
     }
 
-    /**
-     * Check if cancellation is allowed (at least 2 days before arrival).
-     * 
-     * @param string $arrivalDate The arrival date in 'Y-m-d' format.
-     * @return bool True if cancellation is allowed, false otherwise.
-     */
     private function canCancelBooking($arrivalDate)
     {
-        $arrivalDate = new DateTime($arrivalDate);
-        $currentDate = new DateTime();
-        $twoDaysBeforeArrival = (clone $arrivalDate)->modify('-2 days');
-        
-        return $currentDate < $twoDaysBeforeArrival;
+        try {
+            $arrivalDateObj = new DateTime($arrivalDate);
+            $currentDate = new DateTime();
+            $twoDaysBeforeArrival = (clone $arrivalDateObj)->modify('-2 days');
+            return $currentDate < $twoDaysBeforeArrival;
+        } catch (Exception $e) {
+            error_log("Error in canCancelBooking: " . $e->getMessage());
+            return false;
+        }
     }
 
-    /**
-     * Cancel the booking process
-     *
-     * @param int $bookingId The ID of the booking to cancel
-     * @return array Response array indicating success or failure
-     */
     public function cancelBooking($bookingId)
     {
-        // Retrieve booking details
-        $bookingDetails = $this->bookingDb->getDetailsById($bookingId);
-
-        // Check if booking exists
-        if (!$bookingDetails) {
-            return ["success" => false, "message" => "Booking not found."];
-        }
-
-        // Check if cancellation is allowed (at least 2 days before arrival)
-        if (!$this->canCancelBooking($bookingDetails['arrival_date'])) {
-            return [
-                "success" => false,
-                "message" => "Cancellations are only allowed at least 2 days before the arrival date."
-            ];
-        }
-
-        // Attempt to delete the booking
         try {
-            $result = $this->bookingDb->deleteBooking($bookingId);
-            if ($result) {
-                // Remove the booking from the session if it matches
-                if (isset($_SESSION['booking_details']) && $_SESSION['booking_details']['booking_id'] == $bookingId) {
-                    unset($_SESSION['booking_details']);
-                }
-                return ["success" => true, "message" => "Booking canceled successfully."];
-            } else {
-                return ["success" => false, "message" => "Booking cancellation failed."];
+            $bookingDetails = $this->bookingDb->getDetailsById($bookingId);
+
+            if (!$bookingDetails) {
+                return ["success" => false, "message" => "Booking not found."];
             }
+
+            if (!$this->canCancelBooking($bookingDetails['arrival_date'])) {
+                return [
+                    "success" => false,
+                    "message" => "Cancellations are only allowed at least 2 days before the arrival date."
+                ];
+            }
+
+            $result = $this->bookingDb->deleteBooking($bookingId);
+
+            return $result
+                ? ["success" => true, "message" => "Booking canceled successfully."]
+                : ["success" => false, "message" => "Failed to cancel the booking."];
         } catch (Exception $e) {
             error_log("Error during cancellation: " . $e->getMessage());
             return ["success" => false, "message" => "An error occurred while canceling the booking."];
         }
     }
 
-    /**
-     * Handle the request to cancel a booking
-     *
-     * @return void
-     */
     public function handleRequest()
     {
         header('Content-Type: application/json');
 
-        // Validate the booking ID
-        $bookingId = $this->validateBookingId();
+        $action = filter_input(INPUT_POST, 'action', FILTER_SANITIZE_STRING);
 
-        if (!$bookingId) {
-            echo json_encode(["success" => false, "message" => "Invalid booking ID."]);
+        if (!$action) {
+            echo json_encode(["success" => false, "message" => "Invalid action."]);
             exit;
         }
 
-        // Perform the cancellation
-        $response = $this->cancelBooking($bookingId);
-        echo json_encode($response);
+        switch ($action) {
+            case 'get_details':
+                $bookingId = $this->validateBookingId();
+                if (!$bookingId) {
+                    echo json_encode(["success" => false, "message" => "Invalid booking ID."]);
+                    exit;
+                }
+
+                $details = $this->bookingDb->getDetailsById($bookingId);
+                echo json_encode($details
+                    ? ["success" => true, "details" => $details]
+                    : ["success" => false, "message" => "Booking not found."]
+                );
+                break;
+
+            case 'cancel_booking':
+                $bookingId = $this->validateBookingId();
+                if (!$bookingId) {
+                    echo json_encode(["success" => false, "message" => "Invalid booking ID."]);
+                    exit;
+                }
+
+                echo json_encode($this->cancelBooking($bookingId));
+                break;
+
+            default:
+                echo json_encode(["success" => false, "message" => "Unknown action."]);
+                break;
+        }
     }
 
-    /**
-     * Close the database connection
-     *
-     * @return void
-     */
+    // Optionally close the connection manually
     public function closeConnection()
     {
-        $this->database->close();
+        $this->database->getConnection()->close();
     }
 }
 
-// Instantiate the CancelBooking class and handle the request
+// Call and handle the request
 $cancelBooking = new CancelBooking();
 $cancelBooking->handleRequest();
-$cancelBooking->closeConnection();
-?>
+// Remove the following line if not needed
+// $cancelBooking->closeConnection();

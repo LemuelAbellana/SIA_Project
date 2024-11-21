@@ -44,13 +44,14 @@ class BookingDatabase extends BaseDatabase {
     }
 
 // Delete a booking
-public function deleteBooking($bookingId) {
+public function deleteBooking($bookingId)
+{
     try {
         $query = "DELETE FROM booking_information WHERE booking_id = ?";
         $stmt = $this->db->prepare($query);
         
         if (!$stmt) {
-            throw new Exception("Prepare failed: " . $this->db->error);
+            throw new Exception("Failed to prepare query: " . $this->db->error);
         }
 
         // Bind the booking_id parameter
@@ -63,14 +64,14 @@ public function deleteBooking($bookingId) {
         if ($stmt->affected_rows > 0) {
             return true; // Booking deleted successfully
         } else {
-            return false; // No rows were deleted (maybe the booking does not exist)
+            error_log("No rows were affected during deletion. Booking ID may not exist: " . $bookingId);
+            return false; // No rows deleted (booking may not exist)
         }
     } catch (Exception $e) {
         error_log("Error in deleteBooking: " . $e->getMessage());
-        return false; // Return false if there was an error
+        return false;
     }
 }
-
     // Get customer ID by contact number
     private function getCustomerIdByContactNumber($contactNumber) {
         try {
@@ -263,8 +264,11 @@ public function deleteBooking($bookingId) {
                 'endIndex' => $endIndex
             ];
         }
-        public function getDetailsById($bookingId) {
-            $query = "SELECT * FROM booking_information WHERE booking_id = ?";
+        public function getDetailsById($bookingId)
+        {
+            $query = "SELECT *, (arrival_date > CURDATE() + INTERVAL 2 DAY) AS can_cancel 
+                      FROM booking_information 
+                      WHERE booking_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->bind_param("i", $bookingId);
             $stmt->execute();
@@ -286,6 +290,50 @@ public function deleteBooking($bookingId) {
             $stmt->bind_param("i", $id);
             return $stmt->execute();
         }
+        public function handleRequest()
+{
+    header('Content-Type: application/json');
+
+    $action = filter_input(INPUT_POST, 'action', FILTER_SANITIZE_STRING);
+
+    if (!$action) {
+        echo json_encode(["success" => false, "message" => "Invalid action."]);
+        exit;
+    }
+
+    switch ($action) {
+        case 'get_details':
+            $bookingId = $this->validateBookingId();
+            if (!$bookingId) {
+                echo json_encode(["success" => false, "message" => "Invalid booking ID."]);
+                exit;
+            }
+
+            $details = $this->bookingDb->getDetailsById($bookingId);
+            if ($details) {
+                echo json_encode(["success" => true, "details" => $details]);
+            } else {
+                echo json_encode(["success" => false, "message" => "Booking not found."]);
+            }
+            break;
+
+        case 'cancel_booking':
+            $bookingId = $this->validateBookingId();
+            if (!$bookingId) {
+                echo json_encode(["success" => false, "message" => "Invalid booking ID."]);
+                exit;
+            }
+
+            $response = $this->cancelBooking($bookingId);
+            echo json_encode($response);
+            break;
+
+        default:
+            echo json_encode(["success" => false, "message" => "Unknown action."]);
+            break;
+    }
+}
+
         
     // Get last inserted booking ID
     public function getLastBookingId() {
