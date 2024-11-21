@@ -38,20 +38,28 @@ $leaving_date = htmlspecialchars($bookingDetails['leaving_date'] ?? 'N/A');
 
 <body>
   <header class="header">
-    <div class="navigation-bar">
-      <div class="nav-links">
-        <a href="./index.html">Home</a>
-        <a href="./services.html">Services</a>
-        <a href="./contact.html">Contact</a>
-        <a href="./index.html"><img src="../Assets/SIA_LOGO_wobg1.png" alt="Escape Avenue" class="logo"></a>
-        <a href="./booking.html">Book Now</a>
-        <a href="./myBooking.html">My Booking</a>
-        <a href="./faq.html">FAQ</a>
+  <div class="navigation-bar">
+        <div class="nav-links">
+          <a href="./index.html"><img src="../Assets/SIA_LOGO_wobg1.png" alt="Escape Avenue" class="logo"></a>
+          <a href="./index.html">Home</a>
+          <a href="./services.html">Services</a>
+          <a href="./contact.html">Contact</a>
+          <a href="./booking.html">Book Now</a>
+          <a href="./faq.html">FAQ</a>
+        </div>
+        <div class="theme-toggle-container">
+          <button class="theme-toggle" aria-label="Toggle Dark Mode">
+            <i class="fas fa-sun"></i>
+          </button>
+        </div>
       </div>
-    </div>
   </header>
 
-  <img class="homepage-image" src="../Assets/my_booking.png" alt="My Booking">
+  <div class="subhead-container">
+      <div class="line"></div>
+      <h1 class="subhead">BOOK NOW</h1>
+      <div class="line"></div>
+  </div>
 
   <div class="receipt-container">
     <h2 class="title-booking">Booking Receipt</h2>
@@ -113,5 +121,6 @@ $leaving_date = htmlspecialchars($bookingDetails['leaving_date'] ?? 'N/A');
   </footer>
 
   <script src="../ViewModel/CancelButtonHandler.js"></script>
+  <script src="../ViewModel/darkMode.js"></script>
 </body>
 </html>
