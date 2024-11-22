@@ -278,7 +278,6 @@ button {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.6);
-  display: flex; /* Center contents horizontally */
   justify-content: center;
   align-items: center; /* Center contents vertically */
   z-index: 1000;
@@ -306,7 +305,6 @@ button {
   width: 90%;
   max-width: 400px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-
 }
 
 .popup-content h2 {
@@ -371,14 +369,26 @@ button {
   font-size: 14px;
 }
 
+.view-group {
+  display: flex;
+  justify-content: flex-end; /* Aligns label and span vertically */
+}
+
+
 .view-group label {
-  flex: 0.6;
+  flex: 2;
   color: #26408B;
   font-weight: bolder;
   font-size: 18px;
   line-height: 2.5rem;
   white-space: nowrap;
 }
+
+.view-group span {
+  justify-content: center;
+  color: #01162C;
+}
+
 
  .form-group input {
   flex: 2; 
@@ -429,12 +439,6 @@ button {
     opacity: 1;
   }
 }
-
-.view-form span {
-  flex: 1;
-  color: #01162C;
-}
-
 
 
 

@@ -180,7 +180,7 @@ class PaginationFunc {
                 // Show popup
                 const popup = document.getElementById("view-Form");
                 if (popup) {
-                    popup.style.display = "block";
+                    popup.style.display = "flex";
                 } else {
                     console.error("View popup element not found");
                 }
@@ -199,7 +199,7 @@ class PaginationFunc {
                 
                 if (editForm) {
                     // Show the edit popup
-                    editForm.style.display = "block";
+                    editForm.style.display = "flex";
                     
                     // Remove required attributes from all inputs
                     const formInputs = editForm.querySelectorAll('input, select, textarea');
@@ -351,7 +351,7 @@ handleEditSubmit(event) {
         const closeButtons = document.querySelectorAll('.close-btn, .close');
         closeButtons.forEach(button => {
             button.addEventListener('click', () => {
-                const popup = button.closest('.popup-form, .modal');
+                const popup = button.closest('.popup-form, .view-form, .edit-form, .modal');
                 if (popup) {
                     popup.style.display = 'none';
                 }
