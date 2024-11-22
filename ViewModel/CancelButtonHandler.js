@@ -11,8 +11,18 @@ class CancelButtonHandler {
     init() {
         const cancelButtons = document.querySelectorAll(this.cancelButtonSelector);
 
+        if (cancelButtons.length === 0) {
+            console.warn("No cancel buttons found. Ensure the HTML contains elements with the class '.cancel-button'.");
+            return;
+        }
+
         cancelButtons.forEach((cancelButton) => {
             const bookingId = cancelButton.getAttribute("data-booking-id");
+
+            if (!bookingId) {
+                console.warn("Cancel button is missing the 'data-booking-id' attribute.");
+                return;
+            }
 
             cancelButton.addEventListener("click", () => {
                 this.fetchBookingDetails(bookingId)
@@ -60,7 +70,7 @@ class ConfirmCancel {
     constructor(details) {
         this.details = details;
         this.bookingId = details.booking_id;
-        this.canCancel = details.can_cancel; // Assuming `can_cancel` is part of the backend response.
+        this.canCancel = details.can_cancel; // Ensure this field is available from the backend.
     }
 
     confirmCancellation() {
@@ -84,13 +94,7 @@ class ConfirmCancel {
             cancelButtonText: "No, keep it",
         }).then((result) => {
             if (result.isConfirmed) {
-                this.performCancellation();
-            } else {
-                Swal.fire({
-                    icon: "info",
-                    title: "Cancelled",
-                    text: "Your booking has not been canceled.",
-                });
+                this.   performCancellation();
             }
         });
     }
@@ -100,21 +104,21 @@ class ConfirmCancel {
             const formData = new FormData();
             formData.append("action", "cancel_booking");
             formData.append("booking_id", this.bookingId);
-
+    
             const response = await fetch("../Model/cancelBooking.php", {
                 method: "POST",
                 body: formData,
             });
-
+    
             const data = await response.json();
-
             Swal.fire({
                 icon: data.success ? "success" : "error",
                 title: data.success ? "Booking Canceled" : "Error",
                 text: data.message,
             }).then(() => {
                 if (data.success) {
-                    location.href = "booking.html"; // Reload the page or redirect
+                    // Redirect to booking.html after successful cancellation
+                    window.location.href = "booking.html";
                 }
             });
         } catch (error) {
@@ -126,4 +130,5 @@ class ConfirmCancel {
             console.error("Error during cancellation:", error);
         }
     }
+    
 }

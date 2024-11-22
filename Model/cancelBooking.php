@@ -20,6 +20,7 @@ class CancelBooking
         $bookingId = filter_input(INPUT_POST, 'booking_id', FILTER_VALIDATE_INT);
         if (!$bookingId) {
             error_log("Invalid booking ID provided.");
+            return null;
         }
         return $bookingId;
     }
@@ -34,6 +35,22 @@ class CancelBooking
         } catch (Exception $e) {
             error_log("Error in canCancelBooking: " . $e->getMessage());
             return false;
+        }
+    }
+
+    public function getBookingDetails($bookingId)
+    {
+        try {
+            $details = $this->bookingDb->getDetailsById($bookingId);
+            if (!$details) {
+                return ["success" => false, "message" => "Booking not found."];
+            }
+
+            $details['can_cancel'] = $this->canCancelBooking($details['arrival_date']);
+            return ["success" => true, "details" => $details];
+        } catch (Exception $e) {
+            error_log("Error fetching booking details: " . $e->getMessage());
+            return ["success" => false, "message" => "An error occurred while fetching booking details."];
         }
     }
 
@@ -83,11 +100,7 @@ class CancelBooking
                     exit;
                 }
 
-                $details = $this->bookingDb->getDetailsById($bookingId);
-                echo json_encode($details
-                    ? ["success" => true, "details" => $details]
-                    : ["success" => false, "message" => "Booking not found."]
-                );
+                echo json_encode($this->getBookingDetails($bookingId));
                 break;
 
             case 'cancel_booking':
@@ -106,7 +119,6 @@ class CancelBooking
         }
     }
 
-    // Optionally close the connection manually
     public function closeConnection()
     {
         $this->database->getConnection()->close();
@@ -116,5 +128,6 @@ class CancelBooking
 // Call and handle the request
 $cancelBooking = new CancelBooking();
 $cancelBooking->handleRequest();
-// Remove the following line if not needed
-// $cancelBooking->closeConnection();
+
+
+?>

@@ -48,23 +48,33 @@ public function deleteBooking($bookingId) {
     try {
         $this->db->begin_transaction();
 
-        // First delete from number_of_people table
+        // Delete dependent records from number_of_people table
         $query1 = "DELETE FROM number_of_people WHERE booking_id = ?";
         $stmt1 = $this->db->prepare($query1);
         if (!$stmt1) {
-            throw new Exception("Failed to prepare delete query for number_of_people");
+            throw new Exception("Failed to prepare delete query for number_of_people: " . $this->db->error);
         }
         $stmt1->bind_param("i", $bookingId);
         $stmt1->execute();
 
-        // Then delete from booking_information
+        // Check if rows were affected in number_of_people
+        if ($stmt1->affected_rows === 0) {
+            error_log("No entries found in number_of_people for booking ID $bookingId.");
+        }
+
+        // Delete main record from booking_information
         $query2 = "DELETE FROM booking_information WHERE booking_id = ?";
         $stmt2 = $this->db->prepare($query2);
         if (!$stmt2) {
-            throw new Exception("Failed to prepare delete query for booking_information");
+            throw new Exception("Failed to prepare delete query for booking_information: " . $this->db->error);
         }
         $stmt2->bind_param("i", $bookingId);
         $stmt2->execute();
+
+        // Ensure a row was deleted in booking_information
+        if ($stmt2->affected_rows === 0) {
+            throw new Exception("No entries found in booking_information for booking ID $bookingId.");
+        }
 
         $this->db->commit();
         return true;
@@ -74,6 +84,7 @@ public function deleteBooking($bookingId) {
         throw new Exception("Error deleting booking: " . $e->getMessage());
     }
 }
+
     // Get customer ID by contact number
     private function getCustomerIdByContactNumber($contactNumber) {
         try {
