@@ -430,7 +430,10 @@ button {
   }
 }
 
-
+.view-form span {
+  flex: 1;
+  color: #01162C;
+}
 
 
 
