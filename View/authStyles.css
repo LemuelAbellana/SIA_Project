@@ -71,6 +71,7 @@ body {
 .btn-group {
     display: flex;
     justify-content: space-between;
+    margin-top: 18px;
 }
 
 .btn-group button {
@@ -153,3 +154,8 @@ a{
     color: #ffffff;
 }
 
+hr {
+    margin-top: 18px;
+    color: white;
+    margin-bottom: 11px;
+}
