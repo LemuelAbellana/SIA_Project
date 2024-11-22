@@ -28,6 +28,7 @@ class PaginationFunc {
     handleData(data) {
         this.data = data.bookings || [];
         this.populateTable(this.data);
+        this.updatePagination(data.totalEntries || 0, this.entries);
     }
 
     handleError(error) {
