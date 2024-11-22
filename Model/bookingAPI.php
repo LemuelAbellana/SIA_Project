@@ -23,30 +23,95 @@
 
         public function handleRequest() {
             $method = $_SERVER['REQUEST_METHOD'];
-            header("Content-Type: application/json");
-
+            
             try {
                 switch ($method) {
                     case 'GET':
-                        $this->handleGet();
+                        if (isset($_GET['id'])) {
+                            $details = $this->bookingDb->getDetailsById($_GET['id']);
+                            echo json_encode(['success' => true, 'booking' => $details]);
+                        } else {
+                            $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                            $entries = isset($_GET['entries']) ? (int)$_GET['entries'] : 10;
+                            $search = isset($_GET['search']) ? $_GET['search'] : '';
+                            $offset = ($page - 1) * $entries;
+                            
+                            $result = $this->bookingDb->getAll($entries, $offset, $search);
+                            echo json_encode($result);
+                        }
                         break;
-                    case 'POST':
-                        $this->handlePost();
-                        break;
+    
                     case 'PUT':
-                        $this->handlePut();
+                        $data = json_decode(file_get_contents('php://input'), true);
+                        if (!$data) {
+                            throw new Exception("Invalid input data");
+                        }
+                        
+                        $result = $this->bookingDb->updateBooking(
+                            $data['booking_id'],
+                            $data['name'],
+                            $data['email'],
+                            $data['contact_number'],
+                            $data['event_type'],
+                            $data['arrival_date'],
+                            $data['leaving_date'],
+                            $data['number_of_people']
+                        );
+                        echo json_encode($result);
                         break;
-                    case 'DELETE':
-                        $this->handleDelete();
-                        break;
-                    default:
-                        $this->sendErrorResponse("Method not allowed.", 405);
+    
+                        case 'DELETE':
+                            if (!isset($_GET['id'])) {
+                                throw new Exception("Booking ID is required");
+                            }
+                            $result = $this->bookingDb->deleteBooking($_GET['id']);
+                            if ($result) {
+                                echo json_encode([
+                                    'success' => true,
+                                    'message' => 'Booking deleted successfully'
+                                ]);
+                            } else {
+                                throw new Exception("Failed to delete booking");
+                            }
+                            break;
+            
+                        case 'PUT':
+                            $data = json_decode(file_get_contents('php://input'), true);
+                            if (!$data) {
+                                throw new Exception("Invalid input data");
+                            }
+                            
+                            $result = $this->bookingDb->updateBooking(
+                                $data['booking_id'],
+                                $data['name'],
+                                $data['email'],
+                                $data['contact_number'],
+                                $data['event_type'],
+                                $data['arrival_date'],
+                                $data['leaving_date'],
+                                $data['number_of_people']
+                            );
+            
+                            if ($result) {
+                                echo json_encode([
+                                    'success' => true,
+                                    'message' => 'Booking updated successfully'
+                                ]);
+                            } else {
+                                throw new Exception("Failed to update booking");
+                            }
+                            break;
+            
+                        // ... other cases remain the same ...
+                    }
+                } catch (Exception $e) {
+                    http_response_code(500);
+                    echo json_encode([
+                        'success' => false,
+                        'message' => $e->getMessage()
+                    ]);
                 }
-            } catch (Exception $e) {
-                error_log("Error in BookingAPI: " . $e->getMessage());
-                $this->sendErrorResponse("Internal server error.", 500);
             }
-        }
 
         private function handleGet() {
             if (isset($_GET['id'])) {

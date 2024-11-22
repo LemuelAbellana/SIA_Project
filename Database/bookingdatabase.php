@@ -44,32 +44,34 @@ class BookingDatabase extends BaseDatabase {
     }
 
 // Delete a booking
-public function deleteBooking($bookingId)
-{
+public function deleteBooking($bookingId) {
     try {
-        $query = "DELETE FROM booking_information WHERE booking_id = ?";
-        $stmt = $this->db->prepare($query);
-        
-        if (!$stmt) {
-            throw new Exception("Failed to prepare query: " . $this->db->error);
+        $this->db->begin_transaction();
+
+        // First delete from number_of_people table
+        $query1 = "DELETE FROM number_of_people WHERE booking_id = ?";
+        $stmt1 = $this->db->prepare($query1);
+        if (!$stmt1) {
+            throw new Exception("Failed to prepare delete query for number_of_people");
         }
+        $stmt1->bind_param("i", $bookingId);
+        $stmt1->execute();
 
-        // Bind the booking_id parameter
-        $stmt->bind_param("i", $bookingId);
-
-        // Execute the query
-        $stmt->execute();
-
-        // Check if any row was affected by the delete operation
-        if ($stmt->affected_rows > 0) {
-            return true; // Booking deleted successfully
-        } else {
-            error_log("No rows were affected during deletion. Booking ID may not exist: " . $bookingId);
-            return false; // No rows deleted (booking may not exist)
+        // Then delete from booking_information
+        $query2 = "DELETE FROM booking_information WHERE booking_id = ?";
+        $stmt2 = $this->db->prepare($query2);
+        if (!$stmt2) {
+            throw new Exception("Failed to prepare delete query for booking_information");
         }
+        $stmt2->bind_param("i", $bookingId);
+        $stmt2->execute();
+
+        $this->db->commit();
+        return true;
     } catch (Exception $e) {
+        $this->db->rollback();
         error_log("Error in deleteBooking: " . $e->getMessage());
-        return false;
+        throw new Exception("Error deleting booking: " . $e->getMessage());
     }
 }
     // Get customer ID by contact number
@@ -425,8 +427,6 @@ public function deleteBooking($bookingId)
     }
 }
 
-        
-    // Get last inserted booking ID
     public function getLastBookingId() {
         return $this->db->insert_id;
     }

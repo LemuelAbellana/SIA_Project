@@ -201,6 +201,12 @@ class PaginationFunc {
                     // Show the edit popup
                     editForm.style.display = "block";
                     
+                    // Remove required attributes from all inputs
+                    const formInputs = editForm.querySelectorAll('input, select, textarea');
+                    formInputs.forEach(input => {
+                        input.removeAttribute('required');
+                    });
+                    
                     // Populate form fields
                     const formFields = [
                         'booking_id',
@@ -227,57 +233,108 @@ class PaginationFunc {
                     }
                 }
             } else {
-                console.error("Invalid booking data received");
-                alert("Failed to load booking details");
+                Swal.fire(
+                    'Error',
+                    'Failed to load booking details',
+                    'error'
+                );
             }
         });
-    }    
-    handleEditSubmit(event) {
-        event.preventDefault();
-        
-        const form = event.target;
-        const formData = new FormData(form);
-        const bookingData = {};
-        
-        formData.forEach((value, key) => {
-            bookingData[key] = value;
-        });
-        
-        // Convert to JSON string
-        const jsonData = JSON.stringify(bookingData);
-        
-        // Send PUT request
-        fetch(this.apiUrl, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: jsonData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Booking updated successfully');
-                document.getElementById('edit-Form').style.display = 'none';
-                this.fetchData(); // Refresh the table
-            } else {
-                alert('Failed to update booking: ' + (data.error || 'Unknown error'));
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Failed to update booking');
-        });
-    }
-    deleteBooking(bookingId) {
-        if (confirm("Are you sure you want to delete this booking?")) {
-            fetch(`${this.apiUrl}?id=${bookingId}`, { method: "DELETE" })
-                .then(() => this.fetchData())
-                .catch((error) => console.error("Error deleting booking:", error));
-        }
     }
 
+handleEditSubmit(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const form = event.target;
+    const formData = new FormData(form);
+    const bookingData = Object.fromEntries(formData.entries());
+
+    fetch(this.apiUrl, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData), // Send booking data as JSON
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Failed to update booking');
+        }
+        return response.json();
+    })
+    .then(data => {
+        if (data.success) {
+            Swal.fire(
+                'Success!',
+                data.message || 'Booking details updated successfully.',
+                'success'
+            ).then(() => {
+                this.fetchData(); // Refresh the table after update
+                document.getElementById("edit-Form").style.display = "none"; // Close the form popup
+            });
+        } else {
+            throw new Error(data.message || 'Unexpected error occurred');
+        }
+    })
+    .catch(error => {
+        Swal.fire(
+            'Error',
+            error.message || 'An error occurred while updating the booking.',
+            'error'
+        );
+    });
+}
+
+
+    // Delete the booking
+    deleteBooking(bookingId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`${this.apiUrl}?id=${bookingId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: data.message || 'Booking has been deleted.',
+                            icon: 'success'
+                        }).then(() => {
+                            this.fetchData(); // Refresh the data
+                        });
+                    } else {
+                        throw new Error(data.message || 'Failed to delete booking.');
+                    }
+                })
+                .catch(error => {
+                    console.error("Error deleting booking:", error);
+                    Swal.fire(
+                        'Error!',
+                        error.message || 'An error occurred while deleting the booking.',
+                        'error'
+                    );
+                });
+            }
+        });
+    }
+
+    // Initialize event listeners
     initEventListeners() {
+        // Existing event listeners
         document.getElementById("search").addEventListener("input", (event) => {
             this.searchTerm = event.target.value;
             this.currentPage = 1;
@@ -289,11 +346,27 @@ class PaginationFunc {
             this.currentPage = 1;
             this.fetchData();
         });
-    
-        // Initialize close listeners for popups
-        this.initPopupCloseListener("view-Form");
-        this.initPopupCloseListener("edit-Form");
-        this.initPopupCloseListener("popupForm"); // If there's a third popup
+
+        // Close buttons for popups
+        const closeButtons = document.querySelectorAll('.close-btn, .close');
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const popup = button.closest('.popup-form, .modal');
+                if (popup) {
+                    popup.style.display = 'none';
+                }
+            });
+        });
+
+        // Close popup when clicking outside
+        window.addEventListener('click', (event) => {
+            const popups = document.querySelectorAll('.popup-form, .modal');
+            popups.forEach(popup => {
+                if (event.target === popup) {
+                    popup.style.display = 'none';
+                }
+            });
+        });
     }
 
     initPopupCloseListener(formId) {
@@ -310,8 +383,9 @@ class PaginationFunc {
         } else {
             console.error(`Close button for popup "${formId}" not found.`);
         }
-    }    
+    }
 }
 
+// Create a new instance of PaginationFunc
 const apiUrl = "../../Model/bookingAPI.php"; 
 new PaginationFunc(apiUrl);
