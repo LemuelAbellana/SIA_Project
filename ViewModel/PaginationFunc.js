@@ -242,48 +242,52 @@ class PaginationFunc {
         });
     }
 
-handleEditSubmit(event) {
-    event.preventDefault(); // Prevent default form submission
-
-    const form = event.target;
-    const formData = new FormData(form);
-    const bookingData = Object.fromEntries(formData.entries());
-
-    fetch(this.apiUrl, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bookingData), // Send booking data as JSON
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Failed to update booking');
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
+    handleEditSubmit(event) {
+        event.preventDefault(); // Prevent default form submission
+    
+        const form = event.target;
+        const formData = new FormData(form);
+        const bookingData = Object.fromEntries(formData.entries());
+    
+        fetch(this.apiUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(bookingData), // Send booking data as JSON
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then((data) => {
+                    throw new Error(data.message || 'Failed to update booking');
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                Swal.fire(
+                    'Success!',
+                    data.message || 'Booking details updated successfully.',
+                    'success'
+                ).then(() => {
+                    this.fetchData(); // Refresh the table after update
+                    document.getElementById("edit-Form").style.display = "none"; // Close the form popup
+                });
+            } else {
+                throw new Error(data.message || 'Unexpected error occurred');
+            }
+        })
+        .catch(error => {
+            console.error("Update failed:", error);
             Swal.fire(
-                'Success!',
-                data.message || 'Booking details updated successfully.',
-                'success'
-            ).then(() => {
-                this.fetchData(); // Refresh the table after update
-                document.getElementById("edit-Form").style.display = "none"; // Close the form popup
-            });
-        } else {
-            throw new Error(data.message || 'Unexpected error occurred');
-        }
-    })
-    .catch(error => {
-        Swal.fire(
-            'Error',
-            error.message || 'An error occurred while updating the booking.',
-            'error'
-        );
-    });
-}
+                'Error',
+                error.message || 'An error occurred while updating the booking.',
+                'error'
+            );
+        });
+    }
+    
 
 
     // Delete the booking
