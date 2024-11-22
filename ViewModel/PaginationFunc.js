@@ -192,20 +192,83 @@ class PaginationFunc {
     }
 
     editBooking(bookingId) {
-        this.fetchBookingDetails(bookingId, (data) => {
-            const popup = document.getElementById("edit-Form");
-            if (popup) {
-                popup.style.display = "block";
-                const fields = popup.querySelectorAll("input");
-                fields.forEach((field) => {
-                    field.value = data[field.name] || "";
-                });
+        this.fetchBookingDetails(bookingId, (response) => {
+            if (response && response.booking) {
+                const booking = response.booking;
+                const editForm = document.getElementById("edit-Form");
+                
+                if (editForm) {
+                    // Show the edit popup
+                    editForm.style.display = "block";
+                    
+                    // Populate form fields
+                    const formFields = [
+                        'booking_id',
+                        'name',
+                        'email',
+                        'contact_number',
+                        'event_type',
+                        'arrival_date',
+                        'leaving_date',
+                        'number_of_people'
+                    ];
+                    
+                    formFields.forEach(field => {
+                        const input = editForm.querySelector(`[name="${field}"]`);
+                        if (input) {
+                            input.value = booking[field] || '';
+                        }
+                    });
+                    
+                    // Initialize form submission handler
+                    const editFormElement = editForm.querySelector('form');
+                    if (editFormElement) {
+                        editFormElement.onsubmit = (e) => this.handleEditSubmit(e);
+                    }
+                }
             } else {
-                console.error("Edit popup element not found.");
+                console.error("Invalid booking data received");
+                alert("Failed to load booking details");
             }
         });
+    }    
+    handleEditSubmit(event) {
+        event.preventDefault();
+        
+        const form = event.target;
+        const formData = new FormData(form);
+        const bookingData = {};
+        
+        formData.forEach((value, key) => {
+            bookingData[key] = value;
+        });
+        
+        // Convert to JSON string
+        const jsonData = JSON.stringify(bookingData);
+        
+        // Send PUT request
+        fetch(this.apiUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: jsonData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Booking updated successfully');
+                document.getElementById('edit-Form').style.display = 'none';
+                this.fetchData(); // Refresh the table
+            } else {
+                alert('Failed to update booking: ' + (data.error || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to update booking');
+        });
     }
-
     deleteBooking(bookingId) {
         if (confirm("Are you sure you want to delete this booking?")) {
             fetch(`${this.apiUrl}?id=${bookingId}`, { method: "DELETE" })

@@ -98,24 +98,27 @@
         
         private function handlePost() {
             $data = json_decode(file_get_contents("php://input"), true);
-
+        
+            // Fill missing values with defaults
+            $data = $this->fillDefaultValues($data, 'POST');
+        
             if (!$this->validateBookingData($data)) {
                 $this->sendErrorResponse("Invalid input data.", 400);
                 return;
             }
-
+        
             // Ensure email is valid
             if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
                 $this->sendErrorResponse("Invalid email format.", 400);
                 return;
             }
-
+        
             // Ensure dates are valid
             if (!strtotime($data['arrival_date']) || !strtotime($data['leaving_date'])) {
                 $this->sendErrorResponse("Invalid date format.", 400);
                 return;
             }
-
+        
             $bookingId = $this->bookingDb->book(
                 $data['name'],
                 $data['email'],
@@ -125,31 +128,80 @@
                 $data['leaving_date'],
                 $data['number_of_people']
             );
-
+        
             $this->sendSuccessResponse(["success" => true, "booking_id" => $bookingId]);
         }
-
+        
         private function handlePut() {
-            parse_str(file_get_contents("php://input"), $data);
-
+            $data = json_decode(file_get_contents("php://input"), true);
+        
+            if (!$data || !isset($data['booking_id'])) {
+                $this->sendErrorResponse("Invalid input data.", 400);
+                return;
+            }
+        
             if (!$this->validateUpdateData($data)) {
-                $this->sendErrorResponse("Invalid input data for update.", 400);
+                $this->sendErrorResponse("Missing required fields.", 400);
                 return;
             }
-
-            // Ensure email is valid
-            if (!filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-                $this->sendErrorResponse("Invalid email format.", 400);
-                return;
+        
+            try {
+                $result = $this->bookingDb->updateBooking(
+                    $data['booking_id'],
+                    $data['name'],
+                    $data['email'],
+                    $data['contact_number'],
+                    $data['event_type'],
+                    $data['arrival_date'],
+                    $data['leaving_date'],
+                    $data['number_of_people']
+                );
+        
+                if ($result) {
+                    $this->sendSuccessResponse(["success" => true]);
+                } else {
+                    $this->sendErrorResponse("Failed to update booking.", 500);
+                }
+            } catch (Exception $e) {
+                $this->sendErrorResponse("Error updating booking: " . $e->getMessage(), 500);
             }
-
-            // Ensure dates are valid
-            if (!strtotime($data['arrival_date']) || !strtotime($data['leaving_date'])) {
-                $this->sendErrorResponse("Invalid date format.", 400);
-                return;
+        }        
+        
+        private function fillDefaultValues($data, $method) {
+            // Define default values for required fields
+            $defaults = [
+                'name' => 'Guest',
+                'email' => 'guest@example.com',
+                'contact_number' => '0000000000',
+                'event_type' => 'General',
+                'arrival_date' => date('Y-m-d'),
+                'leaving_date' => date('Y-m-d', strtotime('+1 day')),
+                'number_of_people' => 1,
+            ];
+        
+            // For PUT, ensure 'id' is provided
+            if ($method === 'PUT') {
+                $defaults['id'] = null; // Ensure ID must be explicitly provided for updates
             }
-
-            $result = $this->bookingDb->updateById(
+        
+            // Merge defaults with input data
+            return array_merge($defaults, $data);
+        }
+        
+        private function validateBookingData($data) {
+            return isset(
+                $data['name'],
+                $data['email'],
+                $data['arrival_date'],
+                $data['leaving_date'],
+                $data['number_of_people'],
+                $data['contact_number'],
+                $data['event_type']
+            );
+        }
+        
+        private function validateUpdateData($data) {
+            return isset(
                 $data['id'],
                 $data['name'],
                 $data['email'],
@@ -158,30 +210,8 @@
                 $data['number_of_people'],
                 $data['contact_number']
             );
-
-            $this->sendSuccessResponse(["success" => $result]);
         }
-
-        private function handleDelete() {
-            parse_str(file_get_contents("php://input"), $data);
-
-            if (empty($data['id'])) {
-                $this->sendErrorResponse("Missing booking ID for deletion.", 400);
-                return;
-            }
-
-            $result = $this->bookingDb->deleteById($data['id']);
-            $this->sendSuccessResponse(["success" => $result]);
-        }
-
-        private function validateBookingData($data) {
-            return isset($data['name'], $data['email'], $data['arrival_date'], $data['leaving_date'], $data['number_of_people'], $data['contact_number'], $data['event_type']);
-        }
-
-        private function validateUpdateData($data) {
-            return isset($data['id'], $data['name'], $data['email'], $data['arrival_date'], $data['leaving_date'], $data['number_of_people'], $data['contact_number']);
-        }
-
+        
         private function sendSuccessResponse($data) {
             echo json_encode($data);
             exit;

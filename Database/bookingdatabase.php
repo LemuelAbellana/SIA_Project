@@ -317,22 +317,71 @@ public function deleteBooking($bookingId)
         }
         
         
-        public function updateById($id, $name, $email, $arrivalDate, $leavingDate, $numberOfPeople, $contactNumber) {
-            $query = "UPDATE booking_information 
-                      SET name = ?, email = ?, arrival_date = ?, leaving_date = ?, number_of_people = ?, contact_number = ?
-                      WHERE booking_id = ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->bind_param("ssssisi", $name, $email, $arrivalDate, $leavingDate, $numberOfPeople, $contactNumber, $id);
-            return $stmt->execute();
+        public function updateBooking($bookingId, $name, $email, $contactNumber, $eventType, $arrivalDate, $leavingDate, $numberOfPeople) {
+            $this->db->begin_transaction();
+            
+            try {
+                // Update customer information
+                $customerId = $this->getCustomerIdFromBooking($bookingId);
+                if (!$customerId) {
+                    throw new Exception("Customer not found for booking");
+                }
+                
+                $query = "UPDATE customer 
+                          SET name = ?, email = ?, contact_number = ? 
+                          WHERE customer_id = ?";
+                $stmt = $this->db->prepare($query);
+                $stmt->bind_param("sssi", $name, $email, $contactNumber, $customerId);
+                $stmt->execute();
+                
+                // Get or create event type
+                $eventId = $this->getEventId($eventType);
+                
+                // Update booking information
+                $query = "UPDATE booking_information 
+                          SET event_id = ?, arrival_date = ?, leaving_date = ? 
+                          WHERE booking_id = ?";
+                $stmt = $this->db->prepare($query);
+                $stmt->bind_param("issi", $eventId, $arrivalDate, $leavingDate, $bookingId);
+                $stmt->execute();
+                
+                // Update number of people
+                $query = "UPDATE number_of_people 
+                          SET number_of_people = ? 
+                          WHERE booking_id = ?";
+                $stmt = $this->db->prepare($query);
+                $stmt->bind_param("ii", $numberOfPeople, $bookingId);
+                $stmt->execute();
+                
+                $this->db->commit();
+                return true;
+            } catch (Exception $e) {
+                $this->db->rollback();
+                error_log("Error in updateBooking: " . $e->getMessage());
+                throw $e;
+            }
         }
-    
+        
+        private function getCustomerIdFromBooking($bookingId) {
+            $query = "SELECT customer_id FROM booking_information WHERE booking_id = ?";
+            $stmt = $this->db->prepare($query);
+            $stmt->bind_param("i", $bookingId);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            if ($result->num_rows > 0) {
+                return $result->fetch_assoc()['customer_id'];
+            }
+            return null;
+        }
+
         public function deleteById($id) {
             $query = "DELETE FROM booking_information WHERE booking_id = ?";
             $stmt = $this->db->prepare($query);
             $stmt->bind_param("i", $id);
             return $stmt->execute();
         }
-        public function handleRequest()
+        public function handleRequest() 
 {
     header('Content-Type: application/json');
 
