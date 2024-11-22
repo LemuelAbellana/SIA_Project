@@ -30,6 +30,8 @@
     --line-color: #08142c;
     --subhead-color: #08142c;
 
+    --form-color-text: #
+
 }
 
 [data-theme="dark"] {
@@ -483,7 +485,7 @@ button {
 .form-content .left-side .phone-details i,
 .form-content .left-side .email-details i {
     font-size: 30px;
-    color: #1073ff;
+    color: var(--form-color-text);
     margin-bottom: 10px;
 }
 
@@ -507,7 +509,7 @@ button {
 .form-content .right-side .topic-text {
     font-size: 23px;
     font-weight: bold;
-    color: #1073ff;
+    color: var(--form-color-text);
 }
 
 .form-content .right-side .input-box {

@@ -45,11 +45,10 @@
     <div class="line"></div>
     <h1 class="subhead">Contact</h1>
     <div class="line"></div>
-</div>
+  </div>
 
-  <form action="https://api.web3forms.com/submit" method="POST">
+  <form method="POST">
     <input type="hidden" name="access_key" value="d424a9d5-17af-464a-9a29-8615e1f23044">
-
 
     <div class="form-container">
       <div class="form-content">
@@ -89,7 +88,7 @@
             <textarea name="message" placeholder="Enter your message" required></textarea>
           </div>
           <div class="form-button">
-            <input type="submit" value="Send Now">
+            <input type="submit" onclick="sendMail()" value="Send Now">
           </div>
         </div>
       </div>
@@ -115,6 +114,8 @@
     </div>
   </footer>
   <script src="../ViewModel/darkMode.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="../ViewModel/emailFunc.js"></script>
 </body>
 
 </html>
