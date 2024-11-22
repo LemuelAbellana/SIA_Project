@@ -8,7 +8,7 @@
     integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
     crossorigin="anonymous" referrerpolicy="no-referrer">
   <link rel="stylesheet" href="./admin.css">
-
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <title>Admin</title>
 </head>
 
@@ -196,48 +196,82 @@
           <h2>View Customer Receipt</h2>
           <form id="memberForm">
               <div class="view-group">
-                  <label for="booking_id">ID Number: </label><span id="viewBookingBookingId"></span>
+                  <label>ID Number: </label><span id="viewBookingBookingId"></span>
               </div>
               <div class="view-group">
-                  <label for="name">Name: </label><span id="viewBookingName"></span>
+                  <label>Name: </label><span id="viewBookingName"></span>
               </div>
               <div class="view-group">
-                  <label for="email">Email:</label><span id="viewBookingEmail"></span>
+                  <label>Email:</label><span id="viewBookingEmail"></span>
               </div>
               <div class="view-group">
-                  <label for="contact_number">Contact Number:</label><span id="viewBookingContactNumber"></span>
+                  <label>Contact Number:</label><span id="viewBookingContactNumber"></span>
               </div>
               <div class="view-group">
-                  <label for="arrival_date">Arrival Date:</label><span id="viewBookingArrivalDate"></span>
+                  <label>Arrival Date:</label><span id="viewBookingArrivalDate"></span>
               </div>
               <div class="view-group">
-                  <label for="leaving_date">Leaving Date:</label><span id="viewBookingLeavingDate"></span>
+                  <label>Leaving Date:</label><span id="viewBookingLeavingDate"></span>
               </div>
               <div class="view-group">
-                  <label for="event_type">Event Type:</label><span id="viewBookingEventType"></span>
+                  <label>Event Type:</label><span id="viewBookingEventType"></span>
+              </div>
+              <div class="view-group">
+                  <label>Number of People:</label><span id="viewBookingNumberOfPeople"></span>
               </div>
           </form>
       </div>
   </div>
   
+  
 
-    <div id="edit-Form" class="edit-form">
-      <div class="popup-content">
+  <div id="edit-Form" class="edit-form">
+    <div class="popup-content">
         <span id="closeEdit" class="close-btn">&times;</span>
         <h2>Edit Booking Information</h2>
         <form id="editBookingForm">
-          <input type="hidden" name="booking_id">
-          <input type="text" name="name">
-          <input type="email" name="email">
-          <input type="tel" name="contact_number">
-          <input type="text" name="event_type">
-          <input type="date" name="arrival_date">
-          <input type="date" name="leaving_date">
-          <input type="number" name="number_of_people">
-          <button type="submit">Save Changes</button>
-      </form>
-      </div>
+            <input type="hidden" name="booking_id">
+
+            <div class="edit-group">
+                <label for="editName">Name:</label>
+                <input type="text" id="editName" name="name">
+            </div>
+
+            <div class="edit-group">
+                <label for="editEmail">Email:</label>
+                <input type="email" id="editEmail" name="email">
+            </div>
+
+            <div class="edit-group">
+                <label for="editContactNumber">Contact Number:</label>
+                <input type="tel" id="editContactNumber" name="contact_number">
+            </div>
+
+            <div class="edit-group">
+                <label for="editEventType">Event Type:</label>
+                <input type="text" id="editEventType" name="event_type">
+            </div>
+
+            <div class="edit-group">
+                <label for="editArrivalDate">Arrival Date:</label>
+                <input type="date" id="editArrivalDate" name="arrival_date">
+            </div>
+
+            <div class="edit-group">
+                <label for="editLeavingDate">Leaving Date:</label>
+                <input type="date" id="editLeavingDate" name="leaving_date">
+            </div>
+
+            <div class="edit-group">
+                <label for="editNumberOfPeople">Number of People:</label>
+                <input type="number" id="editNumberOfPeople" name="number_of_people">
+            </div>
+
+            <button type="submit">Save Changes</button>
+        </form>
     </div>
+</div>
+
   </div>
 
   <script src="../../ViewModel/sidenavFunc.js"></script>
