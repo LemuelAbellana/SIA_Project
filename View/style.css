@@ -30,7 +30,7 @@
     --line-color: #08142c;
     --subhead-color: #08142c;
 
-    --form-color-text: #
+    --form-color-text: #1d1f23;
 
 }
 
@@ -430,7 +430,7 @@ button {
 
 .form-container {
     width: 80%;
-    background: #f8fcff;
+    background: #fff;
     padding: 30px 60px 40px 40px;
     border-radius: 6px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.7);
@@ -485,8 +485,12 @@ button {
 .form-content .left-side .phone-details i,
 .form-content .left-side .email-details i {
     font-size: 30px;
-    color: var(--form-color-text);
+    color: #08142c;
     margin-bottom: 10px;
+}
+
+.forms-paragraph {
+    color:#08142c
 }
 
 .form-content .left-side .address-details .text-one,
@@ -504,12 +508,13 @@ button {
 .form-content .left-side .email-details .topic {
     font-size: 18px;
     font-weight: bold;
+    color: #08142c;
 }
 
 .form-content .right-side .topic-text {
     font-size: 23px;
     font-weight: bold;
-    color: var(--form-color-text);
+    color: #01162C;
 }
 
 .form-content .right-side .input-box {
