@@ -271,7 +271,7 @@ button {
 }
 
 /* Popup Form Styles */
-.popup-form {
+.popup-form, .view-form, .edit-form {
   position: fixed;
   top: 0;
   left: 0;
@@ -282,25 +282,13 @@ button {
   align-items: center; /* Center contents vertically */
   z-index: 1000;
   display: none; /* Default state is hidden */
-}
 
-.view-form, .edit-form {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  justify-content: center; /* Horizontally center */
-  align-items: center; /* Vertically center */
-  z-index: 1000;
-  display: none; /* Default state is hidden */
 }
 
 .popup-content {
   position: relative;
   background-color: #ffffff;
-  padding: 20px;
+  padding: 35px;
   border-radius: 8px;
   width: 90%;
   max-width: 400px;
@@ -352,7 +340,7 @@ button {
 }
 
 .edit-group label {
-  flex: 0.7;
+  flex: 3;
   color: #26408B;
   font-weight: bold;
   font-size: 14px;
@@ -360,7 +348,7 @@ button {
 }
 
 .edit-group input {
-  flex: 2; 
+  flex: 5;
   padding: 12px;
   border: 1px solid #555;
   border-radius: 6px;
@@ -373,7 +361,6 @@ button {
   display: flex;
   justify-content: flex-end; /* Aligns label and span vertically */
 }
-
 
 .view-group label {
   flex: 2;
@@ -412,7 +399,7 @@ button {
   align-items: center; 
 }
 
-.form-btn {
+.form-btn, .sub-btn {
   background-color: #26408B;
   color: white;
   border: none;
@@ -428,6 +415,14 @@ button {
   background-color: #0b3d6e;
   transform: scale(1.05);
 }
+
+.sub-btn:hover {
+  background-color: #0b3d6e;
+  transform: scale(1.05);
+}
+
+
+
 
 @keyframes slideIn {
   from {
