@@ -264,17 +264,59 @@ public function deleteBooking($bookingId)
                 'endIndex' => $endIndex
             ];
         }
-        public function getDetailsById($bookingId)
-        {
-            $query = "SELECT *, (arrival_date > CURDATE() + INTERVAL 2 DAY) AS can_cancel 
-                      FROM booking_information 
-                      WHERE booking_id = ?";
-            $stmt = $this->db->prepare($query);
-            $stmt->bind_param("i", $bookingId);
-            $stmt->execute();
-            return $stmt->get_result()->fetch_assoc();
+        public function getDetailsById($bookingId) {
+            try {
+                $query = "SELECT 
+                            b.booking_id, 
+                            c.name, 
+                            c.email, 
+                            c.contact_number, 
+                            e.event_type, 
+                            DATE_FORMAT(b.arrival_date, '%Y-%m-%d') as arrival_date, 
+                            DATE_FORMAT(b.leaving_date, '%Y-%m-%d') as leaving_date, 
+                            np.number_of_people
+                        FROM booking_information b
+                        INNER JOIN customer c ON b.customer_id = c.customer_id
+                        INNER JOIN event e ON b.event_id = e.event_id
+                        LEFT JOIN number_of_people np ON b.booking_id = np.booking_id
+                        WHERE b.booking_id = ?";
+                
+                $stmt = $this->db->prepare($query);
+                if (!$stmt) {
+                    throw new Exception("Failed to prepare query: " . $this->db->error);
+                }
+        
+                $stmt->bind_param("i", $bookingId);
+                
+                if (!$stmt->execute()) {
+                    throw new Exception("Failed to execute query: " . $stmt->error);
+                }
+                
+                $result = $stmt->get_result();
+                $booking = $result->fetch_assoc();
+                
+                if (!$booking) {
+                    return null;
+                }
+                
+                // Ensure all fields are properly formatted
+                return [
+                    'booking_id' => (int)$booking['booking_id'],
+                    'name' => $booking['name'] ?? '',
+                    'email' => $booking['email'] ?? '',
+                    'contact_number' => $booking['contact_number'] ?? '',
+                    'event_type' => $booking['event_type'] ?? '',
+                    'arrival_date' => $booking['arrival_date'] ?? '',
+                    'leaving_date' => $booking['leaving_date'] ?? '',
+                    'number_of_people' => (int)$booking['number_of_people'] ?? 0
+                ];
+            } catch (Exception $e) {
+                error_log("Error in getDetailsById: " . $e->getMessage());
+                return null;
+            }
         }
-    
+        
+        
         public function updateById($id, $name, $email, $arrivalDate, $leavingDate, $numberOfPeople, $contactNumber) {
             $query = "UPDATE booking_information 
                       SET name = ?, email = ?, arrival_date = ?, leaving_date = ?, number_of_people = ?, contact_number = ?
