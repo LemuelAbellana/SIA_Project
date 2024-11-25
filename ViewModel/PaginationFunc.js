@@ -107,17 +107,63 @@ class PaginationFunc {
             }
         }));
     }
+    setMinDates() {
+        const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+        const arrivalInput = document.querySelector('input[name="arrival_date"]');
+        const leavingInput = document.querySelector('input[name="leaving_date"]');
+
+        if (arrivalInput) arrivalInput.setAttribute("min", today);
+        if (leavingInput) leavingInput.setAttribute("min", today);
+    }
 
     createPaginationButton(text, isDisabled, onClick) {
         const button = document.createElement("button");
         button.textContent = text;
         button.classList.add("page-btn");
         button.disabled = isDisabled;
-        if (!isDisabled && text === this.currentPage.toString()) {
+    
+        // Apply 'active' class to the current page
+        if (text.toString() === this.currentPage.toString()) {
             button.classList.add("active");
         }
+    
         button.addEventListener("click", onClick);
         return button;
+    }
+    
+    validateBookingDetails(booking) {
+        const errors = [];
+
+        const contactNumberRegex = /^\d{11}$/;
+        if (!contactNumberRegex.test(booking.contact_number)) {
+            errors.push("Contact number must be exactly 11 digits.");
+        }
+
+        const numPeople = parseInt(booking.number_of_people, 10);
+        if (isNaN(numPeople) || numPeople < 1 || numPeople > 1000) {
+            errors.push("Number of people must be between 1 and 1000.");
+        }
+
+        const arrivalDate = new Date(booking.arrival_date);
+        const leavingDate = new Date(booking.leaving_date);
+        if (arrivalDate >= leavingDate) {
+            errors.push("Leaving date must be after arrival date.");
+        }
+
+        this.data.forEach(existingBooking => {
+            const existingArrival = new Date(existingBooking.arrival_date);
+            const existingLeaving = new Date(existingBooking.leaving_date);
+
+            if (
+                booking.booking_id !== existingBooking.booking_id &&
+                ((arrivalDate >= existingArrival && arrivalDate < existingLeaving) ||
+                 (leavingDate > existingArrival && leavingDate <= existingLeaving))
+            ) {
+                errors.push("Booking dates overlap with an existing booking.");
+            }
+        });
+
+        return errors;
     }
 
     initViewEditButtons() {
@@ -196,65 +242,64 @@ class PaginationFunc {
             if (response && response.booking) {
                 const booking = response.booking;
                 const editForm = document.getElementById("edit-Form");
-                
+
                 if (editForm) {
-                    // Show the edit popup
                     editForm.style.display = "flex";
-                    
-                    // Remove required attributes from all inputs
-                    const formInputs = editForm.querySelectorAll('input, select, textarea');
-                    formInputs.forEach(input => {
-                        input.removeAttribute('required');
-                    });
-                    
-                    // Populate form fields
                     const formFields = [
-                        'booking_id',
-                        'name',
-                        'email',
-                        'contact_number',
-                        'event_type',
-                        'arrival_date',
-                        'leaving_date',
-                        'number_of_people'
+                        "booking_id",
+                        "name",
+                        "email",
+                        "contact_number",
+                        "event_type",
+                        "arrival_date",
+                        "leaving_date",
+                        "number_of_people",
                     ];
-                    
-                    formFields.forEach(field => {
+
+                    formFields.forEach((field) => {
                         const input = editForm.querySelector(`[name="${field}"]`);
                         if (input) {
-                            input.value = booking[field] || '';
+                            input.value = booking[field] || "";
                         }
                     });
-                    
-                    // Initialize form submission handler
-                    const editFormElement = editForm.querySelector('form');
+
+                    this.setMinDates(); // Disable past dates
+                    const editFormElement = editForm.querySelector("form");
                     if (editFormElement) {
                         editFormElement.onsubmit = (e) => this.handleEditSubmit(e);
                     }
                 }
             } else {
-                Swal.fire(
-                    'Error',
-                    'Failed to load booking details',
-                    'error'
-                );
+                Swal.fire("Error", "Failed to load booking details", "error");
             }
         });
     }
 
+
     handleEditSubmit(event) {
-        event.preventDefault(); // Prevent default form submission
-    
+        event.preventDefault();
+
         const form = event.target;
         const formData = new FormData(form);
         const bookingData = Object.fromEntries(formData.entries());
-    
+
+        const validationErrors = this.validateBookingDetails(bookingData);
+
+        if (validationErrors.length > 0) {
+            Swal.fire(
+                'Validation Error',
+                validationErrors.join('<br>'),
+                'error'
+            );
+            return;
+        }
+
         fetch(this.apiUrl, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(bookingData), // Send booking data as JSON
+            body: JSON.stringify(bookingData),
         })
         .then(response => {
             if (!response.ok) {
@@ -271,8 +316,8 @@ class PaginationFunc {
                     data.message || 'Booking details updated successfully.',
                     'success'
                 ).then(() => {
-                    this.fetchData(); // Refresh the table after update
-                    document.getElementById("edit-Form").style.display = "none"; // Close the form popup
+                    this.fetchData();
+                    document.getElementById("edit-Form").style.display = "none";
                 });
             } else {
                 throw new Error(data.message || 'Unexpected error occurred');
@@ -288,8 +333,6 @@ class PaginationFunc {
         });
     }
     
-
-
     // Delete the booking
     deleteBooking(bookingId) {
         Swal.fire({
