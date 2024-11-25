@@ -7,16 +7,16 @@ class PaginationFunction3 {
         this.offset = 0;
     }
 
-    async fetchBookings(limit = this.limit, offset = this.offset) {
+    async fetchBookings(limit = this.limit, offset = this.offset, search = '') {
         try {
-            const response = await fetch(`${this.apiUrl}?limit=${limit}&offset=${offset}`);
+            const response = await fetch(`${this.apiUrl}?limit=${limit}&offset=${offset}&search=${encodeURIComponent(search)}`);
             if (!response.ok) {
                 console.error("Failed to fetch data. Status:", response.status);
                 return;
             }
-
+    
             const result = await response.json();
-
+    
             if (result.status === "success") {
                 this.populateTable(result.data);
                 this.updatePagination(result.total_count, limit, offset);
@@ -27,7 +27,7 @@ class PaginationFunction3 {
             console.error("Error during API fetch:", error);
         }
     }
-
+    
     populateTable(data) {
         const tableBody = document.querySelector(`${this.tableSelector} tbody`);
         tableBody.innerHTML = "";
@@ -102,8 +102,17 @@ class PaginationFunction3 {
 
     initialize() {
         this.fetchBookings();
+    
+        // Add event listener for the search bar
+        const searchInput = document.querySelector("#search");
+        if (searchInput) {
+            searchInput.addEventListener("input", (e) => {
+                const searchTerm = e.target.value;
+                this.fetchBookings(this.limit, 0, searchTerm); // Reset offset to 0 for new search
+            });
+        }
     }
-}
+}    
 
 // Instantiate and initialize the PaginationFunction3
 const paginationFunction3 = new PaginationFunction3(

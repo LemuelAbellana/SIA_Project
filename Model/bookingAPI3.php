@@ -34,10 +34,11 @@ class BookingAPI3
     {
         $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 10;
         $offset = isset($_GET['offset']) ? (int)$_GET['offset'] : 0;
-
+        $search = isset($_GET['search']) ? $_GET['search'] : '';
+    
         try {
-            $data = $this->bookingDb->getBookingSummary($limit, $offset);
-
+            $data = $this->bookingDb->getBookingSummary($limit, $offset, $search);
+    
             $this->sendResponse(200, [
                 'status' => 'success',
                 'data' => $data,
@@ -50,6 +51,7 @@ class BookingAPI3
             ]);
         }
     }
+    
 
     private function sendResponse(int $statusCode, array $responseBody)
     {
