@@ -4,11 +4,64 @@ require_once 'Database.php';  // Assuming this file exists
 
 class BookingDatabase2 extends BaseDatabase2 {  // Extending BaseDatabase2
 
+
+    
     // Constructor to initialize the database connection
     public function __construct(mysqli $connection) {
         parent::__construct($connection);
     }
 
+    public function getFilteredEventSummary($search = '', $limit = 10, $offset = 0) {
+        try {
+            $query = "SELECT e.event_type AS EventName, SUM(n.number_of_people) AS NumberOfGuests
+                      FROM booking_information b
+                      JOIN event e ON e.event_id = b.event_id
+                      JOIN number_of_people n ON b.booking_id = n.booking_id
+                      WHERE e.event_type LIKE ? OR b.booking_id LIKE ?
+                      GROUP BY e.event_type
+                      ORDER BY NumberOfGuests DESC
+                      LIMIT ? OFFSET ?";
+    
+            $stmt = $this->db->prepare($query);
+            if (!$stmt) {
+                throw new Exception("Error preparing filtered query: " . $this->db->error);
+            }
+    
+            $searchTerm = "%$search%";
+            $stmt->bind_param("ssii", $searchTerm, $searchTerm, $limit, $offset);
+            $stmt->execute();
+            $result = $stmt->get_result();
+    
+            if ($result === false) {
+                throw new Exception("Error executing filtered query: " . $this->db->error);
+            }
+    
+            $data = $result->fetch_all(MYSQLI_ASSOC);
+    
+            $countQuery = "SELECT COUNT(DISTINCT e.event_id) AS total_count
+                           FROM booking_information b
+                           JOIN event e ON e.event_id = b.event_id
+                           JOIN number_of_people n ON b.booking_id = n.booking_id
+                           WHERE e.event_type LIKE ? OR b.booking_id LIKE ?";
+    
+            $countStmt = $this->db->prepare($countQuery);
+            if (!$countStmt) {
+                throw new Exception("Error preparing count query: " . $this->db->error);
+            }
+    
+            $countStmt->bind_param("ss", $searchTerm, $searchTerm);
+            $countStmt->execute();
+            $countResult = $countStmt->get_result();
+    
+            $totalCount = $countResult->fetch_assoc()['total_count'];
+    
+            return ['data' => $data, 'totalCount' => $totalCount];
+        } catch (Exception $e) {
+            error_log("Error in getFilteredEventSummary: " . $e->getMessage());
+            throw $e;
+        }
+    }
+    
     // Method to fetch event guest summary with pagination
     public function getEventGuestSummary($limit = 10, $offset = 0) {
         try {

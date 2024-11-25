@@ -14,6 +14,7 @@ class BookingAPI2 {
         $this->method = $_SERVER['REQUEST_METHOD'];
         header("Content-Type: application/json");
     }
+    
 
     // Initialize the database connection and BookingDatabase
     private function initializeDatabase() {
@@ -42,14 +43,43 @@ class BookingAPI2 {
     // Handle POST requests
     private function handlePostRequest() {
         $data = json_decode(file_get_contents("php://input"), true);
-
-        if (isset($data['action']) && $data['action'] === 'get_event_summary') {
-            $this->handleGetEventSummary($data);
+        
+        if (isset($data['action'])) {
+            switch ($data['action']) {
+                case 'get_event_summary':
+                    $this->handleGetEventSummary($data);
+                    break;
+                case 'search_event_summary':
+                    $this->handleSearchEventSummary($data);
+                    break;
+                default:
+                    $this->sendResponse(["success" => false, "message" => "Invalid action"], 400);
+            }
         } else {
-            $this->sendResponse(["success" => false, "message" => "Invalid action"], 400);
+            $this->sendResponse(["success" => false, "message" => "No action specified"], 400);
         }
     }
-
+    
+    private function handleSearchEventSummary($data) {
+        $search = isset($data['search']) ? $data['search'] : '';
+        $limit = isset($data['limit']) ? (int)$data['limit'] : 10;
+        $offset = isset($data['offset']) ? (int)$data['offset'] : 0;
+    
+        $summary = $this->bookingDb->getFilteredEventSummary($search, $limit, $offset);
+    
+        $startIndex = $offset + 1;
+        $endIndex = min($offset + $limit, $summary['totalCount']);
+    
+        $response = [
+            "success" => true,
+            "data" => $summary['data'],
+            "totalCount" => $summary['totalCount'],
+            "startIndex" => $startIndex,
+            "endIndex" => $endIndex
+        ];
+        $this->sendResponse($response);
+    }
+    
     // Fetch event guest summary with pagination
     private function handleGetEventSummary($data) {
         $limit = isset($data['limit']) ? (int)$data['limit'] : 10;
