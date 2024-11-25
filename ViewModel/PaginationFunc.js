@@ -63,15 +63,15 @@ class PaginationFunc {
         }
     
         // Check for overlapping dates with existing bookings
-        this.data.forEach(existingBooking => {
-            if (booking.booking_id !== existingBooking.booking_id) {
+        this.data.forEach((existingBooking) => {
+            // Skip the booking being edited by comparing booking_id
+            if (parseInt(booking.booking_id, 10) !== parseInt(existingBooking.booking_id, 10)) {
                 const existingArrival = new Date(existingBooking.arrival_date);
                 const existingLeaving = new Date(existingBooking.leaving_date);
     
-                // Check for any overlap between new booking and existing booking
+                // Check for overlap
                 const isOverlapping =
-                    (arrivalDate < existingLeaving && leavingDate > existingArrival); // Overlap condition
-    
+                    (arrivalDate < existingLeaving && leavingDate > existingArrival);
                 if (isOverlapping) {
                     errors.push(
                         `Booking dates overlap with an existing booking (ID: ${existingBooking.booking_id}).`
@@ -205,14 +205,13 @@ class PaginationFunc {
     
         // Check for overlapping dates with existing bookings
         this.data.forEach(existingBooking => {
-            if (booking.booking_id !== existingBooking.booking_id) {
+            if (parseInt(booking.booking_id, 10) !== parseInt(existingBooking.booking_id, 10)) { // Exclude the current booking
                 const existingArrival = new Date(existingBooking.arrival_date);
                 const existingLeaving = new Date(existingBooking.leaving_date);
     
-                // Check for any overlap between new booking and existing booking
+                // Check for any overlap
                 const isOverlapping =
-                    (arrivalDate < existingLeaving && leavingDate > existingArrival); // Any overlap condition
-    
+                    arrivalDate < existingLeaving && leavingDate > existingArrival;
                 if (isOverlapping) {
                     errors.push(
                         `Booking dates overlap with an existing booking (ID: ${existingBooking.booking_id}).`
@@ -223,7 +222,6 @@ class PaginationFunc {
     
         return errors;
     }    
-    
 
     initViewEditButtons() {
         const tableBody = document.querySelector("table tbody");
