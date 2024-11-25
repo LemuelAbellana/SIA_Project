@@ -43,12 +43,19 @@ class PaginationFunc {
 
     populateTable(bookings) {
         const tbody = document.querySelector("table tbody");
-        tbody.innerHTML = bookings.length === 0
+    
+        // Sort bookings based on booking_id
+        const sortedBookings = bookings.sort((a, b) => {
+            return a.booking_id - b.booking_id; // Ascending order
+        });
+    
+        tbody.innerHTML = sortedBookings.length === 0
             ? "<tr><td colspan='10'>No records found</td></tr>"
-            : bookings.map(this.createRow).join("");
-
+            : sortedBookings.map(this.createRow).join("");
+    
         this.initViewEditButtons();
     }
+    
 
     createRow(booking) {
         return `

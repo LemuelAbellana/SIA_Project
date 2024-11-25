@@ -220,7 +220,7 @@ public function deleteBooking($bookingId) {
 
         // Fetch all bookings with search, pagination, and encapsulated logic
         public function getAll($limit, $offset, $search = '') {
-            // Prepare query for paginated results
+            // Prepare query for paginated results with ORDER BY clause
             $query = "SELECT 
                         b.booking_id,
                         b.customer_id,
@@ -237,6 +237,7 @@ public function deleteBooking($bookingId) {
                       INNER JOIN event e ON b.event_id = e.event_id
                       LEFT JOIN number_of_people np ON b.booking_id = np.booking_id
                       WHERE c.name LIKE ? OR c.email LIKE ?
+                      ORDER BY b.booking_id ASC
                       LIMIT ? OFFSET ?";
             
             $stmt = $this->db->prepare($query);
@@ -277,6 +278,7 @@ public function deleteBooking($bookingId) {
                 'endIndex' => $endIndex
             ];
         }
+        
         public function getDetailsById($bookingId) {
             try {
                 $query = "SELECT 
