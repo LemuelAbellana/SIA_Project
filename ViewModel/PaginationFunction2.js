@@ -77,12 +77,16 @@ class PaginationFunction2 {
 
         const createButton = (text, disabled, onClick) => {
             const button = document.createElement('button');
-            button.classList.add('page-btn');
             button.textContent = text;
+            button.classList.add('page-btn');
             button.disabled = disabled;
-            button.addEventListener('click', onClick);
+            if (text.toString() === this.currentPage.toString()) {
+                button.classList.add("active");
+            }
+        
+            button.addEventListener("click", onClick);
             return button;
-        };
+        }
 
         paginationContainer.appendChild(
             createButton('Prev', this.currentPage === 1, () => {
