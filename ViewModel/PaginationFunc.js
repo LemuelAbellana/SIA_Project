@@ -40,6 +40,49 @@ class PaginationFunc {
     createApiUrl() {
         return `${this.apiUrl}?page=${this.currentPage}&entries=${this.entries}&search=${this.searchTerm}`;
     }
+    validateBookingDetails(booking) {
+        const errors = [];
+    
+        // Validate contact number format
+        const contactNumberRegex = /^\d{11}$/;
+        if (!contactNumberRegex.test(booking.contact_number)) {
+            errors.push("Contact number must be exactly 11 digits.");
+        }
+    
+        // Validate number of people
+        const numPeople = parseInt(booking.number_of_people, 10);
+        if (isNaN(numPeople) || numPeople < 1 || numPeople > 1000) {
+            errors.push("Number of people must be between 1 and 1000.");
+        }
+    
+        // Validate date order
+        const arrivalDate = new Date(booking.arrival_date);
+        const leavingDate = new Date(booking.leaving_date);
+        if (arrivalDate >= leavingDate) {
+            errors.push("Leaving date must be after arrival date.");
+        }
+    
+        // Check for overlapping dates with existing bookings
+        this.data.forEach(existingBooking => {
+            if (booking.booking_id !== existingBooking.booking_id) {
+                const existingArrival = new Date(existingBooking.arrival_date);
+                const existingLeaving = new Date(existingBooking.leaving_date);
+    
+                // Check for any overlap between new booking and existing booking
+                const isOverlapping =
+                    (arrivalDate < existingLeaving && leavingDate > existingArrival); // Overlap condition
+    
+                if (isOverlapping) {
+                    errors.push(
+                        `Booking dates overlap with an existing booking (ID: ${existingBooking.booking_id}).`
+                    );
+                }
+            }
+        });
+    
+        return errors;
+    }
+    
 
     populateTable(bookings) {
         const tbody = document.querySelector("table tbody");
@@ -140,38 +183,47 @@ class PaginationFunc {
     
     validateBookingDetails(booking) {
         const errors = [];
-
+    
+        // Validate contact number format
         const contactNumberRegex = /^\d{11}$/;
         if (!contactNumberRegex.test(booking.contact_number)) {
             errors.push("Contact number must be exactly 11 digits.");
         }
-
+    
+        // Validate number of people
         const numPeople = parseInt(booking.number_of_people, 10);
         if (isNaN(numPeople) || numPeople < 1 || numPeople > 1000) {
             errors.push("Number of people must be between 1 and 1000.");
         }
-
+    
+        // Validate date order
         const arrivalDate = new Date(booking.arrival_date);
         const leavingDate = new Date(booking.leaving_date);
         if (arrivalDate >= leavingDate) {
             errors.push("Leaving date must be after arrival date.");
         }
-
+    
+        // Check for overlapping dates with existing bookings
         this.data.forEach(existingBooking => {
-            const existingArrival = new Date(existingBooking.arrival_date);
-            const existingLeaving = new Date(existingBooking.leaving_date);
-
-            if (
-                booking.booking_id !== existingBooking.booking_id &&
-                ((arrivalDate >= existingArrival && arrivalDate < existingLeaving) ||
-                 (leavingDate > existingArrival && leavingDate <= existingLeaving))
-            ) {
-                errors.push("Booking dates overlap with an existing booking.");
+            if (booking.booking_id !== existingBooking.booking_id) {
+                const existingArrival = new Date(existingBooking.arrival_date);
+                const existingLeaving = new Date(existingBooking.leaving_date);
+    
+                // Check for any overlap between new booking and existing booking
+                const isOverlapping =
+                    (arrivalDate < existingLeaving && leavingDate > existingArrival); // Any overlap condition
+    
+                if (isOverlapping) {
+                    errors.push(
+                        `Booking dates overlap with an existing booking (ID: ${existingBooking.booking_id}).`
+                    );
+                }
             }
         });
-
+    
         return errors;
-    }
+    }    
+    
 
     initViewEditButtons() {
         const tableBody = document.querySelector("table tbody");
@@ -285,22 +337,25 @@ class PaginationFunc {
 
     handleEditSubmit(event) {
         event.preventDefault();
-
+    
         const form = event.target;
         const formData = new FormData(form);
         const bookingData = Object.fromEntries(formData.entries());
-
+    
+        // Validate booking details
         const validationErrors = this.validateBookingDetails(bookingData);
-
+    
         if (validationErrors.length > 0) {
+            // Display validation errors in a modal or alert
             Swal.fire(
                 'Validation Error',
                 validationErrors.join('<br>'),
                 'error'
             );
-            return;
+            return; // Stop the submission if validation fails
         }
-
+    
+        // Proceed with the update if validation passes
         fetch(this.apiUrl, {
             method: 'PUT',
             headers: {
@@ -308,37 +363,39 @@ class PaginationFunc {
             },
             body: JSON.stringify(bookingData),
         })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then((data) => {
-                    throw new Error(data.message || 'Failed to update booking');
-                });
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then((data) => {
+                        throw new Error(data.message || 'Failed to update booking');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Show success message and refresh data
+                    Swal.fire(
+                        'Success!',
+                        data.message || 'Booking details updated successfully.',
+                        'success'
+                    ).then(() => {
+                        this.fetchData(); // Reload updated data
+                        document.getElementById("edit-Form").style.display = "none"; // Close the form
+                    });
+                } else {
+                    throw new Error(data.message || 'Unexpected error occurred');
+                }
+            })
+            .catch(error => {
+                // Handle errors during the update process
+                console.error("Update failed:", error);
                 Swal.fire(
-                    'Success!',
-                    data.message || 'Booking details updated successfully.',
-                    'success'
-                ).then(() => {
-                    this.fetchData();
-                    document.getElementById("edit-Form").style.display = "none";
-                });
-            } else {
-                throw new Error(data.message || 'Unexpected error occurred');
-            }
-        })
-        .catch(error => {
-            console.error("Update failed:", error);
-            Swal.fire(
-                'Error',
-                error.message || 'An error occurred while updating the booking.',
-                'error'
-            );
-        });
-    }
+                    'Error',
+                    error.message || 'An error occurred while updating the booking.',
+                    'error'
+                );
+            });
+    }    
     
     // Delete the booking
     deleteBooking(bookingId) {

@@ -278,6 +278,28 @@ public function deleteBooking($bookingId) {
                 'endIndex' => $endIndex
             ];
         }
+        public function isDateOverlap($bookingId, $arrivalDate, $leavingDate) {
+            $query = "SELECT booking_id 
+                      FROM booking_information 
+                      WHERE booking_id != ? 
+                      AND (
+                          (arrival_date < ? AND leaving_date > ?) OR 
+                          (arrival_date >= ? AND arrival_date < ?) OR 
+                          (leaving_date > ? AND leaving_date <= ?)
+                      )";
+        
+            $stmt = $this->db->prepare($query);
+            if (!$stmt) {
+                throw new Exception("Failed to prepare overlap check query: " . $this->db->error);
+            }
+        
+            $stmt->bind_param("issssss", $bookingId, $leavingDate, $arrivalDate, $arrivalDate, $leavingDate, $arrivalDate, $leavingDate);
+            $stmt->execute();
+            $result = $stmt->get_result();
+        
+            return $result->num_rows > 0; // Return true if an overlap exists
+        }
+        
         
         public function getDetailsById($bookingId) {
             try {
@@ -334,24 +356,29 @@ public function deleteBooking($bookingId) {
         
         public function updateBooking($bookingId, $name, $email, $contactNumber, $eventType, $arrivalDate, $leavingDate, $numberOfPeople) {
             $this->db->begin_transaction();
-            
+        
             try {
+                // Validate date overlap
+                if ($this->isDateOverlap($bookingId, $arrivalDate, $leavingDate)) {
+                    throw new Exception("Booking dates overlap with an existing booking.");
+                }
+        
                 // Update customer information
                 $customerId = $this->getCustomerIdFromBooking($bookingId);
                 if (!$customerId) {
                     throw new Exception("Customer not found for booking");
                 }
-                
+        
                 $query = "UPDATE customer 
                           SET name = ?, email = ?, contact_number = ? 
                           WHERE customer_id = ?";
                 $stmt = $this->db->prepare($query);
                 $stmt->bind_param("sssi", $name, $email, $contactNumber, $customerId);
                 $stmt->execute();
-                
+        
                 // Get or create event type
                 $eventId = $this->getEventId($eventType);
-                
+        
                 // Update booking information
                 $query = "UPDATE booking_information 
                           SET event_id = ?, arrival_date = ?, leaving_date = ? 
@@ -359,7 +386,7 @@ public function deleteBooking($bookingId) {
                 $stmt = $this->db->prepare($query);
                 $stmt->bind_param("issi", $eventId, $arrivalDate, $leavingDate, $bookingId);
                 $stmt->execute();
-                
+        
                 // Update number of people
                 $query = "UPDATE number_of_people 
                           SET number_of_people = ? 
@@ -367,7 +394,7 @@ public function deleteBooking($bookingId) {
                 $stmt = $this->db->prepare($query);
                 $stmt->bind_param("ii", $numberOfPeople, $bookingId);
                 $stmt->execute();
-                
+        
                 $this->db->commit();
                 return true;
             } catch (Exception $e) {
